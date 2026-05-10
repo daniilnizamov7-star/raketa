@@ -10,39 +10,14 @@
 
 <style>
 /* ================================
-   ШРИФТЫ — без Google, без прыжков
-   Системный стек: мгновенная загрузка
+   ШРИФТЫ — системный стек, ноль прыжков
 ================================ */
-@font-face {
-  font-family: 'AppDisplay';
-  src: local('SF Pro Display'), local('SF Pro Text'),
-       local('Segoe UI'), local('.AppleSystemUIFont'),
-       local('Helvetica Neue');
-  font-weight: 400 900;
-  font-display: block; /* блокируем до загрузки — нет прыжка */
-}
-:root {
-  --font-display: 'SF Pro Display', -apple-system, 'Segoe UI Variable Display',
-                  'Segoe UI', system-ui, sans-serif;
-  --font-body:    -apple-system, 'Segoe UI', system-ui, sans-serif;
-}
-/* Заголовки — жирный системный */
-.hero-title, .section-title, .logo-text, .hstat-num,
-.price-amount, .btn-primary, .btn-secondary, .stat-num,
-.lcp-stars-num, .hc-stars-num, .nav-links a,
-h1, h2, h3, .section-tag {
-  font-family: var(--font-display);
-}
-body, input, select, textarea, button {
-  font-family: var(--font-body);
-}
-</style>
-
-<style>
 /* ================================
    DESIGN TOKENS
 ================================ */
 :root {
+  --font-h: -apple-system, 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-b: -apple-system, 'Segoe UI', system-ui, sans-serif;
   --bg:       #04050e;
   --deep:     #080a1a;
   --card:     #0e1028;
@@ -73,8 +48,9 @@ body, input, select, textarea, button {
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
+*, *::before, *::after { -webkit-font-smoothing: antialiased; }
 body {
-  font-family: var(--font-body);
+  font-family: var(--font-b);
   background: var(--bg);
   color: var(--white);
   overflow-x: hidden;
@@ -138,7 +114,7 @@ nav.scrolled {
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 1.3rem; font-weight: 900;
   display: flex; align-items: center; gap: 10px;
   text-decoration: none;
@@ -194,7 +170,7 @@ nav.scrolled {
 .mobile-nav.open { opacity: 1; }
 .mobile-nav a {
   color: var(--white); text-decoration: none;
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 1.4rem; font-weight: 700;
   letter-spacing: -0.02em;
   transition: color 0.2s;
@@ -232,7 +208,7 @@ nav.scrolled {
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
 
 .hero-title {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: clamp(3.2rem, 9vw, 8rem);
   font-weight: 900;
   line-height: 0.92;
@@ -271,7 +247,7 @@ nav.scrolled {
   display: inline-flex; align-items: center; gap: 8px;
   background: linear-gradient(135deg, var(--neon), var(--neon2));
   color: #fff; padding: 16px 38px; border-radius: 100px;
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 0.85rem; font-weight: 700;
   text-decoration: none; border: none; cursor: none;
   box-shadow: 0 0 32px var(--gp), 0 4px 20px rgba(0,0,0,0.4);
@@ -286,7 +262,7 @@ nav.scrolled {
   display: inline-flex; align-items: center; gap: 8px;
   background: transparent; color: var(--white);
   padding: 15px 36px; border-radius: 100px;
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 0.85rem; font-weight: 700;
   text-decoration: none;
   border: 1.5px solid rgba(255,255,255,0.15);
@@ -312,8 +288,8 @@ nav.scrolled {
   flex: 1; min-width: 130px;
 }
 .hstat:last-child { border-right: none; }
-.hstat-num {
-  font-family: var(--font-display);
+.hstat-num { min-height: 2.3rem;
+  font-family: var(--font-h);
   font-size: 1.9rem; font-weight: 900; line-height: 1;
   background: linear-gradient(135deg, var(--yellow), var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -373,7 +349,7 @@ section {
   color: var(--neon); margin-bottom: 18px;
 }
 .section-title {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 900; line-height: 1.1;
   letter-spacing: -0.03em; margin-bottom: 20px;
@@ -418,14 +394,14 @@ section {
 .why-card:hover { border-color: var(--border2); transform: translateY(-4px); }
 .why-card:hover::after { transform: scaleX(1); }
 .why-num {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 3.5rem; font-weight: 900;
   color: rgba(255,255,255,0.04); line-height: 1;
   position: absolute; top: 20px; right: 24px;
 }
 .why-icon { font-size: 2.4rem; margin-bottom: 20px; display: block; }
 .why-card h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 1rem; font-weight: 700;
   margin-bottom: 10px; letter-spacing: -0.01em;
 }
@@ -462,7 +438,7 @@ section {
 .attr-card:nth-child(6) { --card-glow: radial-gradient(circle at 0% 0%, rgba(0,229,255,0.1), transparent 60%); }
 .attr-icon { font-size: 2.8rem; margin-bottom: 20px; display: block; position: relative; z-index: 1; }
 .attr-card h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 1rem; font-weight: 700;
   margin-bottom: 10px; letter-spacing: -0.01em;
   position: relative; z-index: 1;
@@ -512,13 +488,13 @@ section {
   white-space: nowrap; letter-spacing: 0.05em;
 }
 .price-name {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 0.75rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 24px;
 }
 .price-amount {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: clamp(2.4rem, 5vw, 3.2rem);
   font-weight: 900; line-height: 1; margin-bottom: 6px;
 }
@@ -534,7 +510,7 @@ section {
 .btn-book {
   display: block; padding: 14px;
   border-radius: 100px;
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: 0.78rem; font-weight: 700;
   text-align: center; text-decoration: none;
   cursor: none; transition: all 0.3s; border: none; width: 100%;
@@ -578,7 +554,7 @@ section {
   background: radial-gradient(circle, rgba(45,156,255,0.18), transparent 70%);
 }
 .lcp-logo {
-  font-family: var(--font-display); font-size: 1rem; font-weight: 900;
+  font-family: var(--font-h); font-size: 1rem; font-weight: 900;
   background: linear-gradient(135deg, var(--neon), var(--blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 36px; display: flex; align-items: center; gap: 8px;
@@ -590,7 +566,7 @@ section {
   position: relative; z-index: 1;
 }
 .lcp-stars-num {
-  font-family: var(--font-display); font-size: 3.8rem; font-weight: 900;
+  font-family: var(--font-h); font-size: 3.8rem; font-weight: 900;
   background: linear-gradient(135deg, var(--yellow), var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   line-height: 1; margin-bottom: 4px; position: relative; z-index: 1;
@@ -614,7 +590,7 @@ section {
   position: relative; z-index: 1;
 }
 .lcp-name {
-  font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
+  font-family: var(--font-h); font-size: 0.95rem; font-weight: 700;
   position: relative; z-index: 1;
 }
 .lcp-level {
@@ -636,7 +612,7 @@ section {
 .loyalty-perks li:hover { border-color: var(--border2); transform: translateX(4px); }
 .perk-icon { font-size: 1.7rem; flex-shrink: 0; }
 .perk-title {
-  font-family: var(--font-display); font-size: 0.88rem; font-weight: 700;
+  font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
   margin-bottom: 4px; letter-spacing: -0.01em;
 }
 .perk-desc { font-size: 0.83rem; color: var(--muted2); line-height: 1.5; }
@@ -668,7 +644,7 @@ section {
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--border); border-radius: 12px;
   padding: 14px 18px; color: var(--white);
-  font-family: var(--font-body); font-size: 1rem;
+  font-family: var(--font-b); font-size: 1rem;
   outline: none; transition: all 0.25s; cursor: none;
   -webkit-appearance: none;
 }
@@ -716,7 +692,7 @@ section {
   width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, var(--neon), var(--purple));
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
+  font-family: var(--font-h); font-size: 0.72rem; font-weight: 700;
   flex-shrink: 0;
 }
 .review-name { font-weight: 700; font-size: 0.88rem; }
@@ -744,7 +720,7 @@ section {
   pointer-events: none;
 }
 .cta-wrap h2 {
-  font-family: var(--font-display);
+  font-family: var(--font-h);
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 900; line-height: 1.1;
   letter-spacing: -0.03em; margin-bottom: 16px;
@@ -772,14 +748,14 @@ footer {
   display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
 }
 .footer-logo {
-  font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
+  font-family: var(--font-h); font-size: 1.2rem; font-weight: 900;
   background: linear-gradient(135deg, #fff 30%, var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
 }
 .footer-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.65; max-width: 280px; }
 .footer-col h4 {
-  font-family: var(--font-display); font-size: 0.75rem; font-weight: 700;
+  font-family: var(--font-h); font-size: 0.75rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 18px;
 }
@@ -832,7 +808,7 @@ footer {
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
 .modal h3 {
-  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900;
+  font-family: var(--font-h); font-size: 1.4rem; font-weight: 900;
   margin-bottom: 12px; letter-spacing: -0.02em;
 }
 .modal p { color: var(--muted2); font-size: 0.92rem; line-height: 1.6; margin-bottom: 28px; }
