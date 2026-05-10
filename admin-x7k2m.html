@@ -6,19 +6,20 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Панель управления · Ракета</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap');
 
 :root {
   --bg: #04050e; --deep: #080919; --card: #0e1028; --card2: #131535;
   --border: rgba(255,255,255,0.07); --b2: rgba(255,255,255,0.12);
   --neon: #ff3cac; --blue: #2d9cff; --purple: #9b59ff;
   --yellow: #ffd166; --green: #06d6a0; --red: #ff5c5c;
+  --font-display: 'SF Pro Display', -apple-system, 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-body: -apple-system, 'Segoe UI', system-ui, sans-serif;
   --white: #eef2ff; --muted: #5a6a90; --muted2: #8090b0;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--white);
+  font-family: var(--font-body); background: var(--bg); color: var(--white);
   min-height: 100vh;
 }
 
@@ -31,7 +32,7 @@ body {
   padding: 40px; max-width: 400px; width: 100%; text-align: center;
 }
 .login-logo {
-  font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900;
   background: linear-gradient(135deg, var(--neon), var(--blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 8px;
@@ -40,14 +41,14 @@ body {
 .login-input {
   width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
   border-radius: 12px; padding: 14px 18px; color: var(--white);
-  font-family: 'Nunito', sans-serif; font-size: 1rem; outline: none; margin-bottom: 14px;
+  font-family: var(--font-body); font-size: 1rem; outline: none; margin-bottom: 14px;
   transition: all 0.2s; -webkit-appearance: none;
 }
 .login-input:focus { border-color: var(--neon); box-shadow: 0 0 0 3px rgba(255,60,172,0.12); }
 .login-btn {
   width: 100%; padding: 15px; border: none; border-radius: 100px;
   background: linear-gradient(135deg, var(--neon), #c4007a); color: #fff;
-  font-family: 'Unbounded', sans-serif; font-size: 0.85rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
   cursor: pointer; transition: all 0.3s;
   box-shadow: 0 0 28px rgba(255,60,172,0.3);
 }
@@ -65,7 +66,7 @@ body {
   display: flex; flex-direction: column;
 }
 .sb-logo {
-  font-family: 'Unbounded', sans-serif; font-size: 1rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1rem; font-weight: 900;
   background: linear-gradient(135deg, var(--neon), var(--blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   padding: 0 24px; margin-bottom: 32px; display: flex; align-items: center; gap: 8px;
@@ -86,7 +87,7 @@ body {
 .sb-bottom { margin-top: auto; padding: 0 24px; }
 .sb-logout {
   width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px;
-  background: transparent; color: var(--muted2); font-family: 'Nunito', sans-serif;
+  background: transparent; color: var(--muted2); font-family: var(--font-body);
   font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
 }
 .sb-logout:hover { border-color: var(--red); color: var(--red); }
@@ -99,7 +100,7 @@ body {
   display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;
 }
 .admin-title {
-  font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em;
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em;
 }
 .admin-date { font-size: 0.82rem; color: var(--muted2); margin-top: 4px; }
 .hdr-btn-row { display: flex; gap: 10px; }
@@ -119,7 +120,7 @@ body {
 }
 .stat-icon { font-size: 1.8rem; margin-bottom: 12px; }
 .stat-num {
-  font-family: 'Unbounded', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1;
+  font-family: var(--font-display); font-size: 2rem; font-weight: 900; line-height: 1;
   margin-bottom: 4px;
 }
 .stat-label { font-size: 0.78rem; color: var(--muted2); font-weight: 700; }
@@ -140,7 +141,7 @@ body {
   padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;
   border-bottom: 1px solid var(--border);
 }
-.table-title { font-family: 'Unbounded', sans-serif; font-size: 0.9rem; font-weight: 700; }
+.table-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; }
 .table-actions { display: flex; gap: 10px; }
 .tbl-btn {
   padding: 8px 16px; border-radius: 100px; font-size: 0.75rem; font-weight: 700;
@@ -152,7 +153,7 @@ body {
 .tbl-btn.outline:hover { border-color: var(--b2); color: var(--white); }
 .table-search {
   padding: 9px 16px; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-  border-radius: 100px; color: var(--white); font-family: 'Nunito', sans-serif;
+  border-radius: 100px; color: var(--white); font-family: var(--font-body);
   font-size: 0.82rem; outline: none; transition: all 0.2s; min-width: 200px;
 }
 .table-search:focus { border-color: var(--neon); }
@@ -169,7 +170,7 @@ td {
 tr:hover td { background: rgba(255,255,255,0.02); }
 .td-name { color: var(--white); font-weight: 700; }
 .td-stars {
-  font-family: 'Unbounded', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--yellow);
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; color: var(--yellow);
 }
 .td-level {
   display: inline-flex; align-items: center; gap: 5px;
@@ -202,7 +203,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, var(--neon), #c4007a);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Unbounded', sans-serif; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+  font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
 }
 .booking-info { flex: 1; }
 .booking-title { font-weight: 800; font-size: 0.92rem; margin-bottom: 4px; }
@@ -229,18 +230,18 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   transition: transform 0.4s cubic-bezier(.22,1,.36,1);
 }
 .modal-overlay.active .modal { transform: scale(1) translateY(0); }
-.modal-title { font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900; margin-bottom: 20px; }
+.modal-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; margin-bottom: 20px; }
 .modal-input {
   width: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
   border-radius: 12px; padding: 13px 16px; color: var(--white);
-  font-family: 'Nunito', sans-serif; font-size: 1rem; outline: none;
+  font-family: var(--font-body); font-size: 1rem; outline: none;
   transition: all 0.2s; margin-bottom: 14px; -webkit-appearance: none;
 }
 .modal-input:focus { border-color: var(--neon); }
 .modal-btns { display: flex; gap: 10px; }
 .modal-btn {
   flex: 1; padding: 13px; border-radius: 100px;
-  font-family: 'Unbounded', sans-serif; font-size: 0.8rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
   cursor: pointer; transition: all 0.2s; border: none;
 }
 .modal-btn.confirm { background: linear-gradient(135deg, var(--neon), #c4007a); color: #fff; }
@@ -264,7 +265,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 /* SETTINGS */
 .settings-section { margin-bottom: 28px; }
 .settings-title {
-  font-family: 'Unbounded', sans-serif; font-size: 0.78rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.78rem; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
 }
 .settings-card {
@@ -278,7 +279,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 .setting-input {
   background: rgba(255,255,255,0.04); border: 1px solid var(--border);
   border-radius: 10px; padding: 9px 14px; color: var(--white);
-  font-family: 'Nunito', sans-serif; font-size: 0.9rem; outline: none;
+  font-family: var(--font-body); font-size: 0.9rem; outline: none;
   width: 140px; text-align: right; transition: all 0.2s;
 }
 .setting-input:focus { border-color: var(--neon); }
@@ -564,7 +565,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 /* ===========================
    CONFIG
 =========================== */
-const ADMIN_PASS = 'raketa2026'; // Сменить перед деплоем!
+const SUPABASE_URL = 'https://yiqipulgofoschkccaxr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
+
+const ADMIN_PASS = 'raketa2026';
 const LEVELS = [
   { name: 'Новичок',   icon: '🛸', min: 0,    color: '#8090b0' },
   { name: 'Космонавт', icon: '🚀', min: 500,  color: '#2d9cff' },
@@ -610,6 +614,24 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ===========================
+   SUPABASE HELPERS
+=========================== */
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers || {})
+    },
+    ...opts
+  });
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+/* ===========================
    INIT
 =========================== */
 function initAdmin() {
@@ -620,236 +642,217 @@ function initAdmin() {
 }
 
 /* ===========================
-   DATA
+   DATA — Supabase
 =========================== */
-function getGuests() {
-  // В реальной версии — Supabase. Сейчас: demo data + localStorage
-  const stored = JSON.parse(localStorage.getItem('raketa_guests_admin') || '[]');
-  // Demo data if empty
-  if (!stored.length) {
-    const demo = [
-      { id: 1, name: 'Иванова Мария', phone: '+7 905 100-00-01', stars: 1240, visits: 12, since: '15.03.2026', bday: '' },
-      { id: 2, name: 'Петрова Анна',  phone: '+7 905 100-00-02', stars: 540,  visits: 5,  since: '01.04.2026', bday: '' },
-      { id: 3, name: 'Козлов Дмитрий',phone: '+7 905 100-00-03', stars: 3200, visits: 32, since: '10.01.2026', bday: '' },
-    ];
-    localStorage.setItem('raketa_guests_admin', JSON.stringify(demo));
-    return demo;
+async function getGuests() {
+  try {
+    const rows = await sbFetch('raketa_guests?order=stars.desc&limit=200');
+    return rows || [];
+  } catch(e) {
+    console.error('getGuests:', e);
+    return [];
   }
-  return stored;
 }
 
-function saveGuests(guests) {
-  localStorage.setItem('raketa_guests_admin', JSON.stringify(guests));
+async function getBookings() {
+  try {
+    const rows = await sbFetch('raketa_bookings?order=created_at.desc&limit=100');
+    return rows || [];
+  } catch(e) { return []; }
 }
-
-function getBookings() {
-  return JSON.parse(localStorage.getItem('raketa_bookings') || '[]');
-}
-
-function saveBookings(b) { localStorage.setItem('raketa_bookings', JSON.stringify(b)); }
 
 /* ===========================
    DASHBOARD
 =========================== */
-function renderDashboard() {
-  const guests = getGuests();
-  const bookings = getBookings();
-  const totalStars = guests.reduce((s, g) => s + g.stars, 0);
-  const totalVisits = guests.reduce((s, g) => s + g.visits, 0);
+async function renderDashboard() {
+  const guests   = await getGuests();
+  const bookings = await getBookings();
+  const totalStars  = guests.reduce((s, g) => s + (g.stars || 0), 0);
+  const totalVisits = guests.reduce((s, g) => s + (g.visits || 0), 0);
   const newBookings = bookings.filter(b => b.status === 'new').length;
 
-  document.getElementById('stat-guests').textContent = guests.length;
-  document.getElementById('stat-stars').textContent = totalStars.toLocaleString('ru');
+  document.getElementById('stat-guests').textContent   = guests.length;
+  document.getElementById('stat-stars').textContent    = totalStars.toLocaleString('ru');
   document.getElementById('stat-bookings').textContent = bookings.length;
-  document.getElementById('stat-visits').textContent = totalVisits;
+  document.getElementById('stat-visits').textContent   = totalVisits;
   document.getElementById('trend-bookings').textContent = `${newBookings} новых`;
 
-  // Recent guests table
   const tbody = document.getElementById('recentGuestsBody');
   const recent = guests.slice(0, 5);
-  if (!recent.length) return;
+  if (!recent.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:32px">Нет данных</td></tr>'; return; }
   tbody.innerHTML = recent.map(g => {
-    const lv = getLevel(g.stars);
+    const lv = getLevel(g.stars || 0);
     return `<tr>
       <td class="td-name">${g.name}</td>
-      <td class="td-stars">★ ${g.stars.toLocaleString('ru')}</td>
+      <td class="td-stars">★ ${(g.stars||0).toLocaleString('ru')}</td>
       <td><span class="td-level" style="background:${lv.color}18;color:${lv.color};border:1px solid ${lv.color}30">${lv.icon} ${lv.name}</span></td>
-      <td class="td-badge">${g.visits}</td>
+      <td class="td-badge">${g.visits || 0}</td>
     </tr>`;
   }).join('');
+
+  // Recent bookings
+  const recentWrap = document.getElementById('recentBookingsWrap');
+  recentWrap.innerHTML = bookings.slice(0, 3).map(b => `
+    <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
+      <strong>${b.name}</strong> · ${b.phone} · <span style="color:var(--muted)">${b.event_type || 'Визит'}</span>
+      <span style="float:right;font-size:0.72rem;color:var(--muted)">${new Date(b.created_at).toLocaleDateString('ru-RU')}</span>
+    </div>
+  `).join('') || '<div style="color:var(--muted);padding:12px">Нет заявок</div>';
 }
 
 /* ===========================
    GUESTS TABLE
 =========================== */
-function renderGuestsTable() {
-  const guests = getGuests();
+async function renderGuestsTable() {
+  const guests = await getGuests();
   const q = (document.getElementById('guestSearch')?.value || '').toLowerCase();
-  const filtered = q ? guests.filter(g => g.name.toLowerCase().includes(q) || g.phone.includes(q)) : guests;
+  const filtered = q ? guests.filter(g => g.name.toLowerCase().includes(q) || (g.phone||'').includes(q)) : guests;
   const tbody = document.getElementById('guestsTableBody');
   if (!filtered.length) {
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">Гости не найдены</td></tr>';
     return;
   }
   tbody.innerHTML = filtered.map(g => {
-    const lv = getLevel(g.stars);
+    const lv = getLevel(g.stars || 0);
+    const since = g.registered_at ? new Date(g.registered_at).toLocaleDateString('ru-RU') : '—';
     return `<tr>
       <td class="td-name">${g.name}</td>
-      <td>${g.phone}</td>
-      <td class="td-stars">★ ${g.stars.toLocaleString('ru')}</td>
+      <td>${g.phone || '—'}</td>
+      <td class="td-stars">★ ${(g.stars||0).toLocaleString('ru')}</td>
       <td><span class="td-level" style="background:${lv.color}18;color:${lv.color};border:1px solid ${lv.color}30">${lv.icon} ${lv.name}</span></td>
-      <td>${g.visits}</td>
+      <td>${g.visits || 0}</td>
       <td class="td-actions">
-        <button class="row-btn add" onclick="quickAddStars(${g.id})">+100★</button>
-        <button class="row-btn" onclick="editGuest(${g.id})">✏️</button>
-        <button class="row-btn del" onclick="deleteGuest(${g.id})">🗑</button>
+        <button class="row-btn add" onclick="quickAddStars('${g.id}','${g.name}')">+100★</button>
+        <button class="row-btn del" onclick="deleteGuest('${g.id}','${g.name}')">🗑</button>
       </td>
     </tr>`;
   }).join('');
 }
 
-function quickAddStars(id) {
-  const guests = getGuests();
-  const g = guests.find(g => g.id === id);
-  if (!g) return;
-  g.stars += 100;
-  g.visits++;
-  saveGuests(guests);
-  renderGuestsTable();
-  renderDashboard();
-  showToast(`⭐ +100 звёзд для ${g.name}`);
+async function quickAddStars(id, name) {
+  try {
+    const rows = await sbFetch(`raketa_guests?id=eq.${id}&select=stars,visits`);
+    const cur = rows[0];
+    const newStars = (cur.stars || 0) + 100;
+    await sbFetch(`raketa_guests?id=eq.${id}`, {
+      method: 'PATCH', prefer: '',
+      body: JSON.stringify({ stars: newStars, visits: (cur.visits||0)+1, level: getLevel(newStars).name })
+    });
+    await sbFetch('raketa_visits', {
+      method: 'POST', prefer: '',
+      body: JSON.stringify({ guest_id: id, stars_delta: 100, reason: 'Визит (admin)', staff_note: 'Админ-панель' })
+    });
+    renderGuestsTable();
+    renderDashboard();
+    showToast(`⭐ +100 звёзд для ${name}`);
+  } catch(e) { showToast('❌ ' + e.message); }
 }
 
-function deleteGuest(id) {
-  if (!confirm('Удалить гостя?')) return;
-  const guests = getGuests().filter(g => g.id !== id);
-  saveGuests(guests);
-  renderGuestsTable();
-  renderDashboard();
-  showToast('🗑 Гость удалён');
-}
-
-function editGuest(id) {
-  const guests = getGuests();
-  const g = guests.find(g => g.id === id);
-  if (!g) return;
-  const newStars = prompt(`Звёзды для ${g.name} (текущее: ${g.stars}):`, g.stars);
-  if (newStars === null) return;
-  g.stars = parseInt(newStars) || g.stars;
-  saveGuests(guests);
-  renderGuestsTable();
-  renderDashboard();
-  showToast(`✅ Обновлено: ${g.name} → ${g.stars} ★`);
+async function deleteGuest(id, name) {
+  if (!confirm(`Удалить гостя ${name}?`)) return;
+  try {
+    await sbFetch(`raketa_guests?id=eq.${id}`, { method: 'DELETE', prefer: '' });
+    renderGuestsTable();
+    renderDashboard();
+    showToast('🗑 Гость удалён');
+  } catch(e) { showToast('❌ ' + e.message); }
 }
 
 /* ===========================
    ADD STARS MODAL
 =========================== */
-function openAddStarsModal() {
-  document.getElementById('starsModal').classList.add('active');
-}
+function openAddStarsModal() { document.getElementById('starsModal').classList.add('active'); }
 function closeStarsModal() {
   document.getElementById('starsModal').classList.remove('active');
-  document.getElementById('m-guestName').value = '';
-  document.getElementById('m-stars').value = '';
-  document.getElementById('m-reason').value = '';
+  ['m-guestName','m-stars','m-reason'].forEach(id => document.getElementById(id).value = '');
 }
 
-function addStars() {
-  const guestQ = document.getElementById('m-guestName').value.trim();
+async function addStars() {
+  const q     = document.getElementById('m-guestName').value.trim();
   const stars = parseInt(document.getElementById('m-stars').value);
   const reason = document.getElementById('m-reason').value.trim() || 'Начисление';
-  if (!guestQ || !stars || stars < 1) { showToast('⚠️ Заполни все поля'); return; }
-  
-  const guests = getGuests();
-  const g = guests.find(g => g.name.toLowerCase().includes(guestQ.toLowerCase()) || g.phone.includes(guestQ));
-  if (!g) { showToast('❌ Гость не найден'); return; }
-  
-  g.stars += stars;
-  saveGuests(guests);
-  closeStarsModal();
-  renderGuestsTable();
-  renderDashboard();
-  showToast(`⭐ +${stars} звёзд для ${g.name}`);
+  if (!q || !stars || stars < 1) { showToast('⚠️ Заполни все поля'); return; }
+  try {
+    const rows = await sbFetch(`raketa_guests?or=(name.ilike.*${q}*,phone.ilike.*${q}*)&limit=1`);
+    if (!rows || !rows.length) { showToast('❌ Гость не найден'); return; }
+    const g = rows[0];
+    const newStars = (g.stars || 0) + stars;
+    await sbFetch(`raketa_guests?id=eq.${g.id}`, {
+      method: 'PATCH', prefer: '',
+      body: JSON.stringify({ stars: newStars, level: getLevel(newStars).name })
+    });
+    await sbFetch('raketa_visits', {
+      method: 'POST', prefer: '',
+      body: JSON.stringify({ guest_id: g.id, stars_delta: stars, reason, staff_note: 'Админ-панель' })
+    });
+    closeStarsModal();
+    renderGuestsTable();
+    renderDashboard();
+    showToast(`⭐ +${stars} звёзд для ${g.name}`);
+  } catch(e) { showToast('❌ ' + e.message); }
 }
 
 /* ===========================
-   BOOKINGS
+   BOOKINGS — Supabase
 =========================== */
-function renderBookings() {
-  const bookings = getBookings();
+async function renderBookings() {
+  const bookings = await getBookings();
   const wrap = document.getElementById('bookingsWrap');
-  const recentWrap = document.getElementById('recentBookingsWrap');
 
   if (!bookings.length) {
-    wrap.innerHTML = '<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.88rem">Заявки появятся здесь после подключения бота или добавления вручную</div>';
-    recentWrap.innerHTML = '<div style="text-align:center;color:var(--muted);padding:24px;font-size:0.88rem">Нет заявок</div>';
+    wrap.innerHTML = '<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.88rem">Заявки появятся после отправки формы на сайте</div>';
     return;
   }
-
-  const cards = bookings.slice(0, 20).map((b, i) => `
+  wrap.innerHTML = bookings.slice(0, 30).map((b, i) => `
     <div class="booking-card">
       <div class="booking-num">${i+1}</div>
       <div class="booking-info">
         <div class="booking-title">${b.name} · ${b.phone}</div>
         <div class="booking-meta">
-          ${b.event ? `🎉 ${b.event}` : ''} ${b.date ? `· 📅 ${b.date}` : ''}<br>
-          ${b.comment ? `💬 ${b.comment}` : ''}
-          <br><span style="color:var(--muted);font-size:0.73rem">${b.time}</span>
+          ${b.event_type ? \`🎉 \${b.event_type}\` : ''} ${b.event_date ? \`· 📅 \${new Date(b.event_date).toLocaleDateString('ru-RU')}\` : ''}
+          ${b.comment ? \`<br>💬 \${b.comment}\` : ''}
+          <br><span style="color:var(--muted);font-size:0.73rem">${new Date(b.created_at).toLocaleString('ru-RU')}</span>
         </div>
       </div>
       <div>
-        <div class="booking-status ${b.status || 'new'}">${b.status === 'done' ? '✓ Выполнено' : b.status === 'pending' ? '⏳ В работе' : '🆕 Новая'}</div>
+        <div class="booking-status ${b.status||'new'}">${b.status==='done'?'✓ Выполнено':b.status==='in_progress'?'⏳ В работе':'🆕 Новая'}</div>
         <div style="display:flex;gap:6px;margin-top:8px">
-          <button class="row-btn" onclick="setBookingStatus(${b.id},'pending')">В работу</button>
-          <button class="row-btn add" onclick="setBookingStatus(${b.id},'done')">✓</button>
+          <button class="row-btn" onclick="setBookingStatus('${b.id}','in_progress')">В работу</button>
+          <button class="row-btn add" onclick="setBookingStatus('${b.id}','done')">✓</button>
         </div>
       </div>
     </div>
   `).join('');
-
-  wrap.innerHTML = cards;
-  recentWrap.innerHTML = bookings.slice(0, 3).map(b => `
-    <div style="padding:10px 0;border-bottom:1px solid var(--border);font-size:0.85rem">
-      <strong>${b.name}</strong> · ${b.phone} · <span style="color:var(--muted)">${b.event || 'Визит'}</span>
-    </div>
-  `).join('') || '<div style="color:var(--muted);padding:12px">Нет заявок</div>';
 }
 
-function setBookingStatus(id, status) {
-  const bookings = getBookings();
-  const b = bookings.find(b => b.id === id);
-  if (b) b.status = status;
-  saveBookings(bookings);
-  renderBookings();
+async function setBookingStatus(id, status) {
+  try {
+    await sbFetch(`raketa_bookings?id=eq.${id}`, { method:'PATCH', prefer:'', body: JSON.stringify({status}) });
+    renderBookings();
+  } catch(e) { showToast('❌ ' + e.message); }
 }
 
-function clearBookings() {
+async function clearBookings() {
   if (!confirm('Очистить все заявки?')) return;
-  saveBookings([]);
-  renderBookings();
+  try {
+    await sbFetch('raketa_bookings?status=neq.none', { method:'DELETE', prefer:'' });
+    renderBookings();
+  } catch(e) { showToast('❌ ' + e.message); }
 }
 
-function addManualBooking() {
-  const name = prompt('Имя клиента:');
-  if (!name) return;
-  const phone = prompt('Телефон:');
-  if (!phone) return;
-  const event = prompt('Тип мероприятия (или Enter):') || 'Не указано';
-  const date = prompt('Дата (или Enter):') || '';
-  const comment = prompt('Комментарий (или Enter):') || '';
-  
-  const bookings = getBookings();
-  bookings.unshift({
-    id: Date.now(),
-    name, phone, event, date, comment,
-    status: 'new',
-    time: new Date().toLocaleString('ru-RU')
-  });
-  saveBookings(bookings);
-  renderBookings();
-  renderDashboard();
-  showToast('📋 Заявка добавлена');
+async function addManualBooking() {
+  const name  = prompt('Имя клиента:'); if (!name) return;
+  const phone = prompt('Телефон:');     if (!phone) return;
+  const event = prompt('Мероприятие:') || 'Не указано';
+  const comment = prompt('Комментарий:') || '';
+  try {
+    await sbFetch('raketa_bookings', {
+      method: 'POST', prefer: '',
+      body: JSON.stringify({ name, phone, event_type: event, comment, status: 'new' })
+    });
+    renderBookings(); renderDashboard();
+    showToast('📋 Заявка добавлена');
+  } catch(e) { showToast('❌ ' + e.message); }
 }
 
 /* ===========================
