@@ -585,8 +585,10 @@ function doLogin() {
   const pass = document.getElementById('loginPass').value.trim();
   if (pass === ADMIN_PASS) {
     sessionStorage.setItem('raketa_admin', '1');
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminShell').style.display = 'flex';
+    const ls = document.getElementById('loginScreen');
+    const sh = document.getElementById('adminShell');
+    if (ls) ls.style.cssText = 'display:none!important';
+    if (sh) sh.style.cssText = 'display:flex!important';
     initAdmin();
   } else {
     const err = document.getElementById('loginError');
