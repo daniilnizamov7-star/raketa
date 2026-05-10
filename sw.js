@@ -2,7 +2,7 @@
    РАКЕТА · Service Worker v3
    Network-first + авто-обновление
 ================================ */
-const VERSION = 'raketa-v3';
+const VERSION = 'raketa-v5';
 const STATIC  = ['/loyalty.html', '/staff.html', '/index.html', '/icon.svg'];
 
 self.addEventListener('install', e => {
