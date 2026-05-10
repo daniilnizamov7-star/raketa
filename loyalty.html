@@ -3,887 +3,1183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Ракета-клуб">
-<meta name="theme-color" content="#05060f">
-<title>Ракета-клуб — Карточка лояльности</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="apple-mobile-web-app-title" content="Ракета">
+<meta name="theme-color" content="#04050e">
+<title>🚀 Ракета · Карта гостя</title>
+<link rel="manifest" href="manifest.json">
 <style>
-  :root {
-    --bg: #05060f;
-    --deep: #0b0d1f;
-    --card: #111428;
-    --border: rgba(255,255,255,0.08);
-    --neon: #ff3cac;
-    --blue: #2d9cff;
-    --yellow: #ffd166;
-    --green: #06d6a0;
-    --white: #f0f4ff;
-    --muted: #6b7a9e;
-  }
+/* ============================
+   TOKENS
+============================ */
+:root {
+  --bg:     #04050e;
+  --deep:   #08091a;
+  --card:   #0e1028;
+  --card2:  #131535;
+  --border: rgba(255,255,255,0.07);
+  --b2:     rgba(255,255,255,0.12);
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  --neon:   #ff3cac;
+  --blue:   #2d9cff;
+  --purple: #9b59ff;
+  --yellow: #ffd166;
+  --green:  #06d6a0;
+  --cyan:   #00e5ff;
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--white);
-    font-family: 'Nunito', sans-serif;
-    overflow-x: hidden;
-  }
+  --white:  #eef2ff;
+  --muted:  #5a6a90;
+  --muted2: #8090b0;
 
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
 
-  /* STARS BG */
-  .stars-bg {
-    position: fixed; inset: 0; z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .star {
-    position: absolute; background: white; border-radius: 50%;
-    animation: tw var(--d,3s) infinite alternate ease-in-out;
-    animation-delay: var(--dl,0s);
-  }
-  @keyframes tw {
-    from { opacity: 0.05; transform: scale(0.8); }
-    to { opacity: 0.6; transform: scale(1.2); }
-  }
+  /* level colors */
+  --lv1: #8090b0;   /* Новичок */
+  --lv2: #2d9cff;   /* Космонавт */
+  --lv3: #9b59ff;   /* Командир */
+  --lv4: #ffd166;   /* Галактика */
+}
 
-  /* HEADER */
-  .header {
-    position: relative; z-index: 10;
-    padding: 20px 24px 0;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .header-logo {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1rem; font-weight: 900;
-    background: linear-gradient(135deg, var(--neon), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .header-right {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .notif-btn {
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem; cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .notif-btn:hover { background: rgba(255,255,255,0.1); }
-  .notif-dot {
-    position: absolute; top: 6px; right: 6px;
-    width: 8px; height: 8px;
-    background: var(--neon);
-    border-radius: 50%;
-    border: 2px solid var(--bg);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.3); opacity: 0.7; }
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100%;
+  overflow-x: hidden;
+  padding-top: var(--safe-top);
+  padding-bottom: calc(var(--safe-bot) + 80px);
+}
 
-  /* MAIN CARD */
-  .card-section {
-    position: relative; z-index: 5;
-    padding: 24px 20px 0;
-  }
-  .loyalty-card {
-    background: linear-gradient(135deg, #1a1040 0%, #0d1530 45%, #1a0820 100%);
-    border: 1px solid rgba(255,60,172,0.25);
-    border-radius: 28px;
-    padding: 28px 28px 24px;
-    position: relative;
-    overflow: hidden;
-    box-shadow:
-      0 20px 60px rgba(0,0,0,0.6),
-      0 0 0 1px rgba(255,60,172,0.1),
-      inset 0 1px 0 rgba(255,255,255,0.08);
-    transform-style: preserve-3d;
-    transition: transform 0.3s;
-  }
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap');
 
-  /* card shine effect */
-  .loyalty-card::before {
-    content: '';
-    position: absolute;
-    top: -50%; left: -50%;
-    width: 200%; height: 200%;
-    background: conic-gradient(
-      from 180deg at 50% 50%,
-      transparent 0deg,
-      rgba(255,60,172,0.06) 60deg,
-      transparent 120deg,
-      rgba(45,156,255,0.06) 180deg,
-      transparent 240deg,
-      rgba(255,60,172,0.04) 300deg,
-      transparent 360deg
-    );
-    animation: cardShine 8s linear infinite;
-    pointer-events: none;
-  }
-  @keyframes cardShine { to { transform: rotate(360deg); } }
+/* ============================
+   STARS BG
+============================ */
+#stars-canvas {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
 
-  .card-glow-1 {
-    position: absolute; top: -60px; right: -60px;
-    width: 180px; height: 180px;
-    background: radial-gradient(circle, rgba(255,60,172,0.3), transparent 70%);
-    border-radius: 50%; pointer-events: none;
-  }
-  .card-glow-2 {
-    position: absolute; bottom: -40px; left: -40px;
-    width: 150px; height: 150px;
-    background: radial-gradient(circle, rgba(45,156,255,0.25), transparent 70%);
-    border-radius: 50%; pointer-events: none;
-  }
+/* ============================
+   HEADER
+============================ */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  padding: 16px 20px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(4,5,14,0.88); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.header-logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.95rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--neon), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: flex; align-items: center; gap: 6px;
+  text-decoration: none;
+}
+.header-rocket { -webkit-text-fill-color: initial; animation: hFloat 3s ease-in-out infinite; }
+@keyframes hFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.hdr-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; cursor: pointer; transition: all 0.2s; position: relative;
+}
+.hdr-btn:hover { background: rgba(255,255,255,0.1); }
+.notif-dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon); border: 2px solid var(--bg);
+  animation: pdot 2s infinite;
+}
+@keyframes pdot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
 
-  .card-top {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    margin-bottom: 24px;
-    position: relative;
-  }
-  .card-brand {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.85rem; font-weight: 900;
-    background: linear-gradient(135deg, var(--neon), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .card-brand-sub {
-    font-size: 0.7rem; color: var(--muted);
-    font-weight: 600; margin-top: 2px;
-    letter-spacing: 0.04em;
-  }
-  .card-chip {
-    width: 42px; height: 32px;
-    background: linear-gradient(135deg, rgba(255,209,102,0.3), rgba(255,209,102,0.15));
-    border: 1px solid rgba(255,209,102,0.25);
-    border-radius: 6px;
-    position: relative;
-    overflow: hidden;
-  }
-  .card-chip::before {
-    content: '';
-    position: absolute; inset: 4px;
-    border: 1px solid rgba(255,209,102,0.2);
-    border-radius: 3px;
-  }
+/* ============================
+   MAIN CONTENT
+============================ */
+.page { position: relative; z-index: 1; }
 
-  .card-stars-row {
-    display: flex; align-items: flex-end; gap: 12px;
-    margin-bottom: 6px; position: relative;
-  }
-  .card-stars-num {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 3.2rem; font-weight: 900;
-    line-height: 1;
-    background: linear-gradient(135deg, var(--yellow) 0%, #ff9f43 50%, var(--neon) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .card-stars-label {
-    font-size: 0.75rem; color: var(--muted);
-    font-weight: 700; letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding-bottom: 8px;
-  }
-  .card-next-reward {
-    font-size: 0.78rem; color: rgba(255,255,255,0.5);
-    margin-bottom: 14px; position: relative;
-  }
-  .card-next-reward strong { color: var(--yellow); }
+/* ============================
+   HERO CARD
+============================ */
+.hero-card-wrap {
+  padding: 20px 20px 0;
+}
+.hero-card {
+  background: linear-gradient(145deg, #18104a 0%, #0c1540 45%, #1e0a2a 100%);
+  border: 1px solid rgba(155,89,255,0.25);
+  border-radius: 24px; padding: 28px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(155,89,255,0.1);
+}
+.hc-glow1 {
+  position: absolute; top: -50px; right: -50px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,60,172,0.22), transparent 70%);
+  pointer-events: none;
+}
+.hc-glow2 {
+  position: absolute; bottom: -40px; left: -40px;
+  width: 150px; height: 150px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,156,255,0.18), transparent 70%);
+  pointer-events: none;
+}
+.hc-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 24px; position: relative; z-index: 1;
+}
+.hc-logo {
+  font-family: 'Unbounded', sans-serif; font-size: 0.85rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--neon), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hc-level-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 100px;
+  border: 1px solid; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.hc-stars-row { position: relative; z-index: 1; margin-bottom: 4px; }
+.hc-stars-label {
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+}
+.hc-stars-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 3.2rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--yellow), var(--neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 2px;
+}
+.hc-stars-sub { font-size: 0.8rem; color: var(--muted2); margin-bottom: 20px; }
+.hc-bar-wrap { position: relative; z-index: 1; }
+.hc-bar-track {
+  height: 8px; background: rgba(255,255,255,0.08); border-radius: 100px;
+  overflow: hidden; margin-bottom: 6px;
+}
+.hc-bar-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--neon), var(--purple), var(--blue));
+  transition: width 1.2s cubic-bezier(.22,1,.36,1);
+  position: relative;
+}
+.hc-bar-fill::after {
+  content: '';
+  position: absolute; right: 0; top: -3px; bottom: -3px; width: 12px;
+  background: #fff; border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon);
+}
+.hc-bar-labels {
+  font-size: 0.7rem; color: var(--muted);
+  display: flex; justify-content: space-between; margin-bottom: 20px;
+}
+.hc-owner-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  position: relative; z-index: 1;
+}
+.hc-name {
+  font-family: 'Unbounded', sans-serif; font-size: 0.88rem; font-weight: 700;
+}
+.hc-since { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+.hc-visits {
+  text-align: right; font-size: 0.72rem; color: var(--muted);
+}
+.hc-visits strong { display: block; font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--white); }
 
-  .card-progress {
-    height: 5px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 10px; overflow: hidden;
-    margin-bottom: 20px; position: relative;
-  }
-  .card-progress-fill {
-    height: 100%;
-    width: 65%;
-    background: linear-gradient(90deg, var(--neon), var(--blue));
-    border-radius: 10px;
-    box-shadow: 0 0 8px rgba(255,60,172,0.5);
-    animation: fillAnim 1.5s 0.3s ease both;
-  }
-  @keyframes fillAnim { from { width: 0; } }
+/* STAR BURST ANIMATION */
+.star-burst {
+  position: absolute; pointer-events: none; z-index: 999;
+  font-size: 1.4rem;
+  animation: burst 0.8s ease forwards;
+}
+@keyframes burst {
+  0% { transform: translate(-50%,-50%) scale(0.3); opacity: 1; }
+  60% { transform: translate(-50%,-120%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%,-180%) scale(0.8); opacity: 0; }
+}
 
-  .card-bottom {
-    display: flex; align-items: center; justify-content: space-between;
-    position: relative;
-  }
-  .card-owner-name {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.85rem; font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .card-level-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    font-size: 0.7rem; font-weight: 700;
-    color: var(--yellow);
-    background: rgba(255,209,102,0.1);
-    border: 1px solid rgba(255,209,102,0.2);
-    padding: 3px 10px; border-radius: 100px;
-  }
-  .card-qr {
-    width: 52px; height: 52px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.6rem;
-    border: 1px solid rgba(255,255,255,0.1);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .card-qr:hover { background: rgba(255,255,255,0.12); }
+/* ============================
+   QUICK ACTIONS
+============================ */
+.quick-actions {
+  padding: 16px 20px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.qa-btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 14px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: pointer; transition: all 0.25s; text-decoration: none;
+}
+.qa-btn:active { transform: scale(0.95); }
+.qa-btn:hover { border-color: var(--b2); background: var(--card2); }
+.qa-icon { font-size: 1.4rem; }
+.qa-label { font-size: 0.65rem; font-weight: 800; color: var(--muted2); text-align: center; line-height: 1.3; }
 
-  /* LEVELS */
-  .levels-section {
-    position: relative; z-index: 5;
-    padding: 24px 20px 0;
-  }
-  .section-label {
-    font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 14px;
-    padding: 0 2px;
-  }
-  .levels-row {
-    display: flex; gap: 10px; overflow-x: auto;
-    scrollbar-width: none; padding-bottom: 4px;
-  }
-  .levels-row::-webkit-scrollbar { display: none; }
-  .level-item {
-    flex-shrink: 0;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 18px;
-    min-width: 120px;
-    text-align: center;
-    transition: all 0.2s;
-    position: relative;
-  }
-  .level-item.active {
-    border-color: rgba(255,209,102,0.4);
-    background: rgba(255,209,102,0.06);
-    box-shadow: 0 0 20px rgba(255,209,102,0.1);
-  }
-  .level-item.active::before {
-    content: 'текущий';
-    position: absolute; top: -9px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--yellow);
-    color: #1a1000;
-    font-size: 0.62rem; font-weight: 800;
-    padding: 2px 8px; border-radius: 100px;
-    white-space: nowrap;
-  }
-  .level-emoji { font-size: 1.6rem; margin-bottom: 8px; }
-  .level-name {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 0.04em;
-    margin-bottom: 4px;
-  }
-  .level-req {
-    font-size: 0.65rem; color: var(--muted); font-weight: 600;
-  }
+/* ============================
+   SECTION
+============================ */
+.sect { padding: 0 20px 20px; }
+.sect-title {
+  font-family: 'Unbounded', sans-serif; font-size: 0.8rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
 
-  /* HISTORY */
-  .history-section {
-    position: relative; z-index: 5;
-    padding: 24px 20px 0;
-    flex: 1;
-  }
-  .history-list {
-    display: flex; flex-direction: column; gap: 10px;
-  }
-  .history-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px 18px;
-    display: flex; align-items: center; gap: 14px;
-    transition: all 0.2s;
-    animation: slideIn 0.5s ease both;
-    animation-delay: var(--delay, 0s);
-  }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-16px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-  .history-icon {
-    width: 42px; height: 42px;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; flex-shrink: 0;
-  }
-  .history-icon.visit { background: rgba(255,60,172,0.12); }
-  .history-icon.bonus { background: rgba(255,209,102,0.12); }
-  .history-icon.redeem { background: rgba(6,214,160,0.12); }
-  .history-text { flex: 1; }
-  .history-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 2px; }
-  .history-date { font-size: 0.75rem; color: var(--muted); }
-  .history-points {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.85rem; font-weight: 700;
-  }
-  .history-points.plus { color: var(--yellow); }
-  .history-points.minus { color: var(--green); }
+/* ============================
+   LEVELS
+============================ */
+.levels-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.level-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 10px; text-align: center;
+  position: relative; overflow: hidden;
+  transition: all 0.25s;
+}
+.level-card.active { border-color: var(--lv-color, var(--neon)); box-shadow: 0 0 20px rgba(255,60,172,0.12); }
+.level-card.done { opacity: 0.5; }
+.level-icon { font-size: 1.6rem; margin-bottom: 6px; display: block; }
+.level-name {
+  font-family: 'Unbounded', sans-serif; font-size: 0.6rem; font-weight: 700;
+  color: var(--lv-color, var(--muted)); line-height: 1.2; margin-bottom: 4px;
+}
+.level-pts { font-size: 0.6rem; color: var(--muted); }
+.level-check {
+  position: absolute; top: 6px; right: 6px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--green); display: flex; align-items: center; justify-content: center;
+  font-size: 0.5rem; color: #fff;
+}
 
-  /* PERKS */
-  .perks-section {
-    position: relative; z-index: 5;
-    padding: 24px 20px 0;
-  }
-  .perks-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  }
-  .perk-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 18px 16px;
-    transition: all 0.2s;
-  }
-  .perk-card:hover {
-    border-color: rgba(255,255,255,0.15);
-    transform: translateY(-2px);
-  }
-  .perk-card-icon { font-size: 1.5rem; margin-bottom: 10px; }
-  .perk-card-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.72rem; font-weight: 700;
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-  }
-  .perk-card-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+/* ============================
+   PERKS
+============================ */
+.perks-list { display: flex; flex-direction: column; gap: 10px; }
+.perk-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px;
+  display: flex; align-items: center; gap: 14px;
+  transition: all 0.25s;
+}
+.perk-item:active { transform: scale(0.98); }
+.perk-item.locked { opacity: 0.45; }
+.perk-emoji { font-size: 1.6rem; flex-shrink: 0; }
+.perk-info { flex: 1; }
+.perk-name { font-weight: 800; font-size: 0.88rem; margin-bottom: 2px; }
+.perk-desc { font-size: 0.78rem; color: var(--muted2); line-height: 1.4; }
+.perk-action {
+  font-size: 0.7rem; font-weight: 800; padding: 6px 14px;
+  border-radius: 100px; border: 1px solid; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.perk-action.available {
+  border-color: var(--green); color: var(--green);
+  background: rgba(6,214,160,0.08);
+}
+.perk-action.available:hover { background: rgba(6,214,160,0.18); }
+.perk-action.locked-badge {
+  border-color: var(--border); color: var(--muted);
+}
 
-  /* BOTTOM NAV */
-  .bottom-nav {
-    position: sticky; bottom: 0; left: 0; right: 0;
-    z-index: 50;
-    background: rgba(11,13,31,0.92);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
-    display: flex; justify-content: space-around;
-    margin-top: 24px;
-  }
-  .nav-item {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    padding: 4px 16px;
-    border-radius: 12px;
-    border: none; background: none;
-    color: var(--muted);
-    font-family: 'Nunito', sans-serif;
-  }
-  .nav-item.active { color: var(--neon); }
-  .nav-item:hover { color: var(--white); }
-  .nav-icon { font-size: 1.3rem; }
-  .nav-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; }
+/* ============================
+   HISTORY
+============================ */
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.hist-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.hist-icon {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+}
+.hist-icon.plus { background: rgba(6,214,160,0.12); }
+.hist-icon.minus { background: rgba(255,60,172,0.1); }
+.hist-info { flex: 1; }
+.hist-action { font-weight: 700; font-size: 0.85rem; }
+.hist-date { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+.hist-pts {
+  font-family: 'Unbounded', sans-serif; font-size: 0.9rem; font-weight: 700;
+}
+.hist-pts.plus { color: var(--green); }
+.hist-pts.minus { color: var(--neon); }
 
-  /* TABS CONTENT */
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+/* ============================
+   PROMO BANNER
+============================ */
+.promo-banner {
+  background: linear-gradient(135deg, rgba(255,60,172,0.12), rgba(45,156,255,0.08));
+  border: 1px solid rgba(255,60,172,0.2);
+  border-radius: 20px; padding: 20px;
+  display: flex; gap: 16px; align-items: center;
+  margin: 0 20px 20px;
+  position: relative; overflow: hidden; cursor: pointer;
+  transition: all 0.25s;
+}
+.promo-banner:hover { border-color: rgba(255,60,172,0.35); }
+.promo-glow {
+  position: absolute; right: -20px; top: -20px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,60,172,0.15), transparent 70%);
+  pointer-events: none;
+}
+.promo-emoji { font-size: 2.2rem; flex-shrink: 0; }
+.promo-text { flex: 1; }
+.promo-title { font-family: 'Unbounded', sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+.promo-desc { font-size: 0.78rem; color: var(--muted2); line-height: 1.4; }
+.promo-arrow { font-size: 1.2rem; color: var(--muted); }
 
-  /* PROMO TAB */
-  .promo-list {
-    padding: 24px 20px 0;
-    position: relative; z-index: 5;
-    display: flex; flex-direction: column; gap: 14px;
-  }
-  .promo-card {
-    border-radius: 20px;
-    padding: 24px;
-    position: relative; overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .promo-card.pink {
-    background: linear-gradient(135deg, rgba(255,60,172,0.15), rgba(255,60,172,0.05));
-    border-color: rgba(255,60,172,0.2);
-  }
-  .promo-card.blue {
-    background: linear-gradient(135deg, rgba(45,156,255,0.15), rgba(45,156,255,0.05));
-    border-color: rgba(45,156,255,0.2);
-  }
-  .promo-card.yellow {
-    background: linear-gradient(135deg, rgba(255,209,102,0.15), rgba(255,209,102,0.05));
-    border-color: rgba(255,209,102,0.2);
-  }
-  .promo-tag {
-    display: inline-block;
-    font-size: 0.65rem; font-weight: 800;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    padding: 4px 10px; border-radius: 100px;
-    margin-bottom: 10px;
-  }
-  .promo-card.pink .promo-tag { background: rgba(255,60,172,0.2); color: var(--neon); }
-  .promo-card.blue .promo-tag { background: rgba(45,156,255,0.2); color: var(--blue); }
-  .promo-card.yellow .promo-tag { background: rgba(255,209,102,0.2); color: var(--yellow); }
-  .promo-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1rem; font-weight: 700;
-    margin-bottom: 6px; line-height: 1.3;
-  }
-  .promo-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-  .promo-until {
-    font-size: 0.75rem; font-weight: 700;
-    margin-top: 14px; opacity: 0.6;
-  }
-  .promo-big-emoji {
-    position: absolute; right: 20px; top: 50%;
-    transform: translateY(-50%);
-    font-size: 3rem; opacity: 0.25;
-    pointer-events: none;
-  }
+/* ============================
+   REGISTER FORM
+============================ */
+.register-wrap {
+  padding: 20px;
+  display: none;
+}
+.register-wrap.active { display: block; }
+.reg-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 24px; padding: 28px;
+}
+.reg-title {
+  font-family: 'Unbounded', sans-serif; font-size: 1.2rem; font-weight: 900;
+  margin-bottom: 8px; letter-spacing: -0.02em;
+}
+.reg-sub { font-size: 0.88rem; color: var(--muted2); margin-bottom: 24px; line-height: 1.5; }
+.reg-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
+.reg-group label {
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--muted);
+}
+.reg-group input {
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  border-radius: 12px; padding: 13px 16px; color: var(--white);
+  font-family: 'Nunito', sans-serif; font-size: 1rem; outline: none;
+  transition: all 0.2s; -webkit-appearance: none;
+}
+.reg-group input::placeholder { color: var(--muted); }
+.reg-group input:focus {
+  border-color: var(--neon); background: rgba(255,60,172,0.04);
+  box-shadow: 0 0 0 3px rgba(255,60,172,0.1);
+}
+.reg-btn {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, var(--neon), #c4007a);
+  color: #fff; border: none; border-radius: 100px;
+  font-family: 'Unbounded', sans-serif; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 0 28px rgba(255,60,172,0.3);
+  margin-top: 4px;
+}
+.reg-btn:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(255,60,172,0.4); }
+.reg-btn:active { transform: scale(0.98); }
 
-  /* SCAN TAB */
-  .scan-section {
-    padding: 40px 20px;
-    position: relative; z-index: 5;
-    text-align: center;
-    display: flex; flex-direction: column; align-items: center;
-  }
-  .qr-display {
-    width: 200px; height: 200px;
-    background: white;
-    border-radius: 20px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 7rem;
-    margin: 0 auto 24px;
-    position: relative;
-    box-shadow: 0 0 60px rgba(255,60,172,0.3);
-    animation: qrGlow 3s ease-in-out infinite alternate;
-  }
-  @keyframes qrGlow {
-    from { box-shadow: 0 0 40px rgba(255,60,172,0.2); }
-    to { box-shadow: 0 0 80px rgba(255,60,172,0.5); }
-  }
-  .qr-corners::before, .qr-corners::after {
-    content: '';
-    position: absolute;
-    width: 28px; height: 28px;
-    border-color: var(--neon);
-    border-style: solid;
-  }
-  .qr-corners::before {
-    top: -3px; left: -3px;
-    border-width: 3px 0 0 3px;
-    border-radius: 4px 0 0 0;
-  }
-  .qr-corners::after {
-    bottom: -3px; right: -3px;
-    border-width: 0 3px 3px 0;
-    border-radius: 0 0 4px 0;
-  }
-  .qr-card-num {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.85rem; font-weight: 700;
-    letter-spacing: 0.2em;
-    color: var(--muted); margin-bottom: 8px;
-  }
-  .scan-hint {
-    font-size: 0.85rem; color: var(--muted);
-    line-height: 1.6; max-width: 280px;
-  }
+/* ============================
+   BOTTOM NAV
+============================ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(8,9,26,0.95); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 10px 0 calc(10px + var(--safe-bot));
+}
+.bnav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 0.6rem; font-weight: 800; color: var(--muted);
+  cursor: pointer; padding: 4px 16px; border-radius: 12px;
+  transition: all 0.2s; text-decoration: none;
+}
+.bnav-item.active { color: var(--neon); }
+.bnav-icon { font-size: 1.3rem; }
 
-  /* INSTALL BANNER */
-  .install-banner {
-    position: relative; z-index: 5;
-    margin: 0 20px 20px;
-    background: linear-gradient(135deg, rgba(255,60,172,0.12), rgba(45,156,255,0.08));
-    border: 1px solid rgba(255,60,172,0.2);
-    border-radius: 18px;
-    padding: 16px 18px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .install-icon { font-size: 1.8rem; flex-shrink: 0; }
-  .install-text { flex: 1; }
-  .install-title { font-weight: 800; font-size: 0.88rem; margin-bottom: 2px; }
-  .install-desc { font-size: 0.75rem; color: var(--muted); }
-  .install-btn {
-    background: var(--neon);
-    color: white;
-    border: none; border-radius: 100px;
-    padding: 8px 16px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.7rem; font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    box-shadow: 0 0 16px rgba(255,60,172,0.4);
-    flex-shrink: 0;
-  }
-  .install-close {
-    position: absolute; top: 10px; right: 12px;
-    background: none; border: none;
-    color: var(--muted); font-size: 0.85rem;
-    cursor: pointer;
-  }
+/* ============================
+   TOAST
+============================ */
+.toast {
+  position: fixed; top: calc(70px + var(--safe-top)); left: 50%; z-index: 300;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--card2); border: 1px solid var(--b2);
+  border-radius: 100px; padding: 12px 20px;
+  font-size: 0.85rem; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+  opacity: 0; transition: all 0.35s cubic-bezier(.22,1,.36,1);
+  white-space: nowrap; pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* SPACER */
-  .spacer { height: 20px; }
+/* ============================
+   INSTALL BANNER
+============================ */
+.install-banner {
+  margin: 0 20px 16px;
+  background: linear-gradient(135deg, rgba(45,156,255,0.12), rgba(155,89,255,0.08));
+  border: 1px solid rgba(45,156,255,0.2);
+  border-radius: 16px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: all 0.25s;
+}
+.install-banner:hover { border-color: rgba(45,156,255,0.35); }
+.install-icon { font-size: 1.8rem; flex-shrink: 0; }
+.install-text { flex: 1; }
+.install-title { font-weight: 800; font-size: 0.85rem; margin-bottom: 2px; }
+.install-sub { font-size: 0.75rem; color: var(--muted2); }
+.install-btn {
+  font-size: 0.72rem; font-weight: 800; padding: 8px 14px; border-radius: 100px;
+  background: rgba(45,156,255,0.15); border: 1px solid rgba(45,156,255,0.3);
+  color: var(--blue); cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.install-btn:hover { background: rgba(45,156,255,0.25); }
+
+/* ============================
+   MODAL
+============================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(4,5,14,0.85); backdrop-filter: blur(12px);
+  display: flex; align-items: flex-end; padding: 20px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-sheet {
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 28px 28px 20px 20px; padding: 32px 24px;
+  width: 100%; max-width: 480px; margin: 0 auto;
+  transform: translateY(40px); transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+}
+.modal-overlay.active .modal-sheet { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 100px; margin: 0 auto 24px; display: block;
+}
+.modal-title {
+  font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900;
+  margin-bottom: 8px; letter-spacing: -0.02em;
+}
+.modal-body { font-size: 0.88rem; color: var(--muted2); line-height: 1.6; margin-bottom: 24px; }
+.modal-close-btn {
+  width: 100%; padding: 14px; border: 1.5px solid var(--border);
+  border-radius: 100px; background: transparent; color: var(--white);
+  font-family: 'Unbounded', sans-serif; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+.modal-close-btn:hover { border-color: var(--b2); }
+
+/* ============================
+   RESPONSIVE (tabs content)
+============================ */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (min-width: 500px) {
+  .quick-actions { grid-template-columns: repeat(4, 1fr); }
+  .levels-row { grid-template-columns: repeat(4, 1fr); }
+}
 </style>
 </head>
 <body>
 
-<!-- STARS -->
-<div class="stars-bg" id="stars"></div>
+<canvas id="stars-canvas"></canvas>
 
 <!-- HEADER -->
 <header class="header">
-  <div class="header-logo">🚀 РАКЕТА-КЛУБ</div>
+  <a href="index.html" class="header-logo">
+    <span class="header-rocket">🚀</span>
+    <span>РАКЕТА</span>
+  </a>
   <div class="header-right">
-    <div class="notif-btn" onclick="showNotif()">
+    <div class="hdr-btn" id="notifBtn" onclick="showNotifModal()" title="Уведомления">
       🔔
-      <div class="notif-dot"></div>
+      <div class="notif-dot" id="notifDot"></div>
     </div>
+    <div class="hdr-btn" onclick="showQR()" title="QR-код">📲</div>
   </div>
 </header>
 
-<!-- TAB: КАРТОЧКА -->
-<div class="tab-content active" id="tab-card">
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-  <!-- MAIN LOYALTY CARD -->
-  <div class="card-section">
-    <div class="loyalty-card" id="loyaltyCard">
-      <div class="card-glow-1"></div>
-      <div class="card-glow-2"></div>
+<!-- MAIN PAGE -->
+<div class="page" id="mainPage">
 
-      <div class="card-top">
-        <div>
-          <div class="card-brand">РАКЕТА-КЛУБ</div>
-          <div class="card-brand-sub">Программа лояльности</div>
+  <!-- HERO CARD -->
+  <div class="hero-card-wrap">
+    <div class="hero-card" id="heroCard">
+      <div class="hc-glow1"></div>
+      <div class="hc-glow2"></div>
+      <div class="hc-top">
+        <div class="hc-logo">🚀 КЛУБ РАКЕТЫ</div>
+        <div class="hc-level-badge" id="levelBadge">⭐ Новичок</div>
+      </div>
+      <div class="hc-stars-row">
+        <div class="hc-stars-label">Мои звёзды</div>
+        <div class="hc-stars-num" id="starsNum">0</div>
+        <div class="hc-stars-sub" id="starsSub">Загружаем...</div>
+      </div>
+      <div class="hc-bar-wrap">
+        <div class="hc-bar-track"><div class="hc-bar-fill" id="barFill" style="width:0%"></div></div>
+        <div class="hc-bar-labels">
+          <span id="barFrom">Новичок</span>
+          <span id="barTo">до уровня</span>
         </div>
-        <div class="card-chip"></div>
       </div>
-
-      <div class="card-stars-row">
-        <div class="card-stars-num" id="starsCount">1 240</div>
-        <div class="card-stars-label">звёзд</div>
-      </div>
-      <div class="card-next-reward">До бесплатного билета: <strong>260 звёзд</strong></div>
-
-      <div class="card-progress">
-        <div class="card-progress-fill"></div>
-      </div>
-
-      <div class="card-bottom">
+      <div class="hc-owner-row">
         <div>
-          <div class="card-owner-name" id="ownerName">Семья Петровых</div>
-          <div class="card-level-badge">🌟 Космонавт</div>
+          <div class="hc-name" id="guestName">Загружаем...</div>
+          <div class="hc-since" id="guestSince"></div>
         </div>
-        <div class="card-qr" onclick="switchTab('scan')">📲</div>
+        <div class="hc-visits">
+          <strong id="visitsNum">0</strong>
+          визитов
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- LEVELS -->
-  <div class="levels-section">
-    <div class="section-label">Уровни программы</div>
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions">
+    <div class="qa-btn" onclick="addVisit()">
+      <span class="qa-icon">➕</span>
+      <span class="qa-label">Отметить визит</span>
+    </div>
+    <a class="qa-btn" href="#" onclick="openTab('perks');return false;">
+      <span class="qa-icon">🎁</span>
+      <span class="qa-label">Мои привилегии</span>
+    </a>
+    <a class="qa-btn" href="tel:+79058391411">
+      <span class="qa-icon">📞</span>
+      <span class="qa-label">Позвонить</span>
+    </a>
+    <a class="qa-btn" href="index.html#booking">
+      <span class="qa-icon">🎂</span>
+      <span class="qa-label">Забронировать</span>
+    </a>
+  </div>
+
+  <!-- PROMO BANNER -->
+  <div class="promo-banner" id="promoBanner">
+    <div class="promo-glow"></div>
+    <div class="promo-emoji">🎂</div>
+    <div class="promo-text">
+      <div class="promo-title">Бонус в день рождения!</div>
+      <div class="promo-desc">Расскажи нам дату — получи ×3 звёзды и подарок в праздник</div>
+    </div>
+    <div class="promo-arrow">›</div>
+  </div>
+
+  <!-- INSTALL BANNER -->
+  <div class="install-banner" id="installBanner" style="display:none" onclick="installPWA()">
+    <div class="install-icon">📱</div>
+    <div class="install-text">
+      <div class="install-title">Добавь на главный экран</div>
+      <div class="install-sub">Быстрый доступ к карте гостя</div>
+    </div>
+    <div class="install-btn">Установить</div>
+  </div>
+
+  <!-- TABS SECTIONS -->
+  <!-- LEVELS TAB -->
+  <div class="sect tab-content active" id="tab-levels">
+    <div class="sect-title">Уровни участника</div>
     <div class="levels-row">
-      <div class="level-item">
-        <div class="level-emoji">🛸</div>
-        <div class="level-name">Новичок</div>
-        <div class="level-req">0–499 ⭐</div>
+      <div class="level-card" id="lv-1" style="--lv-color: var(--lv1)">
+        <span class="level-icon">🛸</span>
+        <div class="level-name">НОВИЧОК</div>
+        <div class="level-pts">0 ★</div>
       </div>
-      <div class="level-item active">
-        <div class="level-emoji">🌟</div>
-        <div class="level-name">Космонавт</div>
-        <div class="level-req">500–1999 ⭐</div>
+      <div class="level-card" id="lv-2" style="--lv-color: var(--lv2)">
+        <span class="level-icon">🚀</span>
+        <div class="level-name">КОСМОНАВТ</div>
+        <div class="level-pts">500 ★</div>
       </div>
-      <div class="level-item">
-        <div class="level-emoji">🪐</div>
-        <div class="level-name">Командир</div>
-        <div class="level-req">2000–4999 ⭐</div>
+      <div class="level-card" id="lv-3" style="--lv-color: var(--lv3)">
+        <span class="level-icon">⚡</span>
+        <div class="level-name">КОМАНДИР</div>
+        <div class="level-pts">1 500 ★</div>
       </div>
-      <div class="level-item">
-        <div class="level-emoji">🌌</div>
-        <div class="level-name">Галактика</div>
-        <div class="level-req">5000+ ⭐</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HISTORY -->
-  <div class="history-section">
-    <div class="section-label">История начислений</div>
-    <div class="history-list">
-      <div class="history-item" style="--delay:0.1s">
-        <div class="history-icon visit">🚀</div>
-        <div class="history-text">
-          <div class="history-title">Визит в парк</div>
-          <div class="history-date">Сегодня, 15:30</div>
-        </div>
-        <div class="history-points plus">+100 ⭐</div>
-      </div>
-      <div class="history-item" style="--delay:0.2s">
-        <div class="history-icon bonus">🎂</div>
-        <div class="history-text">
-          <div class="history-title">День рождения × 3</div>
-          <div class="history-date">5 апреля 2026</div>
-        </div>
-        <div class="history-points plus">+300 ⭐</div>
-      </div>
-      <div class="history-item" style="--delay:0.3s">
-        <div class="history-icon visit">🚀</div>
-        <div class="history-text">
-          <div class="history-title">Визит в парк</div>
-          <div class="history-date">30 марта 2026</div>
-        </div>
-        <div class="history-points plus">+100 ⭐</div>
-      </div>
-      <div class="history-item" style="--delay:0.4s">
-        <div class="history-icon redeem">🎁</div>
-        <div class="history-text">
-          <div class="history-title">Использовано: скидка 10%</div>
-          <div class="history-date">22 марта 2026</div>
-        </div>
-        <div class="history-points minus">−300 ⭐</div>
-      </div>
-      <div class="history-item" style="--delay:0.5s">
-        <div class="history-icon visit">🚀</div>
-        <div class="history-text">
-          <div class="history-title">Визит в парк</div>
-          <div class="history-date">15 марта 2026</div>
-        </div>
-        <div class="history-points plus">+100 ⭐</div>
+      <div class="level-card" id="lv-4" style="--lv-color: var(--lv4)">
+        <span class="level-icon">👑</span>
+        <div class="level-name">ГАЛАКТИКА</div>
+        <div class="level-pts">3 000 ★</div>
       </div>
     </div>
   </div>
 
-  <div class="spacer"></div>
+  <!-- PERKS TAB -->
+  <div class="sect tab-content" id="tab-perks">
+    <div class="sect-title">Привилегии</div>
+    <div class="perks-list" id="perksList">
+      <!-- dynamically rendered -->
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div class="sect tab-content" id="tab-history">
+    <div class="sect-title">История визитов</div>
+    <div class="history-list" id="historyList">
+      <!-- dynamically rendered -->
+    </div>
+  </div>
+
 </div>
 
-<!-- TAB: АКЦИИ -->
-<div class="tab-content" id="tab-promo">
-  <div class="promo-list">
-    <div class="promo-card pink">
-      <span class="promo-big-emoji">🌟</span>
-      <div class="promo-tag">Только сейчас</div>
-      <div class="promo-title">Двойные звёзды по воскресеньям</div>
-      <div class="promo-desc">Каждое воскресенье апреля — × 2 звезды за любой визит</div>
-      <div class="promo-until">⏱ До 30 апреля 2026</div>
-    </div>
-    <div class="promo-card yellow">
-      <span class="promo-big-emoji">🎂</span>
-      <div class="promo-tag">День рождения</div>
-      <div class="promo-title">× 3 звезды в день рождения</div>
-      <div class="promo-desc">Тройное начисление + подарок от парка имениннику</div>
-      <div class="promo-until">⏱ Постоянная акция</div>
-    </div>
-    <div class="promo-card blue">
-      <span class="promo-big-emoji">🚀</span>
-      <div class="promo-tag">Приведи друга</div>
-      <div class="promo-title">+200 звёзд за нового гостя</div>
-      <div class="promo-desc">Порекомендуйте нас — получите бонус, когда друг посетит парк</div>
-      <div class="promo-until">⏱ До 1 мая 2026</div>
-    </div>
-    <div class="promo-card pink">
-      <span class="promo-big-emoji">☕</span>
-      <div class="promo-tag">В ресторане</div>
-      <div class="promo-title">+100 звёзд за заказ от 1000₽</div>
-      <div class="promo-desc">Обедайте в нашем кафе и копите звёзды вдвойне быстрее</div>
-      <div class="promo-until">⏱ Постоянная акция</div>
-    </div>
-  </div>
-  <div class="spacer"></div>
-</div>
+<!-- REGISTER PAGE -->
+<div class="register-wrap" id="registerPage">
+  <div class="reg-card">
+    <div class="reg-title">🚀 Добро пожаловать!</div>
+    <p class="reg-sub">Зарегистрируйся в Клубе Ракеты — копи звёзды, получай привилегии и эксклюзивные предложения</p>
 
-<!-- TAB: ПРИВИЛЕГИИ -->
-<div class="tab-content" id="tab-perks">
-  <div class="perks-section">
-    <div class="section-label">Ваши привилегии — Космонавт 🌟</div>
-    <div class="perks-grid">
-      <div class="perk-card">
-        <div class="perk-card-icon">🎟️</div>
-        <div class="perk-card-title">Бесплатный билет</div>
-        <div class="perk-card-desc">За 1500 ⭐ — 1 безлимитный день</div>
-      </div>
-      <div class="perk-card">
-        <div class="perk-card-icon">🎨</div>
-        <div class="perk-card-title">Аквагрим</div>
-        <div class="perk-card-desc">Бесплатно при каждом визите</div>
-      </div>
-      <div class="perk-card">
-        <div class="perk-card-icon">🎂</div>
-        <div class="perk-card-title">ДР-сюрприз</div>
-        <div class="perk-card-desc">Подарок и × 3 звёзды в день рождения</div>
-      </div>
-      <div class="perk-card">
-        <div class="perk-card-icon">📣</div>
-        <div class="perk-card-title">Ранний доступ</div>
-        <div class="perk-card-desc">Уведомления об акциях раньше всех</div>
-      </div>
-      <div class="perk-card">
-        <div class="perk-card-icon">🏷️</div>
-        <div class="perk-card-title">Скидка Командир</div>
-        <div class="perk-card-desc">10% постоянно при 2000+ ⭐</div>
-      </div>
-      <div class="perk-card">
-        <div class="perk-card-icon">👑</div>
-        <div class="perk-card-title">VIP Галактика</div>
-        <div class="perk-card-desc">15% скидка + приоритет брони при 5000+ ⭐</div>
-      </div>
+    <div class="reg-group">
+      <label>Ваше имя</label>
+      <input type="text" id="reg-name" placeholder="Мария Иванова" autocomplete="name">
     </div>
-  </div>
-  <div class="spacer"></div>
-</div>
-
-<!-- TAB: QR-КОД -->
-<div class="tab-content" id="tab-scan">
-  <div class="scan-section">
-    <div style="font-size: 0.8rem; color: var(--muted); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;">Предъявите на входе</div>
-    <div class="qr-display">
-      <div class="qr-corners"></div>
-      🚀
+    <div class="reg-group">
+      <label>Телефон</label>
+      <input type="tel" id="reg-phone" placeholder="+7 (900) 000-00-00" autocomplete="tel">
     </div>
-    <div class="qr-card-num">RKT · 2025 · 0412</div>
-    <div class="scan-hint">Покажите этот экран сотруднику на стойке или поднесите к QR-сканеру</div>
-    <br>
-    <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center;">
-      <a href="tel:+73512163626" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 100px; padding: 10px 20px; color: var(--white); text-decoration: none; font-weight: 700; font-size: 0.85rem;">📞 Позвонить</a>
-      <a href="https://wa.me/79058391411" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.2); border-radius: 100px; padding: 10px 20px; color: #25D366; text-decoration: none; font-weight: 700; font-size: 0.85rem;">💬 WhatsApp</a>
+    <div class="reg-group">
+      <label>День рождения ребёнка</label>
+      <input type="date" id="reg-bday">
     </div>
+    <button class="reg-btn" onclick="register()">⭐ Вступить в клуб бесплатно</button>
   </div>
-</div>
-
-<!-- INSTALL BANNER -->
-<div class="install-banner" id="installBanner">
-  <button class="install-close" onclick="document.getElementById('installBanner').style.display='none'">✕</button>
-  <div class="install-icon">📲</div>
-  <div class="install-text">
-    <div class="install-title">Добавить на экран</div>
-    <div class="install-desc">Открывайте карточку одним касанием</div>
-  </div>
-  <button class="install-btn" onclick="installPWA()">Добавить</button>
 </div>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav">
-  <button class="nav-item active" id="nav-card" onclick="switchTab('card')">
-    <span class="nav-icon">💳</span>
-    <span class="nav-label">Карта</span>
-  </button>
-  <button class="nav-item" id="nav-promo" onclick="switchTab('promo')">
-    <span class="nav-icon">🎁</span>
-    <span class="nav-label">Акции</span>
-  </button>
-  <button class="nav-item" id="nav-perks" onclick="switchTab('perks')">
-    <span class="nav-icon">👑</span>
-    <span class="nav-label">Плюсы</span>
-  </button>
-  <button class="nav-item" id="nav-scan" onclick="switchTab('scan')">
-    <span class="nav-icon">📲</span>
-    <span class="nav-label">QR-код</span>
-  </button>
+  <div class="bnav-item active" onclick="openTab('levels')" id="nav-levels">
+    <span class="bnav-icon">🏠</span>
+    <span>Карта</span>
+  </div>
+  <div class="bnav-item" onclick="openTab('perks')" id="nav-perks">
+    <span class="bnav-icon">🎁</span>
+    <span>Привилегии</span>
+  </div>
+  <div class="bnav-item" onclick="openTab('history')" id="nav-history">
+    <span class="bnav-icon">📋</span>
+    <span>История</span>
+  </div>
+  <a class="bnav-item" href="index.html">
+    <span class="bnav-icon">🏠</span>
+    <span>На сайт</span>
+  </a>
 </nav>
 
+<!-- QR MODAL -->
+<div class="modal-overlay" id="qrModal" onclick="closeModal('qrModal')">
+  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
+    <span class="modal-handle"></span>
+    <div class="modal-title">📲 Мой QR-код</div>
+    <div class="modal-body">
+      Покажи этот код на кассе, чтобы получить звёзды за визит. Каждый чек = +100 ★
+    </div>
+    <div id="qrDisplay" style="text-align:center; padding: 16px; background: #fff; border-radius: 16px; margin-bottom: 20px;">
+      <div style="font-family: monospace; font-size: 0.9rem; color: #333; word-break: break-all;" id="qrCode">Загружаем...</div>
+    </div>
+    <button class="modal-close-btn" onclick="closeModal('qrModal')">Закрыть</button>
+  </div>
+</div>
+
+<!-- NOTIF MODAL -->
+<div class="modal-overlay" id="notifModal" onclick="closeModal('notifModal')">
+  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
+    <span class="modal-handle"></span>
+    <div class="modal-title">🔔 Уведомления</div>
+    <div class="modal-body" id="notifBody">Включи уведомления, чтобы первой узнавать об акциях, новых мероприятиях и бонусах.</div>
+    <button class="reg-btn" style="margin-bottom:12px" onclick="requestNotifs()">Включить уведомления</button>
+    <button class="modal-close-btn" onclick="closeModal('notifModal')">Позже</button>
+  </div>
+</div>
+
+<!-- PROMO MODAL -->
+<div class="modal-overlay" id="promoModal" onclick="closeModal('promoModal')">
+  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
+    <span class="modal-handle"></span>
+    <div class="modal-title">🎂 Бонус в день рождения</div>
+    <div class="modal-body">Укажи дату дня рождения ребёнка — в этот день ты получишь ×3 звёзды за визит + персональный подарок от парка!</div>
+    <div class="reg-group">
+      <label>День рождения ребёнка</label>
+      <input type="date" id="promo-bday" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--white);font-family:'Nunito',sans-serif;font-size:1rem;outline:none;width:100%;-webkit-appearance:none;transition:all 0.2s">
+    </div>
+    <button class="reg-btn" style="margin-bottom:12px" onclick="saveBday()">Сохранить и получить бонус 🎉</button>
+    <button class="modal-close-btn" onclick="closeModal('promoModal')">Позже</button>
+  </div>
+</div>
+
 <script>
-  // STARS
-  const sb = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const sz = Math.random() * 2 + 0.5;
-    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--dl:${Math.random()*4}s;opacity:${Math.random()*0.5+0.1}`;
-    sb.appendChild(s);
-  }
+/* ====================================
+   CONFIG
+==================================== */
+const LEVELS = [
+  { name: 'Новичок',    icon: '🛸', min: 0,    max: 499,  color: '#8090b0', id: 1 },
+  { name: 'Космонавт',  icon: '🚀', min: 500,  max: 1499, color: '#2d9cff', id: 2 },
+  { name: 'Командир',   icon: '⚡', min: 1500, max: 2999, color: '#9b59ff', id: 3 },
+  { name: 'Галактика',  icon: '👑', min: 3000, max: 99999, color: '#ffd166', id: 4 },
+];
+const PERKS = [
+  { emoji: '⭐', name: '100 звёзд за визит', desc: 'Каждое посещение = +100 ★ на карту', req: 0, action: 'Активна' },
+  { emoji: '🎂', name: '×3 в день рождения', desc: 'Тройные звёзды и подарок от парка', req: 0, action: 'Активна' },
+  { emoji: '🔔', name: 'Эксклюзивные акции', desc: 'Первыми узнавать о скидках и событиях', req: 0, action: 'Активна' },
+  { emoji: '🎟️', name: 'Бесплатный визит', desc: '1 000 ★ = 1 бесплатный час в парке', req: 1000, action: 'Обменять' },
+  { emoji: '🏷️', name: 'Скидка 10%', desc: 'На все услуги — с уровня «Командир»', req: 1500, action: 'Командир' },
+  { emoji: '👑', name: 'Скидка 15% навсегда', desc: 'Постоянная скидка и приоритет. Уровень «Галактика»', req: 3000, action: 'Галактика' },
+  { emoji: '🚀', name: 'Приоритетное бронирование', desc: 'Дата рождения — без очереди и ожидания', req: 3000, action: 'Галактика' },
+];
+const STARS_PER_VISIT = 100;
 
-  // TABS
-  function switchTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('nav-' + tab).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+/* ====================================
+   STATE
+==================================== */
+let state = loadState();
 
-  // CARD TILT (gyroscope on mobile)
-  const card = document.getElementById('loyaltyCard');
-  if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation', e => {
-      const x = Math.max(-10, Math.min(10, e.beta - 45)) / 2;
-      const y = Math.max(-10, Math.min(10, e.gamma)) / 2;
-      card.style.transform = `perspective(600px) rotateX(${-x}deg) rotateY(${y}deg)`;
-    });
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem('raketa_guest') || 'null');
+    if (s) return s;
+  } catch(e) {}
+  return null;
+}
+
+function saveState() {
+  localStorage.setItem('raketa_guest', JSON.stringify(state));
+}
+
+/* ====================================
+   INIT
+==================================== */
+window.addEventListener('DOMContentLoaded', () => {
+  initStars();
+  if (!state) {
+    showRegister();
   } else {
-    // Mouse tilt on desktop
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const x = ((e.clientY - r.top) / r.height - 0.5) * 14;
-      const y = ((e.clientX - r.left) / r.width - 0.5) * 14;
-      card.style.transform = `perspective(600px) rotateX(${-x}deg) rotateY(${y}deg)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(600px) rotateX(0deg) rotateY(0deg)';
-    });
+    showMain();
+    renderCard();
+    renderPerks();
+    renderHistory();
+    renderLevels();
+    checkInstallBanner();
+  }
+  document.getElementById('promoBanner').addEventListener('click', () => openModal('promoModal'));
+  document.getElementById('reg-phone').addEventListener('input', phoneMask);
+});
+
+function showRegister() {
+  document.getElementById('mainPage').style.display = 'none';
+  document.getElementById('registerPage').classList.add('active');
+  document.querySelector('.bottom-nav').style.display = 'none';
+}
+
+function showMain() {
+  document.getElementById('mainPage').style.display = 'block';
+  document.getElementById('registerPage').classList.remove('active');
+  document.querySelector('.bottom-nav').style.display = 'flex';
+}
+
+/* ====================================
+   REGISTER
+==================================== */
+function register() {
+  const name = document.getElementById('reg-name').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const bday = document.getElementById('reg-bday').value;
+
+  if (!name || !phone) {
+    showToast('⚠️ Укажи имя и телефон');
+    return;
   }
 
-  // PWA INSTALL
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('installBanner').style.display = 'flex';
-  });
+  state = {
+    name, phone, bday,
+    stars: 100, // бонус за регистрацию
+    visits: 0,
+    since: new Date().toLocaleDateString('ru-RU'),
+    history: [
+      { type: 'plus', action: '🎁 Бонус за регистрацию', date: new Date().toLocaleDateString('ru-RU'), pts: 100 }
+    ]
+  };
+  saveState();
+  showMain();
+  renderCard();
+  renderPerks();
+  renderHistory();
+  renderLevels();
+  showToast('🚀 Добро пожаловать в Клуб Ракеты!');
+  animStars();
+}
 
-  function installPWA() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
-        deferredPrompt = null;
-        document.getElementById('installBanner').style.display = 'none';
-      });
-    } else {
-      alert('Чтобы добавить на экран: нажмите «Поделиться» → «На экран «Домой»');
+/* ====================================
+   RENDER CARD
+==================================== */
+function renderCard() {
+  if (!state) return;
+  const stars = state.stars || 0;
+  const lvl = getLevel(stars);
+  const nextLvl = LEVELS[Math.min(lvl.id, LEVELS.length - 1)];
+  const isMax = lvl.id === LEVELS.length;
+
+  // Animate stars number
+  const starsEl = document.getElementById('starsNum');
+  const prev = parseInt(starsEl.textContent.replace(/\D/g,'')) || 0;
+  animateNum(starsEl, prev, stars, 800);
+
+  document.getElementById('starsSub').textContent = isMax
+    ? '🏆 Максимальный уровень достигнут!'
+    : `До уровня «${nextLvl.name}» осталось ${nextLvl.min - stars} ★`;
+
+  // Level badge
+  const badge = document.getElementById('levelBadge');
+  badge.textContent = `${lvl.icon} ${lvl.name}`;
+  badge.style.color = lvl.color;
+  badge.style.borderColor = lvl.color + '50';
+  badge.style.background = lvl.color + '18';
+
+  // Progress bar
+  const pct = isMax ? 100 : Math.min(100, ((stars - lvl.min) / (nextLvl.min - lvl.min)) * 100);
+  document.getElementById('barFill').style.width = pct + '%';
+  document.getElementById('barFrom').textContent = lvl.name;
+  document.getElementById('barTo').textContent = isMax ? 'Максимум' : `${nextLvl.name} ${nextLvl.min} ★`;
+
+  document.getElementById('guestName').textContent = state.name;
+  document.getElementById('guestSince').textContent = `С нами с ${state.since}`;
+  document.getElementById('visitsNum').textContent = state.visits || 0;
+  document.getElementById('qrCode').textContent = `RAKETA-${(state.phone || '').replace(/\D/g,'').slice(-7)}-${Date.now().toString(36).toUpperCase()}`;
+}
+
+function getLevel(stars) {
+  for (let i = LEVELS.length - 1; i >= 0; i--) {
+    if (stars >= LEVELS[i].min) return LEVELS[i];
+  }
+  return LEVELS[0];
+}
+
+/* ====================================
+   RENDER LEVELS
+==================================== */
+function renderLevels() {
+  if (!state) return;
+  const stars = state.stars || 0;
+  LEVELS.forEach((lv, i) => {
+    const el = document.getElementById(`lv-${i+1}`);
+    if (!el) return;
+    el.classList.remove('active', 'done');
+    const current = getLevel(stars);
+    if (lv.id === current.id) el.classList.add('active');
+    else if (stars >= lv.min) el.classList.add('done');
+    // Add check for done
+    let chk = el.querySelector('.level-check');
+    if (stars > lv.max) {
+      if (!chk) {
+        chk = document.createElement('div');
+        chk.className = 'level-check';
+        chk.textContent = '✓';
+        el.appendChild(chk);
+      }
+    } else if (chk) chk.remove();
+  });
+}
+
+/* ====================================
+   RENDER PERKS
+==================================== */
+function renderPerks() {
+  if (!state) return;
+  const stars = state.stars || 0;
+  const list = document.getElementById('perksList');
+  list.innerHTML = '';
+  PERKS.forEach(p => {
+    const unlocked = stars >= p.req;
+    const div = document.createElement('div');
+    div.className = 'perk-item' + (unlocked ? '' : ' locked');
+    div.innerHTML = `
+      <div class="perk-emoji">${p.emoji}</div>
+      <div class="perk-info">
+        <div class="perk-name">${p.name}</div>
+        <div class="perk-desc">${p.desc}</div>
+      </div>
+      <div class="perk-action ${unlocked ? 'available' : 'locked-badge'}">${unlocked ? p.action : '🔒 ' + p.req + '★'}</div>
+    `;
+    if (unlocked && p.req >= 1000) {
+      div.querySelector('.perk-action').addEventListener('click', () => redeemPerk(p));
+    }
+    list.appendChild(div);
+  });
+}
+
+function redeemPerk(p) {
+  if (!state) return;
+  if (state.stars < p.req) { showToast('⚠️ Недостаточно звёзд'); return; }
+  if (p.req === 1000) {
+    if (confirm(`Списать 1 000 ★ и получить бесплатный визит?`)) {
+      state.stars -= 1000;
+      state.history.unshift({ type: 'minus', action: '🎟️ Обмен: Бесплатный визит', date: new Date().toLocaleDateString('ru-RU'), pts: -1000 });
+      saveState();
+      renderCard();
+      renderPerks();
+      renderHistory();
+      renderLevels();
+      showToast('🎟️ Получена! Назови кассиру «Ракета-Клуб»');
+    }
+  }
+}
+
+/* ====================================
+   RENDER HISTORY
+==================================== */
+function renderHistory() {
+  if (!state) return;
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
+  const items = (state.history || []).slice(0, 20);
+  if (!items.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.88rem">Визиты пока не отмечены</div>';
+    return;
+  }
+  items.forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'hist-item';
+    const isPlus = h.type === 'plus';
+    div.innerHTML = `
+      <div class="hist-icon ${h.type}">
+        ${isPlus ? '⬆️' : '⬇️'}
+      </div>
+      <div class="hist-info">
+        <div class="hist-action">${h.action}</div>
+        <div class="hist-date">${h.date}</div>
+      </div>
+      <div class="hist-pts ${h.type}">${isPlus ? '+' : ''}${h.pts} ★</div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+/* ====================================
+   ADD VISIT (демо-функция)
+==================================== */
+function addVisit() {
+  if (!state) return;
+
+  // Проверяем день рождения
+  let bonus = 1;
+  if (state.bday) {
+    const bday = new Date(state.bday);
+    const now = new Date();
+    if (bday.getMonth() === now.getMonth() && bday.getDate() === now.getDate()) {
+      bonus = 3;
+      showToast('🎂 ДЕНЬ РОЖДЕНИЯ! ×3 звёзды! Поздравляем!');
     }
   }
 
-  // NOTIF
-  function showNotif() {
-    alert('🎁 У вас 2 новых акции!\n\n⭐ Двойные звёзды по воскресеньям\n🎂 Ваш ребёнок скоро именинник — подготовьте сюрприз!');
-  }
+  const pts = STARS_PER_VISIT * bonus;
+  state.stars = (state.stars || 0) + pts;
+  state.visits = (state.visits || 0) + 1;
+  state.history = state.history || [];
+  state.history.unshift({
+    type: 'plus',
+    action: `🚀 Визит в Ракету${bonus > 1 ? ` (×${bonus} день рождения!)` : ''}`,
+    date: new Date().toLocaleDateString('ru-RU'),
+    pts: pts
+  });
+  saveState();
 
-  // Animate stars counter
-  function animateCounter(el, target, duration) {
-    let start = 0;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start = Math.min(start + step, target);
-      el.textContent = Math.floor(start).toLocaleString('ru');
-      if (start >= target) clearInterval(timer);
-    }, 16);
-  }
-  setTimeout(() => {
-    animateCounter(document.getElementById('starsCount'), 1240, 1200);
-  }, 400);
+  animStars();
+  renderCard();
+  renderPerks();
+  renderHistory();
+  renderLevels();
 
-  // Hide install banner if already installed
+  if (bonus === 1) showToast(`⭐ +${pts} звёзд! Всего: ${state.stars} ★`);
+}
+
+/* ====================================
+   TABS
+==================================== */
+function openTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  const tabEl = document.getElementById(`tab-${name}`);
+  const navEl = document.getElementById(`nav-${name}`);
+  if (tabEl) tabEl.classList.add('active');
+  if (navEl) navEl.classList.add('active');
+}
+
+/* ====================================
+   MODALS
+==================================== */
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function showQR() { openModal('qrModal'); }
+function showNotifModal() { openModal('notifModal'); }
+
+function saveBday() {
+  const bday = document.getElementById('promo-bday').value;
+  if (!bday) { showToast('⚠️ Укажи дату'); return; }
+  state.bday = bday;
+  saveState();
+  closeModal('promoModal');
+  showToast('🎂 День рождения сохранён! Ждём вас!');
+}
+
+async function requestNotifs() {
+  if (!('Notification' in window)) { showToast('⚠️ Браузер не поддерживает уведомления'); return; }
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') {
+    closeModal('notifModal');
+    document.getElementById('notifDot').style.display = 'none';
+    showToast('✅ Уведомления включены!');
+    new Notification('🚀 Ракета · Клуб', { body: 'Теперь вы первыми узнаёте об акциях!' });
+  } else {
+    showToast('Разреши уведомления в настройках браузера');
+  }
+}
+
+/* ====================================
+   TOAST
+==================================== */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ====================================
+   STAR BURST ANIMATION
+==================================== */
+function animStars() {
+  const card = document.getElementById('heroCard');
+  const rect = card.getBoundingClientRect();
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'star-burst';
+      el.textContent = '⭐';
+      el.style.left = (rect.left + Math.random() * rect.width) + 'px';
+      el.style.top = (rect.top + rect.height * 0.4 + Math.random() * 40) + 'px';
+      el.style.position = 'fixed';
+      el.style.zIndex = '999';
+      el.style.fontSize = (1 + Math.random()) + 'rem';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 900);
+    }, i * 100);
+  }
+}
+
+/* ====================================
+   ANIMATE NUMBER
+==================================== */
+function animateNum(el, from, to, dur) {
+  const start = performance.now();
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = Math.round(from + (to - from) * ease).toLocaleString('ru');
+    if (t < 1) requestAnimationFrame(step);
+    else el.textContent = to.toLocaleString('ru');
+  }
+  requestAnimationFrame(step);
+}
+
+/* ====================================
+   PHONE MASK
+==================================== */
+function phoneMask() {
+  const el = document.getElementById('reg-phone');
+  let v = el.value.replace(/\D/g,'');
+  if (v.startsWith('7') || v.startsWith('8')) v = v.slice(1);
+  let out = '+7';
+  if (v.length > 0) out += ' (' + v.slice(0,3);
+  if (v.length >= 3) out += ') ' + v.slice(3,6);
+  if (v.length >= 6) out += '-' + v.slice(6,8);
+  if (v.length >= 8) out += '-' + v.slice(8,10);
+  el.value = out;
+}
+
+/* ====================================
+   PWA INSTALL
+==================================== */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('installBanner');
+  if (banner) banner.style.display = 'flex';
+});
+
+async function installPWA() {
+  if (!deferredPrompt) {
+    showToast('📱 Открой сайт в браузере для установки');
+    return;
+  }
+  deferredPrompt.prompt();
+  const res = await deferredPrompt.userChoice;
+  if (res.outcome === 'accepted') {
+    document.getElementById('installBanner').style.display = 'none';
+    showToast('✅ Ракета установлена!');
+  }
+  deferredPrompt = null;
+}
+
+function checkInstallBanner() {
   if (window.matchMedia('(display-mode: standalone)').matches) {
     document.getElementById('installBanner').style.display = 'none';
   }
+}
+
+/* ====================================
+   STARFIELD
+==================================== */
+function initStars() {
+  const canvas = document.getElementById('stars-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    stars = Array.from({length: 120}, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.4 + 0.2,
+      a: Math.random(),
+      da: (Math.random() * 0.004 + 0.001) * (Math.random() > 0.5 ? 1 : -1)
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a > 1 || s.a < 0.05) s.da *= -1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(180,200,255,${s.a * 0.7})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  draw();
+  window.addEventListener('resize', resize);
+}
+
+/* ====================================
+   SERVICE WORKER
+==================================== */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
