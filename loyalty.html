@@ -500,6 +500,7 @@ body {
 <body>
 
 <div class="page-loading" id="pageLoading"><div class="pl-logo">🚀</div><div class="pl-text">Загружаем...</div></div>
+<script>window.addEventListener("load",function(){var p=document.getElementById("pageLoading");if(p)p.remove();});</script>
 <canvas id="stars-canvas"></canvas>
 
 <!-- HEADER -->
@@ -774,7 +775,7 @@ function saveState() {
 window.addEventListener('DOMContentLoaded', () => {
   // Скрываем загрузчик сразу — гарантированно
   const pl = document.getElementById('pageLoading');
-  if (pl) { pl.style.transition = 'opacity 0.3s'; pl.style.opacity = '0'; setTimeout(() => pl.remove(), 300); }
+  if (pl) { pl.style.display = 'none'; pl.remove(); }
   initStars();
   if (!state) {
     showRegister();
