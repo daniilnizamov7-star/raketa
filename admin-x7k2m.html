@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<link rel="manifest" href="manifest-admin.json">
 <title>Панель управления · Ракета</title>
 <style>
 
@@ -921,12 +922,58 @@ function getLevel(stars) {
   return LEVELS[0];
 }
 
+
+function setLoading(el, state) {
+  if (!el) return;
+  if (state) { el.dataset.orig = el.innerHTML; el.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.6s linear infinite"></span>'; el.disabled = true; }
+  else { el.innerHTML = el.dataset.orig || el.innerHTML; el.disabled = false; }
+}
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   clearTimeout(t._t);
   t._t = setTimeout(() => t.classList.remove('show'), 2600);
 }
+
+/* ================================
+   PWA UPDATE CHECKER
+================================ */
+(function() {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    // Проверяем обновление при каждом запуске
+    reg.update();
+    reg.addEventListener('updatefound', () => {
+      const worker = reg.installing;
+      worker.addEventListener('statechange', () => {
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner();
+        }
+      });
+    });
+  });
+  // Перезагружаем при активации нового SW
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) { refreshing = true; location.reload(); }
+  });
+  function showUpdateBanner() {
+    const b = document.createElement('div');
+    b.id = 'update-banner';
+    b.innerHTML = '<span>🚀 Доступна новая версия</span><button onclick="applyUpdate()">Обновить</button>';
+    b.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:#ff3cac;color:#fff;padding:12px 20px;border-radius:100px;display:flex;align-items:center;gap:12px;font-size:0.85rem;font-weight:700;box-shadow:0 4px 20px rgba(255,60,172,0.4);white-space:nowrap;animation:slideUp 0.4s ease';
+    b.querySelector('button').style.cssText = 'background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 14px;border-radius:100px;cursor:pointer;font-weight:800;font-size:0.82rem';
+    document.body.appendChild(b);
+    const style = document.createElement('style');
+    style.textContent = '@keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}';
+    document.head.appendChild(style);
+  }
+  window.applyUpdate = function() {
+    navigator.serviceWorker.getRegistration().then(reg => {
+      if (reg && reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+    });
+  };
+})();
 </script>
 </body>
 </html>
