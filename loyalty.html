@@ -35,6 +35,8 @@
 
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bot: env(safe-area-inset-bottom, 0px);
+  --font-display: 'SF Pro Display', -apple-system, 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-body: -apple-system, 'Segoe UI', system-ui, sans-serif;
 
   /* level colors */
   --lv1: #8090b0;   /* Новичок */
@@ -46,7 +48,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; -webkit-text-size-adjust: 100%; }
 body {
-  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--white);
   min-height: 100%;
@@ -55,7 +57,6 @@ body {
   padding-bottom: calc(var(--safe-bot) + 80px);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap');
 
 /* ============================
    STARS BG
@@ -75,7 +76,7 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .header-logo {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 0.95rem; font-weight: 900;
   background: linear-gradient(135deg, var(--neon), var(--blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -135,7 +136,7 @@ body {
   margin-bottom: 24px; position: relative; z-index: 1;
 }
 .hc-logo {
-  font-family: 'Unbounded', sans-serif; font-size: 0.85rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 900;
   background: linear-gradient(135deg, var(--neon), var(--blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
@@ -150,7 +151,7 @@ body {
   text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
 }
 .hc-stars-num {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 3.2rem; font-weight: 900; line-height: 1;
   background: linear-gradient(135deg, var(--yellow), var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -183,13 +184,13 @@ body {
   position: relative; z-index: 1;
 }
 .hc-name {
-  font-family: 'Unbounded', sans-serif; font-size: 0.88rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.88rem; font-weight: 700;
 }
 .hc-since { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
 .hc-visits {
   text-align: right; font-size: 0.72rem; color: var(--muted);
 }
-.hc-visits strong { display: block; font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--white); }
+.hc-visits strong { display: block; font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; color: var(--white); }
 
 /* STAR BURST ANIMATION */
 .star-burst {
@@ -226,7 +227,7 @@ body {
 ============================ */
 .sect { padding: 0 20px 20px; }
 .sect-title {
-  font-family: 'Unbounded', sans-serif; font-size: 0.8rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
   letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 12px;
 }
@@ -247,7 +248,7 @@ body {
 .level-card.done { opacity: 0.5; }
 .level-icon { font-size: 1.6rem; margin-bottom: 6px; display: block; }
 .level-name {
-  font-family: 'Unbounded', sans-serif; font-size: 0.6rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.6rem; font-weight: 700;
   color: var(--lv-color, var(--muted)); line-height: 1.2; margin-bottom: 4px;
 }
 .level-pts { font-size: 0.6rem; color: var(--muted); }
@@ -308,7 +309,7 @@ body {
 .hist-action { font-weight: 700; font-size: 0.85rem; }
 .hist-date { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
 .hist-pts {
-  font-family: 'Unbounded', sans-serif; font-size: 0.9rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
 }
 .hist-pts.plus { color: var(--green); }
 .hist-pts.minus { color: var(--neon); }
@@ -334,7 +335,7 @@ body {
 }
 .promo-emoji { font-size: 2.2rem; flex-shrink: 0; }
 .promo-text { flex: 1; }
-.promo-title { font-family: 'Unbounded', sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+.promo-title { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
 .promo-desc { font-size: 0.78rem; color: var(--muted2); line-height: 1.4; }
 .promo-arrow { font-size: 1.2rem; color: var(--muted); }
 
@@ -351,7 +352,7 @@ body {
   border-radius: 24px; padding: 28px;
 }
 .reg-title {
-  font-family: 'Unbounded', sans-serif; font-size: 1.2rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
   margin-bottom: 8px; letter-spacing: -0.02em;
 }
 .reg-sub { font-size: 0.88rem; color: var(--muted2); margin-bottom: 24px; line-height: 1.5; }
@@ -363,7 +364,7 @@ body {
 .reg-group input {
   background: rgba(255,255,255,0.04); border: 1px solid var(--border);
   border-radius: 12px; padding: 13px 16px; color: var(--white);
-  font-family: 'Nunito', sans-serif; font-size: 1rem; outline: none;
+  font-family: var(--font-body); font-size: 1rem; outline: none;
   transition: all 0.2s; -webkit-appearance: none;
 }
 .reg-group input::placeholder { color: var(--muted); }
@@ -375,7 +376,7 @@ body {
   width: 100%; padding: 15px;
   background: linear-gradient(135deg, var(--neon), #c4007a);
   color: #fff; border: none; border-radius: 100px;
-  font-family: 'Unbounded', sans-serif; font-size: 0.85rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
   cursor: pointer; transition: all 0.3s;
   box-shadow: 0 0 28px rgba(255,60,172,0.3);
   margin-top: 4px;
@@ -463,14 +464,14 @@ body {
   border-radius: 100px; margin: 0 auto 24px; display: block;
 }
 .modal-title {
-  font-family: 'Unbounded', sans-serif; font-size: 1.1rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1.1rem; font-weight: 900;
   margin-bottom: 8px; letter-spacing: -0.02em;
 }
 .modal-body { font-size: 0.88rem; color: var(--muted2); line-height: 1.6; margin-bottom: 24px; }
 .modal-close-btn {
   width: 100%; padding: 14px; border: 1.5px solid var(--border);
   border-radius: 100px; background: transparent; color: var(--white);
-  font-family: 'Unbounded', sans-serif; font-size: 0.8rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
   cursor: pointer; transition: all 0.2s;
 }
 .modal-close-btn:hover { border-color: var(--b2); }
@@ -709,7 +710,7 @@ body {
     <div class="modal-body">Укажи дату дня рождения ребёнка — в этот день ты получишь ×3 звёзды за визит + персональный подарок от парка!</div>
     <div class="reg-group">
       <label>День рождения ребёнка</label>
-      <input type="date" id="promo-bday" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--white);font-family:'Nunito',sans-serif;font-size:1rem;outline:none;width:100%;-webkit-appearance:none;transition:all 0.2s">
+      <input type="date" id="promo-bday" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--white);font-family:var(--font-body);font-size:1rem;outline:none;width:100%;-webkit-appearance:none;transition:all 0.2s">
     </div>
     <button class="reg-btn" style="margin-bottom:12px" onclick="saveBday()">Сохранить и получить бонус 🎉</button>
     <button class="modal-close-btn" onclick="closeModal('promoModal')">Позже</button>
@@ -720,6 +721,9 @@ body {
 /* ====================================
    CONFIG
 ==================================== */
+const SUPABASE_URL = 'https://yiqipulgofoschkccaxr.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
+
 const LEVELS = [
   { name: 'Новичок',    icon: '🛸', min: 0,    max: 499,  color: '#8090b0', id: 1 },
   { name: 'Космонавт',  icon: '🚀', min: 500,  max: 1499, color: '#2d9cff', id: 2 },
