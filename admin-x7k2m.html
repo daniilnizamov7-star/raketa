@@ -587,8 +587,8 @@ function doLogin() {
     sessionStorage.setItem('raketa_admin', '1');
     const ls = document.getElementById('loginScreen');
     const sh = document.getElementById('adminShell');
-    if (ls) ls.style.cssText = 'display:none!important';
-    if (sh) sh.style.cssText = 'display:flex!important';
+    if (ls) { ls.style.setProperty('display', 'none', 'important'); }
+    if (sh) { sh.style.setProperty('display', 'flex', 'important'); }
     initAdmin();
   } else {
     const err = document.getElementById('loginError');
@@ -609,8 +609,10 @@ function logout() {
 // Auto-login from session
 window.addEventListener('DOMContentLoaded', () => {
   if (sessionStorage.getItem('raketa_admin') === '1') {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminShell').style.display = 'flex';
+    const _ls = document.getElementById('loginScreen');
+    const _sh = document.getElementById('adminShell');
+    if (_ls) _ls.style.setProperty('display', 'none', 'important');
+    if (_sh) _sh.style.setProperty('display', 'flex', 'important');
     initAdmin();
   }
   document.getElementById('panelDate').textContent = new Date().toLocaleDateString('ru-RU', {
