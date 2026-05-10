@@ -8,9 +8,34 @@
 <title>🚀 Ракета — Семейный парк развлечений в Челябинске</title>
 <link rel="manifest" href="manifest.json">
 
-<!-- Google Fonts - заменяем на безопасные для России -->
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap');
+/* ================================
+   ШРИФТЫ — без Google, без прыжков
+   Системный стек: мгновенная загрузка
+================================ */
+@font-face {
+  font-family: 'AppDisplay';
+  src: local('SF Pro Display'), local('SF Pro Text'),
+       local('Segoe UI'), local('.AppleSystemUIFont'),
+       local('Helvetica Neue');
+  font-weight: 400 900;
+  font-display: block; /* блокируем до загрузки — нет прыжка */
+}
+:root {
+  --font-display: 'SF Pro Display', -apple-system, 'Segoe UI Variable Display',
+                  'Segoe UI', system-ui, sans-serif;
+  --font-body:    -apple-system, 'Segoe UI', system-ui, sans-serif;
+}
+/* Заголовки — жирный системный */
+.hero-title, .section-title, .logo-text, .hstat-num,
+.price-amount, .btn-primary, .btn-secondary, .stat-num,
+.lcp-stars-num, .hc-stars-num, .nav-links a,
+h1, h2, h3, .section-tag {
+  font-family: var(--font-display);
+}
+body, input, select, textarea, button {
+  font-family: var(--font-body);
+}
 </style>
 
 <style>
@@ -49,7 +74,7 @@
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
-  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--white);
   overflow-x: hidden;
@@ -113,7 +138,7 @@ nav.scrolled {
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.3rem; font-weight: 900;
   display: flex; align-items: center; gap: 10px;
   text-decoration: none;
@@ -169,7 +194,7 @@ nav.scrolled {
 .mobile-nav.open { opacity: 1; }
 .mobile-nav a {
   color: var(--white); text-decoration: none;
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.4rem; font-weight: 700;
   letter-spacing: -0.02em;
   transition: color 0.2s;
@@ -207,7 +232,7 @@ nav.scrolled {
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
 
 .hero-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(3.2rem, 9vw, 8rem);
   font-weight: 900;
   line-height: 0.92;
@@ -246,7 +271,7 @@ nav.scrolled {
   display: inline-flex; align-items: center; gap: 8px;
   background: linear-gradient(135deg, var(--neon), var(--neon2));
   color: #fff; padding: 16px 38px; border-radius: 100px;
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 0.85rem; font-weight: 700;
   text-decoration: none; border: none; cursor: none;
   box-shadow: 0 0 32px var(--gp), 0 4px 20px rgba(0,0,0,0.4);
@@ -261,7 +286,7 @@ nav.scrolled {
   display: inline-flex; align-items: center; gap: 8px;
   background: transparent; color: var(--white);
   padding: 15px 36px; border-radius: 100px;
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 0.85rem; font-weight: 700;
   text-decoration: none;
   border: 1.5px solid rgba(255,255,255,0.15);
@@ -288,7 +313,7 @@ nav.scrolled {
 }
 .hstat:last-child { border-right: none; }
 .hstat-num {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 1.9rem; font-weight: 900; line-height: 1;
   background: linear-gradient(135deg, var(--yellow), var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -348,7 +373,7 @@ section {
   color: var(--neon); margin-bottom: 18px;
 }
 .section-title {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(1.8rem, 4vw, 3rem);
   font-weight: 900; line-height: 1.1;
   letter-spacing: -0.03em; margin-bottom: 20px;
@@ -393,14 +418,14 @@ section {
 .why-card:hover { border-color: var(--border2); transform: translateY(-4px); }
 .why-card:hover::after { transform: scaleX(1); }
 .why-num {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 3.5rem; font-weight: 900;
   color: rgba(255,255,255,0.04); line-height: 1;
   position: absolute; top: 20px; right: 24px;
 }
 .why-icon { font-size: 2.4rem; margin-bottom: 20px; display: block; }
 .why-card h3 {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 1rem; font-weight: 700;
   margin-bottom: 10px; letter-spacing: -0.01em;
 }
@@ -437,7 +462,7 @@ section {
 .attr-card:nth-child(6) { --card-glow: radial-gradient(circle at 0% 0%, rgba(0,229,255,0.1), transparent 60%); }
 .attr-icon { font-size: 2.8rem; margin-bottom: 20px; display: block; position: relative; z-index: 1; }
 .attr-card h3 {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 1rem; font-weight: 700;
   margin-bottom: 10px; letter-spacing: -0.01em;
   position: relative; z-index: 1;
@@ -487,13 +512,13 @@ section {
   white-space: nowrap; letter-spacing: 0.05em;
 }
 .price-name {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 0.75rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 24px;
 }
 .price-amount {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(2.4rem, 5vw, 3.2rem);
   font-weight: 900; line-height: 1; margin-bottom: 6px;
 }
@@ -509,7 +534,7 @@ section {
 .btn-book {
   display: block; padding: 14px;
   border-radius: 100px;
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: 0.78rem; font-weight: 700;
   text-align: center; text-decoration: none;
   cursor: none; transition: all 0.3s; border: none; width: 100%;
@@ -553,7 +578,7 @@ section {
   background: radial-gradient(circle, rgba(45,156,255,0.18), transparent 70%);
 }
 .lcp-logo {
-  font-family: 'Unbounded', sans-serif; font-size: 1rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1rem; font-weight: 900;
   background: linear-gradient(135deg, var(--neon), var(--blue));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 36px; display: flex; align-items: center; gap: 8px;
@@ -565,7 +590,7 @@ section {
   position: relative; z-index: 1;
 }
 .lcp-stars-num {
-  font-family: 'Unbounded', sans-serif; font-size: 3.8rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 3.8rem; font-weight: 900;
   background: linear-gradient(135deg, var(--yellow), var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   line-height: 1; margin-bottom: 4px; position: relative; z-index: 1;
@@ -589,7 +614,7 @@ section {
   position: relative; z-index: 1;
 }
 .lcp-name {
-  font-family: 'Unbounded', sans-serif; font-size: 0.95rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
   position: relative; z-index: 1;
 }
 .lcp-level {
@@ -611,7 +636,7 @@ section {
 .loyalty-perks li:hover { border-color: var(--border2); transform: translateX(4px); }
 .perk-icon { font-size: 1.7rem; flex-shrink: 0; }
 .perk-title {
-  font-family: 'Unbounded', sans-serif; font-size: 0.88rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.88rem; font-weight: 700;
   margin-bottom: 4px; letter-spacing: -0.01em;
 }
 .perk-desc { font-size: 0.83rem; color: var(--muted2); line-height: 1.5; }
@@ -643,7 +668,7 @@ section {
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--border); border-radius: 12px;
   padding: 14px 18px; color: var(--white);
-  font-family: 'Nunito', sans-serif; font-size: 1rem;
+  font-family: var(--font-body); font-size: 1rem;
   outline: none; transition: all 0.25s; cursor: none;
   -webkit-appearance: none;
 }
@@ -691,7 +716,7 @@ section {
   width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, var(--neon), var(--purple));
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Unbounded', sans-serif; font-size: 0.72rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.72rem; font-weight: 700;
   flex-shrink: 0;
 }
 .review-name { font-weight: 700; font-size: 0.88rem; }
@@ -719,7 +744,7 @@ section {
   pointer-events: none;
 }
 .cta-wrap h2 {
-  font-family: 'Unbounded', sans-serif;
+  font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 4rem);
   font-weight: 900; line-height: 1.1;
   letter-spacing: -0.03em; margin-bottom: 16px;
@@ -747,14 +772,14 @@ footer {
   display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
 }
 .footer-logo {
-  font-family: 'Unbounded', sans-serif; font-size: 1.2rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
   background: linear-gradient(135deg, #fff 30%, var(--neon));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
 }
 .footer-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.65; max-width: 280px; }
 .footer-col h4 {
-  font-family: 'Unbounded', sans-serif; font-size: 0.75rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 0.75rem; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 18px;
 }
@@ -807,7 +832,7 @@ footer {
   to { transform: translateY(0) scale(1); opacity: 1; }
 }
 .modal h3 {
-  font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 900;
+  font-family: var(--font-display); font-size: 1.4rem; font-weight: 900;
   margin-bottom: 12px; letter-spacing: -0.02em;
 }
 .modal p { color: var(--muted2); font-size: 0.92rem; line-height: 1.6; margin-bottom: 28px; }
@@ -942,20 +967,20 @@ footer {
 
   <div class="hero-stats">
     <div class="hstat">
-      <div class="hstat-num" data-target="5000">0</div>
-      <div class="hstat-lbl">детей в месяц</div>
+      <div class="hstat-num" data-target="8900">0</div>
+      <div class="hstat-lbl">подписчиков ВК</div>
     </div>
     <div class="hstat">
-      <div class="hstat-num" data-target="4.8" data-suffix="">0</div>
-      <div class="hstat-lbl">★ на Яндекс Картах</div>
+      <div class="hstat-num" data-target="4.6" data-suffix="">0</div>
+      <div class="hstat-lbl">★ · 97 отзывов</div>
     </div>
     <div class="hstat">
-      <div class="hstat-num" data-target="10">0</div>
-      <div class="hstat-lbl">аттракционов</div>
+      <div class="hstat-num" data-target="20">0</div>
+      <div class="hstat-lbl">зон развлечений</div>
     </div>
     <div class="hstat">
-      <div class="hstat-num" data-target="7">0</div>
-      <div class="hstat-lbl">лет в Челябинске</div>
+      <div class="hstat-num" data-target="1">0</div>
+      <div class="hstat-lbl">до 14 лет · вход</div>
     </div>
   </div>
 </section>
@@ -1000,46 +1025,63 @@ footer {
 
 <!-- ATTRACTIONS -->
 <section id="attractions">
-  <div class="section-tag">🎡 Аттракционы</div>
-  <h2 class="section-title reveal">10 зон приключений</h2>
-  <p class="section-desc reveal">Каждая зона создана с любовью, чтобы дети открывали новые миры и возможности</p>
+  <div class="section-tag">🎡 Развлечения</div>
+  <h2 class="section-title reveal">20+ зон приключений<br>от 1 до 14 лет</h2>
+  <p class="section-desc reveal">Родители бесплатно — пока дети носятся, вы отдыхаете в семейном ресторане</p>
 
   <div class="attractions-grid">
     <div class="attr-card reveal">
-      <span class="attr-icon">🧗</span>
-      <h3>Скалодром и верёвочный парк</h3>
-      <p>Высотные маршруты разной сложности. Страховка, инструктор, адреналин — всё включено</p>
-      <span class="attr-badge">от 5 лет</span>
-    </div>
-    <div class="attr-card reveal" style="transition-delay:0.06s">
       <span class="attr-icon">🏀</span>
-      <h3>Батутный центр</h3>
-      <p>Профессиональные батуты, поролоновые ямы, батутный баскетбол. Прыгай без ограничений</p>
-      <span class="attr-badge">от 3 лет</span>
-    </div>
-    <div class="attr-card reveal" style="transition-delay:0.12s">
-      <span class="attr-icon">🏰</span>
-      <h3>Игровой лабиринт</h3>
-      <p>Многоуровневый лабиринт с горками, тоннелями и секретными комнатами. Целый час исследований</p>
+      <h3>Батутная арена</h3>
+      <p>Прыжки, акробатика, батутный баскетбол. Энергия бьёт ключом — и это нормально</p>
       <span class="attr-badge">от 1 года</span>
     </div>
-    <div class="attr-card reveal" style="transition-delay:0.18s">
+    <div class="attr-card reveal" style="transition-delay:0.06s">
+      <span class="attr-icon">🌀</span>
+      <h3>Лабиринт с горками</h3>
+      <p>Многоуровневый игровой лабиринт с горками, тоннелями и пневмостеной магнитиков</p>
+      <span class="attr-badge">от 1 года</span>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.12s">
       <span class="attr-icon">🎮</span>
-      <h3>Аркадные автоматы</h3>
-      <p>Более 30 игровых автоматов. Собирай призовые жетоны и меняй на подарки в призовом магазине</p>
-      <span class="attr-badge">от 4 лет</span>
+      <h3>Игровые автоматы</h3>
+      <p>Аркадные автоматы с жетонами, призовые игры — копи жетоны и меняй на подарки</p>
+      <span class="attr-badge">от 3 лет</span>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.18s">
+      <span class="attr-icon">🦒</span>
+      <h3>Карусель и качалки</h3>
+      <p>Карусель для малышей, качалки супер-крылья, воздушный фонтан — зона для самых маленьких</p>
+      <span class="attr-badge">от 1 года</span>
     </div>
     <div class="attr-card reveal" style="transition-delay:0.24s">
-      <span class="attr-icon">🎯</span>
-      <h3>Лазертаг арена</h3>
-      <p>Тактические бои в командах. Специальные детские миссии и сценарии. Игра на 8–16 игроков</p>
-      <span class="attr-badge">от 6 лет</span>
+      <span class="attr-icon">⚽</span>
+      <h3>Мини футбольное поле</h3>
+      <p>Настоящий матч внутри парка. Команда на команду — кто победит сегодня?</p>
+      <span class="attr-badge">от 4 лет</span>
     </div>
     <div class="attr-card reveal" style="transition-delay:0.30s">
       <span class="attr-icon">🎨</span>
-      <h3>Творческая мастерская</h3>
-      <p>Рисование, лепка, поделки. Аниматор-педагог проводит мастер-классы каждые выходные</p>
+      <h3>Аквагрим и мастер-классы</h3>
+      <p>Профессиональные аквагримёры превратят ребёнка в любимого героя. От 350 ₽. Материалы гипоаллергенны</p>
       <span class="attr-badge">от 2 лет</span>
+    </div>
+  </div>
+
+  <!-- Дополнительные зоны — список -->
+  <div style="margin-top:32px; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:28px 32px;">
+    <div class="section-tag" style="margin-bottom:16px">🚀 Также в парке</div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:10px 24px;">
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Башня паука с горкой</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Шаропад</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Горка-труба и косагор</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Конструктор большого Лего</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Столы для творчества</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Качалка-зебра</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Семейные фотографии</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Зона отдыха для родителей</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Семейное кафе</div>
+      <div style="color:var(--muted2);font-size:0.88rem;display:flex;gap:8px;align-items:center"><span style="color:var(--neon)">›</span> Банкетные комнаты</div>
     </div>
   </div>
 </section>
@@ -1048,63 +1090,77 @@ footer {
 <div class="prices-wrap" id="prices">
   <div class="prices-inner">
     <div class="section-tag">💳 Цены</div>
-    <h2 class="section-title reveal">Честные цены,<br>максимум радости</h2>
-    <p class="section-desc reveal">Все тарифы включают доступ ко всем аттракционам. Никаких скрытых платежей</p>
+    <h2 class="section-title reveal">Честные цены.<br>Родители — бесплатно</h2>
+    <p class="section-desc reveal">Оплата только за ребёнка. Родители и дети до 1 года — вход бесплатный</p>
 
     <div class="prices-grid">
       <div class="price-card reveal">
-        <div class="price-name">Будни</div>
-        <div class="price-amount"><span class="rub">₽</span>350</div>
-        <div class="price-period">1 час · пн–пт</div>
+        <div class="price-name">Вторник</div>
+        <div class="price-amount"><span class="rub">₽</span>700</div>
+        <div class="price-period">Безлимит на весь день</div>
         <ul class="price-features">
-          <li>Все аттракционы</li>
-          <li>Игровые зоны</li>
-          <li>Аркады</li>
-          <li>Wi-Fi для родителей</li>
+          <li>Все зоны без ограничений</li>
+          <li>С 10:00 до 22:00</li>
+          <li>Все аттракционы включены</li>
+          <li>Родители бесплатно</li>
         </ul>
-        <a href="#booking" class="btn-book outline">Забронировать</a>
+        <a href="#booking" class="btn-book outline">Записаться</a>
       </div>
 
-      <div class="price-card featured reveal" style="transition-delay:0.1s">
-        <div class="price-name">Выходной день</div>
-        <div class="price-amount"><span class="rub">₽</span>450</div>
-        <div class="price-period">1 час · сб–вс</div>
+      <div class="price-card reveal" style="transition-delay:0.1s">
+        <div class="price-name">Будни</div>
+        <div class="price-amount"><span class="rub">₽</span>1 000</div>
+        <div class="price-period">Безлимит · пн, ср, чт, пт</div>
         <ul class="price-features">
-          <li>Все аттракционы</li>
-          <li>Лазертаг (1 игра)</li>
-          <li>Игровые зоны</li>
-          <li>Аркады + жетоны</li>
-          <li>Wi-Fi для родителей</li>
+          <li>Все зоны без ограничений</li>
+          <li>С 10:00 до 22:00</li>
+          <li>Все аттракционы включены</li>
+          <li>Родители бесплатно</li>
+        </ul>
+        <a href="#booking" class="btn-book outline">Записаться</a>
+      </div>
+
+      <div class="price-card featured reveal" style="transition-delay:0.2s">
+        <div class="price-name">Выходные</div>
+        <div class="price-amount"><span class="rub">₽</span>1 400</div>
+        <div class="price-period">Безлимит · сб–вс</div>
+        <ul class="price-features">
+          <li>Все зоны без ограничений</li>
+          <li>С 10:00 до 22:00</li>
+          <li>Все аттракционы включены</li>
+          <li>Родители бесплатно</li>
+          <li>Скидка 50% с 20:00 до 22:00</li>
         </ul>
         <a href="#booking" class="btn-book solid">Забронировать</a>
       </div>
 
-      <div class="price-card reveal" style="transition-delay:0.2s">
+      <div class="price-card reveal" style="transition-delay:0.3s">
         <div class="price-name">День рождения</div>
-        <div class="price-amount"><span class="rub">₽</span>2 900</div>
-        <div class="price-period">от 10 детей</div>
+        <div class="price-amount"><span class="rub">₽</span>5 000</div>
+        <div class="price-period">Праздник под ключ</div>
         <ul class="price-features">
-          <li>2 часа в парке</li>
-          <li>Аниматор на 1.5 ч</li>
-          <li>Зал для торта</li>
-          <li>Украшение шарами</li>
-          <li>Подарок имениннику</li>
+          <li>Аниматор + программа</li>
+          <li>Банкетная комната 3 часа</li>
+          <li>Именинник БЕСПЛАТНО</li>
+          <li>Вата в подарок каждому</li>
+          <li>Дистанционное бронирование</li>
         </ul>
         <a href="#booking" class="btn-book outline">Узнать детали</a>
       </div>
+    </div>
 
-      <div class="price-card reveal" style="transition-delay:0.3s">
-        <div class="price-name">Абонемент</div>
-        <div class="price-amount"><span class="rub">₽</span>2 500</div>
-        <div class="price-period">8 посещений / мес</div>
-        <ul class="price-features">
-          <li>8 посещений по 1 ч</li>
-          <li>Экономия 25%</li>
-          <li>Приоритет в очереди</li>
-          <li>+500 звёзд на карту</li>
-          <li>Гибкий график</li>
-        </ul>
-        <a href="#booking" class="btn-book outline">Оформить</a>
+    <!-- Льготы -->
+    <div style="margin-top:28px; background:var(--card); border:1px solid rgba(6,214,160,0.2); border-radius:20px; padding:24px 28px;">
+      <div class="section-tag" style="color:var(--green);margin-bottom:14px">💚 Льготы и скидки</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:8px 24px;">
+        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−30% детям 1–4 лет в будни до 14:00</div>
+        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−30% многодетным семьям</div>
+        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−50% детям с ОВЗ</div>
+        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−50% с 20:00 до 22:00</div>
+        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−30% семьям участников СВО</div>
+        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">Пенсионеры 700₽ · «Ракета 60+»</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border);font-weight:700">🎂 Имениннику −50% (3 дня до и 7 после)</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:6px 0;font-weight:700">🎉 При банкете — именинник БЕСПЛАТНО</div>
       </div>
     </div>
   </div>
@@ -1224,8 +1280,8 @@ footer {
 <!-- REVIEWS -->
 <section id="reviews">
   <div class="section-tag">💬 Отзывы</div>
-  <h2 class="section-title reveal">4.8 ★ — говорят родители</h2>
-  <p class="section-desc reveal">63 отзыва на Яндекс Картах · 91% положительных</p>
+  <h2 class="section-title reveal">4.6 ★ — говорят родители</h2>
+  <p class="section-desc reveal">97 отзывов · 8 900 подписчиков ВКонтакте</p>
 
   <div class="reviews-grid">
     <div class="review-card reveal">
@@ -1272,15 +1328,15 @@ footer {
   <div class="cta-glow"></div>
   <div class="section-tag reveal">📍 Мы ждём вас</div>
   <h2 class="reveal">Стартуй<br>прямо сейчас</h2>
-  <p class="cta-sub reveal">ТРК Таганай · ул. Труда, 181 · 2 этаж</p>
+  <p class="cta-sub reveal">ТРК Таганай · ул. Труда, 181 · 2 этаж (слева от магазина Hoff)</p>
   <div class="cta-btns">
-    <a href="tel:+79058391411" class="btn-primary">📞 +7 (905) 839-14-11</a>
+    <a href="tel:+73512163626" class="btn-primary">📞 +7 (351) 216-36-26</a>
     <a href="https://vk.com/raketa_detskie_prazdniki" class="btn-secondary" target="_blank">💙 ВКонтакте</a>
   </div>
   <div class="cta-info">
     <div class="cta-info-item"><span>🕙</span><span>Ежедневно 10:00–22:00</span></div>
-    <div class="cta-info-item"><span>🚇</span><span>Рядом с остановкой «ТРК Таганай»</span></div>
-    <div class="cta-info-item"><span>🅿️</span><span>Бесплатная парковка</span></div>
+    <div class="cta-info-item"><span>🅿️</span><span>Бесплатная парковка ТРК</span></div>
+    <div class="cta-info-item"><span>📲</span><span>Дистанционное бронирование</span></div>
   </div>
 </div>
 
@@ -1289,27 +1345,28 @@ footer {
   <div class="footer-inner">
     <div>
       <div class="footer-logo">🚀 РАКЕТА</div>
-      <p class="footer-desc">Семейный парк развлечений в Челябинске. Создаём счастливые воспоминания для детей и родителей с 2018 года.</p>
+      <p class="footer-desc">Семейный парк развлечений в Челябинске. Интересно детям от 1 до 14 лет. Взрослые — бесплатно. Семейный ресторан.</p>
     </div>
     <div class="footer-col">
       <h4>Навигация</h4>
-      <a href="#attractions">Аттракционы</a>
-      <a href="#prices">Цены</a>
-      <a href="#loyalty">Клуб гостей</a>
+      <a href="#attractions">Развлечения</a>
+      <a href="#prices">Цены и льготы</a>
+      <a href="#loyalty">Карта гостя</a>
       <a href="#reviews">Отзывы</a>
       <a href="#booking">Бронирование</a>
     </div>
     <div class="footer-col">
       <h4>Контакты</h4>
-      <a href="tel:+79058391411">+7 (905) 839-14-11</a>
+      <a href="tel:+73512163626">+7 (351) 216-36-26</a>
+      <a href="mailto:raketa-park74@mail.ru">raketa-park74@mail.ru</a>
       <a href="https://vk.com/raketa_detskie_prazdniki" target="_blank">ВКонтакте</a>
-      <p>ТРК Таганай, ул. Труда 181</p>
-      <p>2 этаж, Челябинск</p>
+      <p>ТРК Таганай, ул. Труда, 181</p>
+      <p>2 этаж, слева от Hoff</p>
       <p>Пн–Вс 10:00–22:00</p>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 Ракета — Семейный парк развлечений</p>
+    <p>© 2026 Ракета — Семейный парк развлечений · Челябинск</p>
     <a href="privacy.html">Политика конфиденциальности</a>
   </div>
 </footer>
