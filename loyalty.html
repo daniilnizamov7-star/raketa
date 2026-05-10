@@ -815,23 +815,28 @@ function register() {
     return;
   }
 
-  state = {
-    name, phone, bday,
-    stars: 100, // бонус за регистрацию
-    visits: 0,
-    since: new Date().toLocaleDateString('ru-RU'),
-    history: [
-      { type: 'plus', action: '🎁 Бонус за регистрацию', date: new Date().toLocaleDateString('ru-RU'), pts: 100 }
-    ]
-  };
-  saveState();
-  showMain();
-  renderCard();
-  renderPerks();
-  renderHistory();
-  renderLevels();
-  showToast('🚀 Добро пожаловать в Клуб Ракеты!');
-  animStars();
+  try {
+    state = {
+      name, phone, bday,
+      stars: 100,
+      visits: 0,
+      since: new Date().toLocaleDateString('ru-RU'),
+      history: [
+        { type: 'plus', action: '🎁 Бонус за регистрацию', date: new Date().toLocaleDateString('ru-RU'), pts: 100 }
+      ]
+    };
+    saveState();
+    showMain();
+    renderCard();
+    renderPerks();
+    renderHistory();
+    renderLevels();
+    showToast('🚀 Добро пожаловать в Клуб Ракеты!');
+    animStars();
+  } catch(e) {
+    showToast('⚠️ Ошибка регистрации, попробуй снова');
+    console.error(e);
+  }
 }
 
 /* ====================================
@@ -1040,14 +1045,17 @@ function showNotifModal() { openModal('notifModal'); }
 function saveBday() {
   const bday = document.getElementById('promo-bday').value;
   if (!bday) { showToast('⚠️ Укажи дату'); return; }
-  state.bday = bday;
-  saveState();
-  closeModal('promoModal');
-  showToast('🎂 День рождения сохранён! Ждём вас!');
+  try {
+    state.bday = bday;
+    saveState();
+    closeModal('promoModal');
+    showToast('🎂 День рождения сохранён! Ждём вас!');
+  } catch(e) { showToast('⚠️ Не удалось сохранить'); }
 }
 
 async function requestNotifs() {
   if (!('Notification' in window)) { showToast('⚠️ Браузер не поддерживает уведомления'); return; }
+  try {
   const perm = await Notification.requestPermission();
   if (perm === 'granted') {
     closeModal('notifModal');
@@ -1057,6 +1065,7 @@ async function requestNotifs() {
   } else {
     showToast('Разреши уведомления в настройках браузера');
   }
+  } catch(e) { showToast('⚠️ Уведомления недоступны в этом браузере'); }
 }
 
 /* ====================================
