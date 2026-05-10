@@ -1061,8 +1061,8 @@ async function endShift() {
 
   // Отправка в Telegram директору
   try {
-    const token = 'YOUR_BOT_TOKEN'; // из настроек
-    const chatId = '@parkraketa74';
+    const token = '8272701981:AAFfJXOaNVCN3JjHJOa_OuXRUvZnbuAMB2Q';
+    const chatId = '-1003913504411';
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
