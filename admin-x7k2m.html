@@ -28,6 +28,11 @@ body {
 .login-wrap {
   min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
 }
+/* Управление экранами через классы — надёжнее чем inline style */
+#loginScreen { display: flex; }
+#loginScreen.hidden { display: none !important; }
+#adminShell { display: none !important; }
+#adminShell.visible { display: flex !important; }
 .login-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 24px;
   padding: 40px; max-width: 400px; width: 100%; text-align: center;
@@ -322,7 +327,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 </div>
 
 <!-- ADMIN SHELL -->
-<div id="adminShell" class="admin-shell" style="display:none">
+<div id="adminShell" class="admin-shell">
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sb-logo">🚀 Панель</div>
@@ -585,10 +590,8 @@ function doLogin() {
   const pass = document.getElementById('loginPass').value.trim();
   if (pass === ADMIN_PASS) {
     sessionStorage.setItem('raketa_admin', '1');
-    const ls = document.getElementById('loginScreen');
-    const sh = document.getElementById('adminShell');
-    if (ls) { ls.style.setProperty('display', 'none', 'important'); }
-    if (sh) { sh.style.setProperty('display', 'flex', 'important'); }
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminShell').classList.add('visible');
     initAdmin();
   } else {
     const err = document.getElementById('loginError');
@@ -603,16 +606,16 @@ function doLogin() {
 
 function logout() {
   sessionStorage.removeItem('raketa_admin');
-  location.reload();
+  document.getElementById('adminShell').classList.remove('visible');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginPass').value = '';
 }
 
 // Auto-login from session
 window.addEventListener('DOMContentLoaded', () => {
   if (sessionStorage.getItem('raketa_admin') === '1') {
-    const _ls = document.getElementById('loginScreen');
-    const _sh = document.getElementById('adminShell');
-    if (_ls) _ls.style.setProperty('display', 'none', 'important');
-    if (_sh) _sh.style.setProperty('display', 'flex', 'important');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminShell').classList.add('visible');
     initAdmin();
   }
   document.getElementById('panelDate').textContent = new Date().toLocaleDateString('ru-RU', {
