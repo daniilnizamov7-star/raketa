@@ -308,7 +308,8 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 @media (max-width: 600px) {
   .sidebar { display: none; }
-  .admin-main { margin-left: 0; }
+  .admin-main { margin-left: 0; padding: 16px; padding-bottom: 100px; }
+  body { padding-bottom: 80px; }
 }
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 </style>
@@ -955,42 +956,41 @@ function showToast(msg) {
 /* ================================
    PWA UPDATE CHECKER
 ================================ */
-(function() {
-  if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('sw.js').then(reg => {
-    // Проверяем обновление при каждом запуске
-    reg.update();
-    reg.addEventListener('updatefound', () => {
-      const worker = reg.installing;
-      worker.addEventListener('statechange', () => {
-        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-          showUpdateBanner();
-        }
-      });
-    });
-  });
-  // Перезагружаем при активации нового SW
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) { refreshing = true; location.reload(); }
-  });
-  function showUpdateBanner() {
-    const b = document.createElement('div');
-    b.id = 'update-banner';
-    b.innerHTML = '<span>🚀 Доступна новая версия</span><button onclick="applyUpdate()">Обновить</button>';
-    b.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:#ff3cac;color:#fff;padding:12px 20px;border-radius:100px;display:flex;align-items:center;gap:12px;font-size:0.85rem;font-weight:700;box-shadow:0 4px 20px rgba(255,60,172,0.4);white-space:nowrap;animation:slideUp 0.4s ease';
-    b.querySelector('button').style.cssText = 'background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 14px;border-radius:100px;cursor:pointer;font-weight:800;font-size:0.82rem';
-    document.body.appendChild(b);
-    const style = document.createElement('style');
-    style.textContent = '@keyframes slideUp{from{transform:translateX(-50%) translateY(20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}';
-    document.head.appendChild(style);
-  }
-  window.applyUpdate = function() {
-    navigator.serviceWorker.getRegistration().then(reg => {
-      if (reg && reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
-    });
-  };
-})();
+
+// SW регистрация
+if ("serviceWorker" in navigator) { navigator.serviceWorker.register("sw.js"); }
+
 </script>
+
+<!-- MOBILE BOTTOM NAV (только на телефонах) -->
+<nav style="display:none" id="mobileAdminNav">
+  <style>
+    @media(max-width:600px){
+      #mobileAdminNav{
+        display:flex !important;
+        position:fixed;bottom:0;left:0;right:0;z-index:200;
+        background:rgba(7,8,26,0.97);backdrop-filter:blur(20px);
+        border-top:1px solid rgba(255,255,255,0.08);
+        justify-content:space-around;
+        padding:10px 0 calc(10px + env(safe-area-inset-bottom,16px));
+      }
+    }
+  </style>
+  <div onclick="showPanel('dashboard')" style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0.6rem;font-weight:800;color:var(--muted2);cursor:pointer;padding:4px 12px">
+    <span style="font-size:1.25rem">📊</span><span>Дашборд</span>
+  </div>
+  <div onclick="showPanel('guests')" style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0.6rem;font-weight:800;color:var(--muted2);cursor:pointer;padding:4px 12px">
+    <span style="font-size:1.25rem">👥</span><span>Гости</span>
+  </div>
+  <div onclick="showPanel('bookings')" style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0.6rem;font-weight:800;color:var(--muted2);cursor:pointer;padding:4px 12px">
+    <span style="font-size:1.25rem">📅</span><span>Заявки</span>
+  </div>
+  <div onclick="showPanel('settings')" style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0.6rem;font-weight:800;color:var(--muted2);cursor:pointer;padding:4px 12px">
+    <span style="font-size:1.25rem">⚙️</span><span>Настройки</span>
+  </div>
+  <div onclick="logout()" style="display:flex;flex-direction:column;align-items:center;gap:3px;font-size:0.6rem;font-weight:800;color:#ff5c5c;cursor:pointer;padding:4px 12px">
+    <span style="font-size:1.25rem">🚪</span><span>Выйти</span>
+  </div>
+</nav>
 </body>
 </html>
