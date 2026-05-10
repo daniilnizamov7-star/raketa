@@ -6,1229 +6,677 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Ракета">
 <meta name="theme-color" content="#04050e">
 <title>🚀 Ракета · Карта гостя</title>
 <link rel="manifest" href="manifest-client.json">
 <style>
+:root{
+  --bg:#04050e;--card:#0e1028;--card2:#131535;
+  --border:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.14);
+  --neon:#ff3cac;--blue:#2d9cff;--purple:#9b59ff;
+  --yellow:#ffd166;--green:#06d6a0;
+  --white:#eef2ff;--muted:#5a6a90;--muted2:#8090b0;
+  --fh:-apple-system,'Segoe UI Variable Display','Segoe UI',system-ui,sans-serif;
+  --fb:-apple-system,'Segoe UI',system-ui,sans-serif;
+  --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;-webkit-text-size-adjust:100%}
+body{font-family:var(--fb);background:var(--bg);color:var(--white);
+  padding-top:var(--st);padding-bottom:calc(var(--sb)+72px);
+  overflow-x:hidden;min-height:100%}
 
-/* LOADING SKELETON */
-.skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
-@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-.page-loading { position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity 0.3s; }
-.page-loading .pl-logo { font-size:3rem; animation: plFloat 1s ease-in-out infinite alternate; }
-@keyframes plFloat { from{transform:translateY(0)} to{transform:translateY(-12px)} }
-.page-loading .pl-text { font-size:0.82rem;color:var(--muted2);font-weight:700; }
+/* LOADER */
+.loader{position:fixed;inset:0;z-index:9999;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loader-r{font-size:3.5rem;animation:fl 1.2s ease-in-out infinite alternate}
+@keyframes fl{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.loader-t{font-size:0.82rem;color:var(--muted2);font-weight:700;letter-spacing:0.06em}
 
-/* ============================
-   TOKENS
-============================ */
-:root {
-  --bg:     #04050e;
-  --deep:   #08091a;
-  --card:   #0e1028;
-  --card2:  #131535;
-  --border: rgba(255,255,255,0.07);
-  --b2:     rgba(255,255,255,0.12);
+/* TOAST */
+.toast{position:fixed;top:calc(64px + var(--st));left:50%;
+  transform:translateX(-50%) translateY(-16px);
+  background:var(--card2);border:1px solid var(--b2);border-radius:100px;
+  padding:11px 20px;font-size:0.85rem;font-weight:700;
+  opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  --neon:   #ff3cac;
-  --blue:   #2d9cff;
-  --purple: #9b59ff;
-  --yellow: #ffd166;
-  --green:  #06d6a0;
-  --cyan:   #00e5ff;
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:100;
+  background:rgba(4,5,14,0.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.hdr-logo{font-family:var(--fh);font-size:0.95rem;font-weight:900;
+  background:linear-gradient(135deg,var(--neon),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:flex;align-items:center;gap:6px;text-decoration:none}
+.hdr-btn{width:36px;height:36px;border-radius:50%;
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;transition:all 0.2s}
 
-  --white:  #eef2ff;
-  --muted:  #5a6a90;
-  --muted2: #8090b0;
+/* REGISTER */
+.reg-screen{padding:20px;display:none}
+.reg-screen.active{display:block}
+.reg-card{background:var(--card);border:1px solid var(--border);
+  border-radius:24px;padding:32px 22px;text-align:center}
+.reg-icon{font-size:3rem;display:block;margin-bottom:16px;animation:fl 2s ease-in-out infinite alternate}
+.reg-title{font-family:var(--fh);font-size:1.25rem;font-weight:900;margin-bottom:8px;letter-spacing:-0.02em}
+.reg-sub{font-size:0.86rem;color:var(--muted2);line-height:1.6;margin-bottom:24px}
+.reg-perks{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;text-align:left}
+.reg-perk{display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:12px;padding:11px 14px;font-size:0.83rem;color:var(--muted2)}
+.f-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;text-align:left}
+.f-label{font-size:0.7rem;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted)}
+.f-input{background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:12px;padding:13px 16px;color:var(--white);
+  font-family:var(--fb);font-size:1rem;outline:none;
+  transition:all 0.2s;width:100%;-webkit-appearance:none}
+.f-input::placeholder{color:var(--muted)}
+.f-input:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(255,60,172,0.1)}
+.f-input.err{border-color:#ff5c5c}
+.btn-reg{width:100%;padding:15px;border:none;border-radius:100px;
+  background:linear-gradient(135deg,var(--neon),#c4007a);color:#fff;
+  font-family:var(--fh);font-size:0.9rem;font-weight:700;
+  cursor:pointer;transition:all 0.3s;margin-top:6px;
+  box-shadow:0 0 28px rgba(255,60,172,0.25)}
+.btn-reg:active{transform:scale(0.97)}
+.btn-reg:disabled{opacity:0.6;pointer-events:none}
 
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bot: env(safe-area-inset-bottom, 0px);
-  --font-display: 'SF Pro Display', -apple-system, 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
-  --font-body: -apple-system, 'Segoe UI', system-ui, sans-serif;
+/* MAIN */
+.main-screen{display:none}
+.main-screen.active{display:block}
 
-  /* level colors */
-  --lv1: #8090b0;   /* Новичок */
-  --lv2: #2d9cff;   /* Космонавт */
-  --lv3: #9b59ff;   /* Командир */
-  --lv4: #ffd166;   /* Галактика */
-}
+/* HERO CARD */
+.card-wrap{padding:16px 20px 0}
+.hero-card{background:linear-gradient(145deg,#18104a,#0c1540,#1e0a2a);
+  border:1px solid rgba(155,89,255,0.22);border-radius:24px;padding:24px;
+  position:relative;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.hc-glow{position:absolute;top:-50px;right:-50px;width:160px;height:160px;
+  border-radius:50%;background:radial-gradient(circle,rgba(255,60,172,0.16),transparent 70%);pointer-events:none}
+.hc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;position:relative;z-index:1}
+.hc-logo{font-family:var(--fh);font-size:0.8rem;font-weight:900;
+  background:linear-gradient(135deg,var(--neon),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hc-level{font-size:0.66rem;font-weight:800;padding:4px 11px;border-radius:100px;border:1px solid;letter-spacing:0.06em}
+.hc-lbl{font-size:0.6rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px;position:relative;z-index:1}
+.hc-num{font-family:var(--fh);font-size:2.8rem;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,var(--yellow),var(--neon));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px;position:relative;z-index:1}
+.hc-sub{font-size:0.76rem;color:var(--muted2);margin-bottom:16px;position:relative;z-index:1}
+.hc-track{height:6px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden;margin-bottom:4px;position:relative;z-index:1}
+.hc-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--neon),var(--purple),var(--blue));transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.hc-bar-lbl{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--muted);margin-bottom:16px;position:relative;z-index:1}
+.hc-bottom{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
+.hc-name{font-family:var(--fh);font-size:0.88rem;font-weight:700}
+.hc-since{font-size:0.68rem;color:var(--muted);margin-top:2px}
+.hc-visits{text-align:right;font-size:0.68rem;color:var(--muted)}
+.hc-visits strong{display:block;font-family:var(--fh);font-size:1.1rem;font-weight:900;color:var(--white)}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; -webkit-text-size-adjust: 100%; }
-body {
-  font-family: var(--font-body);
-  background: var(--bg);
-  color: var(--white);
-  min-height: 100%;
-  overflow-x: hidden;
-  padding-top: var(--safe-top);
-  padding-bottom: calc(var(--safe-bot) + 80px);
-}
+/* QUICK ACTIONS */
+.qa-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px 20px}
+.qa{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  cursor:pointer;transition:all 0.2s;text-decoration:none}
+.qa:active{transform:scale(0.94)}
+.qa-icon{font-size:1.35rem}
+.qa-lbl{font-size:0.6rem;font-weight:800;color:var(--muted2);text-align:center;line-height:1.2}
 
+/* PROMO */
+.promo{margin:0 20px 14px;background:linear-gradient(135deg,rgba(255,60,172,0.09),rgba(45,156,255,0.06));
+  border:1px solid rgba(255,60,172,0.16);border-radius:16px;padding:16px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;transition:all 0.25s}
+.promo-icon{font-size:1.9rem;flex-shrink:0}
+.promo-title{font-family:var(--fh);font-size:0.83rem;font-weight:700;margin-bottom:2px}
+.promo-desc{font-size:0.74rem;color:var(--muted2);line-height:1.4}
 
-/* ============================
-   STARS BG
-============================ */
-#stars-canvas {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-}
+/* TABS */
+.tab-btns{display:grid;grid-template-columns:repeat(3,1fr);
+  margin:0 20px 12px;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden}
+.tb{padding:10px 4px;text-align:center;font-size:0.68rem;font-weight:800;
+  color:var(--muted2);cursor:pointer;transition:all 0.2s;border:none;background:none}
+.tb.active{background:rgba(255,60,172,0.1);color:var(--neon)}
+.tab-panel{display:none;padding:0 20px}
+.tab-panel.active{display:block}
 
-/* ============================
-   HEADER
-============================ */
-.header {
-  position: sticky; top: 0; z-index: 100;
-  padding: 16px 20px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(4,5,14,0.88); backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-}
-.header-logo {
-  font-family: var(--font-display);
-  font-size: 0.95rem; font-weight: 900;
-  background: linear-gradient(135deg, var(--neon), var(--blue));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  display: flex; align-items: center; gap: 6px;
-  text-decoration: none;
-}
-.header-rocket { -webkit-text-fill-color: initial; animation: hFloat 3s ease-in-out infinite; }
-@keyframes hFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
-.header-right { display: flex; align-items: center; gap: 10px; }
-.hdr-btn {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.9rem; cursor: pointer; transition: all 0.2s; position: relative;
-}
-.hdr-btn:hover { background: rgba(255,255,255,0.1); }
-.notif-dot {
-  position: absolute; top: 5px; right: 5px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--neon); border: 2px solid var(--bg);
-  animation: pdot 2s infinite;
-}
-@keyframes pdot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.4)} }
+/* LEVELS */
+.lvl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.lv{background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:12px 6px;text-align:center;transition:all 0.25s}
+.lv-icon{font-size:1.4rem;display:block;margin-bottom:5px}
+.lv-name{font-family:var(--fh);font-size:0.56rem;font-weight:700;line-height:1.2;margin-bottom:2px}
+.lv-pts{font-size:0.56rem;color:var(--muted)}
 
-/* ============================
-   MAIN CONTENT
-============================ */
-.page { position: relative; z-index: 1; }
+/* PERKS */
+.perks{display:flex;flex-direction:column;gap:9px}
+.perk{background:var(--card);border:1px solid var(--border);
+  border-radius:13px;padding:13px;display:flex;align-items:center;gap:11px}
+.perk.locked{opacity:0.42}
+.pk-icon{font-size:1.4rem;flex-shrink:0}
+.pk-name{font-weight:800;font-size:0.83rem;margin-bottom:2px}
+.pk-desc{font-size:0.74rem;color:var(--muted2);line-height:1.4}
+.pk-badge{font-size:0.66rem;font-weight:800;padding:4px 10px;border-radius:100px;
+  border:1px solid;white-space:nowrap;flex-shrink:0;margin-left:auto}
 
-/* ============================
-   HERO CARD
-============================ */
-.hero-card-wrap {
-  padding: 20px 20px 0;
-}
-.hero-card {
-  background: linear-gradient(145deg, #18104a 0%, #0c1540 45%, #1e0a2a 100%);
-  border: 1px solid rgba(155,89,255,0.25);
-  border-radius: 24px; padding: 28px;
-  position: relative; overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(155,89,255,0.1);
-}
-.hc-glow1 {
-  position: absolute; top: -50px; right: -50px;
-  width: 180px; height: 180px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,60,172,0.22), transparent 70%);
-  pointer-events: none;
-}
-.hc-glow2 {
-  position: absolute; bottom: -40px; left: -40px;
-  width: 150px; height: 150px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(45,156,255,0.18), transparent 70%);
-  pointer-events: none;
-}
-.hc-top {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 24px; position: relative; z-index: 1;
-}
-.hc-logo {
-  font-family: var(--font-display); font-size: 0.85rem; font-weight: 900;
-  background: linear-gradient(135deg, var(--neon), var(--blue));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.hc-level-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 100px;
-  border: 1px solid; letter-spacing: 0.05em; text-transform: uppercase;
-}
-.hc-stars-row { position: relative; z-index: 1; margin-bottom: 4px; }
-.hc-stars-label {
-  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
-}
-.hc-stars-num {
-  font-family: var(--font-display);
-  font-size: 3.2rem; font-weight: 900; line-height: 1;
-  background: linear-gradient(135deg, var(--yellow), var(--neon));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  margin-bottom: 2px;
-}
-.hc-stars-sub { font-size: 0.8rem; color: var(--muted2); margin-bottom: 20px; }
-.hc-bar-wrap { position: relative; z-index: 1; }
-.hc-bar-track {
-  height: 8px; background: rgba(255,255,255,0.08); border-radius: 100px;
-  overflow: hidden; margin-bottom: 6px;
-}
-.hc-bar-fill {
-  height: 100%; border-radius: 100px;
-  background: linear-gradient(90deg, var(--neon), var(--purple), var(--blue));
-  transition: width 1.2s cubic-bezier(.22,1,.36,1);
-  position: relative;
-}
-.hc-bar-fill::after {
-  content: '';
-  position: absolute; right: 0; top: -3px; bottom: -3px; width: 12px;
-  background: #fff; border-radius: 50%;
-  box-shadow: 0 0 10px var(--neon);
-}
-.hc-bar-labels {
-  font-size: 0.7rem; color: var(--muted);
-  display: flex; justify-content: space-between; margin-bottom: 20px;
-}
-.hc-owner-row {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  position: relative; z-index: 1;
-}
-.hc-name {
-  font-family: var(--font-display); font-size: 0.88rem; font-weight: 700;
-}
-.hc-since { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
-.hc-visits {
-  text-align: right; font-size: 0.72rem; color: var(--muted);
-}
-.hc-visits strong { display: block; font-family: var(--font-display); font-size: 1.1rem; font-weight: 900; color: var(--white); }
+/* HISTORY */
+.hist{display:flex;flex-direction:column;gap:8px}
+.hi{background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:12px 13px;display:flex;align-items:center;gap:10px}
+.hi-ico{width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:0.95rem}
+.hi-ico.p{background:rgba(6,214,160,0.12)}
+.hi-ico.m{background:rgba(255,60,172,0.1)}
+.hi-info{flex:1}
+.hi-action{font-weight:700;font-size:0.82rem}
+.hi-date{font-size:0.7rem;color:var(--muted);margin-top:1px}
+.hi-pts{font-family:var(--fh);font-size:0.86rem;font-weight:700;flex-shrink:0}
+.hi-pts.p{color:var(--green)} .hi-pts.m{color:var(--neon)}
 
-/* STAR BURST ANIMATION */
-.star-burst {
-  position: absolute; pointer-events: none; z-index: 999;
-  font-size: 1.4rem;
-  animation: burst 0.8s ease forwards;
-}
-@keyframes burst {
-  0% { transform: translate(-50%,-50%) scale(0.3); opacity: 1; }
-  60% { transform: translate(-50%,-120%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%,-180%) scale(0.8); opacity: 0; }
-}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(7,8,26,0.96);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;
+  padding:10px 0 calc(10px + var(--sb))}
+.bn{display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:0.6rem;font-weight:800;color:var(--muted);
+  cursor:pointer;padding:4px 14px;transition:all 0.2s;text-decoration:none}
+.bn.active{color:var(--neon)}
+.bn-icon{font-size:1.2rem}
 
-/* ============================
-   QUICK ACTIONS
-============================ */
-.quick-actions {
-  padding: 16px 20px;
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-}
-.qa-btn {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 14px 8px;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  cursor: pointer; transition: all 0.25s; text-decoration: none;
-}
-.qa-btn:active { transform: scale(0.95); }
-.qa-btn:hover { border-color: var(--b2); background: var(--card2); }
-.qa-icon { font-size: 1.4rem; }
-.qa-label { font-size: 0.65rem; font-weight: 800; color: var(--muted2); text-align: center; line-height: 1.3; }
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:400;
+  background:rgba(4,5,14,0.88);backdrop-filter:blur(12px);
+  display:flex;align-items:flex-end;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity 0.3s}
+.mo.active{opacity:1;pointer-events:all}
+.mo-sheet{background:var(--card2);border:1px solid var(--border);
+  border-radius:22px 22px 18px 18px;padding:26px 20px;
+  width:100%;max-width:460px;margin:0 auto;
+  transform:translateY(30px);transition:transform 0.35s cubic-bezier(.22,1,.36,1)}
+.mo.active .mo-sheet{transform:translateY(0)}
+.mo-handle{width:32px;height:4px;background:var(--border);border-radius:100px;margin:0 auto 18px;display:block}
+.mo-title{font-family:var(--fh);font-size:1rem;font-weight:900;margin-bottom:7px;letter-spacing:-0.01em}
+.mo-body{font-size:0.83rem;color:var(--muted2);line-height:1.6;margin-bottom:18px}
+.mo-btn{width:100%;padding:14px;border:none;border-radius:100px;
+  background:linear-gradient(135deg,var(--neon),#c4007a);color:#fff;
+  font-family:var(--fh);font-size:0.85rem;font-weight:700;
+  cursor:pointer;transition:all 0.2s;margin-bottom:9px}
+.mo-cancel{width:100%;padding:11px;border:1px solid var(--border);
+  border-radius:100px;background:transparent;color:var(--muted2);
+  font-family:var(--fh);font-size:0.8rem;font-weight:700;cursor:pointer}
 
-/* ============================
-   SECTION
-============================ */
-.sect { padding: 0 20px 20px; }
-.sect-title {
-  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 12px;
-}
+/* STAR BURST */
+.sburst{position:fixed;pointer-events:none;z-index:999;font-size:1.5rem;
+  animation:sb 0.9s ease forwards}
+@keyframes sb{0%{transform:translate(-50%,-50%) scale(0.2);opacity:1}
+  60%{transform:translate(-50%,-150%) scale(1.2);opacity:1}
+  100%{transform:translate(-50%,-210%) scale(0.8);opacity:0}}
 
-/* ============================
-   LEVELS
-============================ */
-.levels-row {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-}
-.level-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 14px 10px; text-align: center;
-  position: relative; overflow: hidden;
-  transition: all 0.25s;
-}
-.level-card.active { border-color: var(--lv-color, var(--neon)); box-shadow: 0 0 20px rgba(255,60,172,0.12); }
-.level-card.done { opacity: 0.5; }
-.level-icon { font-size: 1.6rem; margin-bottom: 6px; display: block; }
-.level-name {
-  font-family: var(--font-display); font-size: 0.6rem; font-weight: 700;
-  color: var(--lv-color, var(--muted)); line-height: 1.2; margin-bottom: 4px;
-}
-.level-pts { font-size: 0.6rem; color: var(--muted); }
-.level-check {
-  position: absolute; top: 6px; right: 6px;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--green); display: flex; align-items: center; justify-content: center;
-  font-size: 0.5rem; color: #fff;
-}
+/* UPDATE BANNER */
+.upd{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;
+  background:var(--neon);color:#fff;padding:11px 18px;border-radius:100px;
+  display:none;align-items:center;gap:10px;font-size:0.8rem;font-weight:700;
+  box-shadow:0 4px 20px rgba(255,60,172,0.35);white-space:nowrap}
+.upd.show{display:flex}
+.upd button{background:rgba(255,255,255,0.25);border:none;color:#fff;
+  padding:4px 12px;border-radius:100px;cursor:pointer;font-weight:800;font-size:0.76rem}
 
-/* ============================
-   PERKS
-============================ */
-.perks-list { display: flex; flex-direction: column; gap: 10px; }
-.perk-item {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 16px;
-  display: flex; align-items: center; gap: 14px;
-  transition: all 0.25s;
-}
-.perk-item:active { transform: scale(0.98); }
-.perk-item.locked { opacity: 0.45; }
-.perk-emoji { font-size: 1.6rem; flex-shrink: 0; }
-.perk-info { flex: 1; }
-.perk-name { font-weight: 800; font-size: 0.88rem; margin-bottom: 2px; }
-.perk-desc { font-size: 0.78rem; color: var(--muted2); line-height: 1.4; }
-.perk-action {
-  font-size: 0.7rem; font-weight: 800; padding: 6px 14px;
-  border-radius: 100px; border: 1px solid; cursor: pointer;
-  transition: all 0.2s; white-space: nowrap;
-}
-.perk-action.available {
-  border-color: var(--green); color: var(--green);
-  background: rgba(6,214,160,0.08);
-}
-.perk-action.available:hover { background: rgba(6,214,160,0.18); }
-.perk-action.locked-badge {
-  border-color: var(--border); color: var(--muted);
-}
-
-/* ============================
-   HISTORY
-============================ */
-.history-list { display: flex; flex-direction: column; gap: 8px; }
-.hist-item {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 14px 16px;
-  display: flex; align-items: center; gap: 12px;
-}
-.hist-icon {
-  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-}
-.hist-icon.plus { background: rgba(6,214,160,0.12); }
-.hist-icon.minus { background: rgba(255,60,172,0.1); }
-.hist-info { flex: 1; }
-.hist-action { font-weight: 700; font-size: 0.85rem; }
-.hist-date { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-.hist-pts {
-  font-family: var(--font-display); font-size: 0.9rem; font-weight: 700;
-}
-.hist-pts.plus { color: var(--green); }
-.hist-pts.minus { color: var(--neon); }
-
-/* ============================
-   PROMO BANNER
-============================ */
-.promo-banner {
-  background: linear-gradient(135deg, rgba(255,60,172,0.12), rgba(45,156,255,0.08));
-  border: 1px solid rgba(255,60,172,0.2);
-  border-radius: 20px; padding: 20px;
-  display: flex; gap: 16px; align-items: center;
-  margin: 0 20px 20px;
-  position: relative; overflow: hidden; cursor: pointer;
-  transition: all 0.25s;
-}
-.promo-banner:hover { border-color: rgba(255,60,172,0.35); }
-.promo-glow {
-  position: absolute; right: -20px; top: -20px;
-  width: 120px; height: 120px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,60,172,0.15), transparent 70%);
-  pointer-events: none;
-}
-.promo-emoji { font-size: 2.2rem; flex-shrink: 0; }
-.promo-text { flex: 1; }
-.promo-title { font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
-.promo-desc { font-size: 0.78rem; color: var(--muted2); line-height: 1.4; }
-.promo-arrow { font-size: 1.2rem; color: var(--muted); }
-
-/* ============================
-   REGISTER FORM
-============================ */
-.register-wrap {
-  padding: 20px;
-  display: none;
-}
-.register-wrap.active { display: block; }
-.reg-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 24px; padding: 28px;
-}
-.reg-title {
-  font-family: var(--font-display); font-size: 1.2rem; font-weight: 900;
-  margin-bottom: 8px; letter-spacing: -0.02em;
-}
-.reg-sub { font-size: 0.88rem; color: var(--muted2); margin-bottom: 24px; line-height: 1.5; }
-.reg-group { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-.reg-group label {
-  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.09em;
-  text-transform: uppercase; color: var(--muted);
-}
-.reg-group input {
-  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-  border-radius: 12px; padding: 13px 16px; color: var(--white);
-  font-family: var(--font-body); font-size: 1rem; outline: none;
-  transition: all 0.2s; -webkit-appearance: none;
-}
-.reg-group input::placeholder { color: var(--muted); }
-.reg-group input:focus {
-  border-color: var(--neon); background: rgba(255,60,172,0.04);
-  box-shadow: 0 0 0 3px rgba(255,60,172,0.1);
-}
-.reg-btn {
-  width: 100%; padding: 15px;
-  background: linear-gradient(135deg, var(--neon), #c4007a);
-  color: #fff; border: none; border-radius: 100px;
-  font-family: var(--font-display); font-size: 0.85rem; font-weight: 700;
-  cursor: pointer; transition: all 0.3s;
-  box-shadow: 0 0 28px rgba(255,60,172,0.3);
-  margin-top: 4px;
-}
-.reg-btn:hover { transform: scale(1.02); box-shadow: 0 0 40px rgba(255,60,172,0.4); }
-.reg-btn:active { transform: scale(0.98); }
-
-/* ============================
-   BOTTOM NAV
-============================ */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
-  background: rgba(8,9,26,0.95); backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
-  display: flex; justify-content: space-around; align-items: center;
-  padding: 10px 0 calc(10px + var(--safe-bot));
-}
-.bnav-item {
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  font-size: 0.6rem; font-weight: 800; color: var(--muted);
-  cursor: pointer; padding: 4px 16px; border-radius: 12px;
-  transition: all 0.2s; text-decoration: none;
-}
-.bnav-item.active { color: var(--neon); }
-.bnav-icon { font-size: 1.3rem; }
-
-/* ============================
-   TOAST
-============================ */
-.toast {
-  position: fixed; top: calc(70px + var(--safe-top)); left: 50%; z-index: 300;
-  transform: translateX(-50%) translateY(-20px);
-  background: var(--card2); border: 1px solid var(--b2);
-  border-radius: 100px; padding: 12px 20px;
-  font-size: 0.85rem; font-weight: 700;
-  display: flex; align-items: center; gap: 8px;
-  opacity: 0; transition: all 0.35s cubic-bezier(.22,1,.36,1);
-  white-space: nowrap; pointer-events: none;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* ============================
-   INSTALL BANNER
-============================ */
-.install-banner {
-  margin: 0 20px 16px;
-  background: linear-gradient(135deg, rgba(45,156,255,0.12), rgba(155,89,255,0.08));
-  border: 1px solid rgba(45,156,255,0.2);
-  border-radius: 16px; padding: 16px 18px;
-  display: flex; align-items: center; gap: 14px;
-  cursor: pointer; transition: all 0.25s;
-}
-.install-banner:hover { border-color: rgba(45,156,255,0.35); }
-.install-icon { font-size: 1.8rem; flex-shrink: 0; }
-.install-text { flex: 1; }
-.install-title { font-weight: 800; font-size: 0.85rem; margin-bottom: 2px; }
-.install-sub { font-size: 0.75rem; color: var(--muted2); }
-.install-btn {
-  font-size: 0.72rem; font-weight: 800; padding: 8px 14px; border-radius: 100px;
-  background: rgba(45,156,255,0.15); border: 1px solid rgba(45,156,255,0.3);
-  color: var(--blue); cursor: pointer; white-space: nowrap; transition: all 0.2s;
-}
-.install-btn:hover { background: rgba(45,156,255,0.25); }
-
-/* ============================
-   MODAL
-============================ */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 400;
-  background: rgba(4,5,14,0.85); backdrop-filter: blur(12px);
-  display: flex; align-items: flex-end; padding: 20px;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s;
-}
-.modal-overlay.active { opacity: 1; pointer-events: all; }
-.modal-sheet {
-  background: var(--card2); border: 1px solid var(--border);
-  border-radius: 28px 28px 20px 20px; padding: 32px 24px;
-  width: 100%; max-width: 480px; margin: 0 auto;
-  transform: translateY(40px); transition: transform 0.4s cubic-bezier(.22,1,.36,1);
-}
-.modal-overlay.active .modal-sheet { transform: translateY(0); }
-.modal-handle {
-  width: 36px; height: 4px; background: var(--border);
-  border-radius: 100px; margin: 0 auto 24px; display: block;
-}
-.modal-title {
-  font-family: var(--font-display); font-size: 1.1rem; font-weight: 900;
-  margin-bottom: 8px; letter-spacing: -0.02em;
-}
-.modal-body { font-size: 0.88rem; color: var(--muted2); line-height: 1.6; margin-bottom: 24px; }
-.modal-close-btn {
-  width: 100%; padding: 14px; border: 1.5px solid var(--border);
-  border-radius: 100px; background: transparent; color: var(--white);
-  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
-  cursor: pointer; transition: all 0.2s;
-}
-.modal-close-btn:hover { border-color: var(--b2); }
-
-/* ============================
-   RESPONSIVE (tabs content)
-============================ */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-@media (min-width: 500px) {
-  .quick-actions { grid-template-columns: repeat(4, 1fr); }
-  .levels-row { grid-template-columns: repeat(4, 1fr); }
-}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 </style>
 </head>
 <body>
 
-<div class="page-loading" id="pageLoading"><div class="pl-logo">🚀</div><div class="pl-text">Загружаем...</div></div>
-<script>window.addEventListener("load",function(){var p=document.getElementById("pageLoading");if(p)p.remove();});</script>
-<canvas id="stars-canvas"></canvas>
+<div class="loader" id="loader">
+  <div class="loader-r">🚀</div>
+  <div class="loader-t">Загружаем карту...</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="upd" id="upd"><span>🚀 Обновление</span><button onclick="applyUpd()">Установить</button></div>
 
-<!-- HEADER -->
-<header class="header">
-  <a href="index.html" class="header-logo">
-    <span class="header-rocket">🚀</span>
-    <span>РАКЕТА</span>
-  </a>
-  <div class="header-right">
-    <div class="hdr-btn" id="notifBtn" onclick="showNotifModal()" title="Уведомления">
-      🔔
-      <div class="notif-dot" id="notifDot"></div>
-    </div>
-    <div class="hdr-btn" onclick="showQR()" title="QR-код">📲</div>
-  </div>
+<header class="hdr">
+  <a href="index.html" class="hdr-logo">🚀 РАКЕТА</a>
+  <div class="hdr-btn" onclick="om('bdayMo')">🎂</div>
 </header>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<!-- REGISTER -->
+<div class="reg-screen" id="regScreen">
+  <div class="reg-card">
+    <span class="reg-icon">⭐</span>
+    <div class="reg-title">Клуб гостей Ракеты</div>
+    <p class="reg-sub">Копи звёзды за каждый визит — получай скидки и бесплатные входы</p>
+    <div class="reg-perks">
+      <div class="reg-perk"><span>⭐</span><span>+100 звёзд за каждый визит</span></div>
+      <div class="reg-perk"><span>🎂</span><span>×3 звёзды в день рождения</span></div>
+      <div class="reg-perk"><span>🎟️</span><span>1000★ = бесплатный визит</span></div>
+      <div class="reg-perk"><span>👑</span><span>Скидка 15% на уровне Галактика</span></div>
+    </div>
+    <div class="f-group">
+      <div class="f-label">Ваше имя *</div>
+      <input class="f-input" type="text" id="rName" placeholder="Мария Иванова" autocomplete="name">
+    </div>
+    <div class="f-group">
+      <div class="f-label">Телефон *</div>
+      <input class="f-input" type="tel" id="rPhone" placeholder="+7 (900) 000-00-00" autocomplete="tel">
+    </div>
+    <div class="f-group">
+      <div class="f-label">День рождения ребёнка (необязательно)</div>
+      <input class="f-input" type="date" id="rBday">
+    </div>
+    <button class="btn-reg" id="regBtn" onclick="doReg()">🚀 Вступить бесплатно</button>
+  </div>
+</div>
 
-<!-- MAIN PAGE -->
-<div class="page" id="mainPage">
-
-  <!-- HERO CARD -->
-  <div class="hero-card-wrap">
-    <div class="hero-card" id="heroCard">
-      <div class="hc-glow1"></div>
-      <div class="hc-glow2"></div>
+<!-- MAIN -->
+<div class="main-screen" id="mainScreen">
+  <div class="card-wrap">
+    <div class="hero-card">
+      <div class="hc-glow"></div>
       <div class="hc-top">
         <div class="hc-logo">🚀 КЛУБ РАКЕТЫ</div>
-        <div class="hc-level-badge" id="levelBadge">⭐ Новичок</div>
+        <div class="hc-level" id="hcLv">⭐ Новичок</div>
       </div>
-      <div class="hc-stars-row">
-        <div class="hc-stars-label">Мои звёзды</div>
-        <div class="hc-stars-num" id="starsNum">0</div>
-        <div class="hc-stars-sub" id="starsSub">Загружаем...</div>
-      </div>
-      <div class="hc-bar-wrap">
-        <div class="hc-bar-track"><div class="hc-bar-fill" id="barFill" style="width:0%"></div></div>
-        <div class="hc-bar-labels">
-          <span id="barFrom">Новичок</span>
-          <span id="barTo">до уровня</span>
-        </div>
-      </div>
-      <div class="hc-owner-row">
+      <div class="hc-lbl">Мои звёзды</div>
+      <div class="hc-num" id="hcNum">0</div>
+      <div class="hc-sub" id="hcSub">Начни копить звёзды</div>
+      <div class="hc-track"><div class="hc-fill" id="hcFill" style="width:0%"></div></div>
+      <div class="hc-bar-lbl"><span id="hcFrom">Новичок</span><span id="hcTo">Космонавт 500★</span></div>
+      <div class="hc-bottom">
         <div>
-          <div class="hc-name" id="guestName">Загружаем...</div>
-          <div class="hc-since" id="guestSince"></div>
+          <div class="hc-name" id="hcName">—</div>
+          <div class="hc-since" id="hcSince"></div>
         </div>
-        <div class="hc-visits">
-          <strong id="visitsNum">0</strong>
-          визитов
-        </div>
+        <div class="hc-visits"><strong id="hcVis">0</strong>визитов</div>
       </div>
     </div>
   </div>
 
-  <!-- QUICK ACTIONS -->
-  <div class="quick-actions">
-    <div class="qa-btn" onclick="addVisit()">
-      <span class="qa-icon">➕</span>
-      <span class="qa-label">Отметить визит</span>
-    </div>
-    <a class="qa-btn" href="#" onclick="openTab('perks');return false;">
-      <span class="qa-icon">🎁</span>
-      <span class="qa-label">Мои привилегии</span>
-    </a>
-    <a class="qa-btn" href="tel:+79058391411">
-      <span class="qa-icon">📞</span>
-      <span class="qa-label">Позвонить</span>
-    </a>
-    <a class="qa-btn" href="index.html#booking">
-      <span class="qa-icon">🎂</span>
-      <span class="qa-label">Забронировать</span>
-    </a>
+  <div class="qa-row">
+    <div class="qa" onclick="om('qrMo')"><span class="qa-icon">📲</span><span class="qa-lbl">Мой QR</span></div>
+    <div class="qa" onclick="stab('perks')"><span class="qa-icon">🎁</span><span class="qa-lbl">Бонусы</span></div>
+    <a class="qa" href="tel:+73512163626"><span class="qa-icon">📞</span><span class="qa-lbl">Звонок</span></a>
+    <a class="qa" href="index.html#booking"><span class="qa-icon">🎂</span><span class="qa-lbl">Праздник</span></a>
   </div>
 
-  <!-- PROMO BANNER -->
-  <div class="promo-banner" id="promoBanner">
-    <div class="promo-glow"></div>
-    <div class="promo-emoji">🎂</div>
-    <div class="promo-text">
+  <div class="promo" onclick="om('bdayMo')">
+    <div class="promo-icon">🎂</div>
+    <div>
       <div class="promo-title">Бонус в день рождения!</div>
-      <div class="promo-desc">Расскажи нам дату — получи ×3 звёзды и подарок в праздник</div>
+      <div class="promo-desc">×3 звёзды + подарок от парка</div>
     </div>
-    <div class="promo-arrow">›</div>
+    <span style="margin-left:auto;color:var(--muted);font-size:1.1rem">›</span>
   </div>
 
-  <!-- INSTALL BANNER -->
-  <div class="install-banner" id="installBanner" style="display:none" onclick="installPWA()">
-    <div class="install-icon">📱</div>
-    <div class="install-text">
-      <div class="install-title">Добавь на главный экран</div>
-      <div class="install-sub">Быстрый доступ к карте гостя</div>
-    </div>
-    <div class="install-btn">Установить</div>
+  <div class="tab-btns">
+    <button class="tb active" onclick="stab('levels')" id="tb-levels">🏆 Уровни</button>
+    <button class="tb" onclick="stab('perks')"  id="tb-perks">🎁 Бонусы</button>
+    <button class="tb" onclick="stab('history')" id="tb-history">📋 История</button>
   </div>
 
-  <!-- TABS SECTIONS -->
-  <!-- LEVELS TAB -->
-  <div class="sect tab-content active" id="tab-levels">
-    <div class="sect-title">Уровни участника</div>
-    <div class="levels-row">
-      <div class="level-card" id="lv-1" style="--lv-color: var(--lv1)">
-        <span class="level-icon">🛸</span>
-        <div class="level-name">НОВИЧОК</div>
-        <div class="level-pts">0 ★</div>
-      </div>
-      <div class="level-card" id="lv-2" style="--lv-color: var(--lv2)">
-        <span class="level-icon">🚀</span>
-        <div class="level-name">КОСМОНАВТ</div>
-        <div class="level-pts">500 ★</div>
-      </div>
-      <div class="level-card" id="lv-3" style="--lv-color: var(--lv3)">
-        <span class="level-icon">⚡</span>
-        <div class="level-name">КОМАНДИР</div>
-        <div class="level-pts">1 500 ★</div>
-      </div>
-      <div class="level-card" id="lv-4" style="--lv-color: var(--lv4)">
-        <span class="level-icon">👑</span>
-        <div class="level-name">ГАЛАКТИКА</div>
-        <div class="level-pts">3 000 ★</div>
-      </div>
+  <div class="tab-panel active" id="tp-levels">
+    <div class="lvl-grid">
+      <div class="lv" id="lv1"><span class="lv-icon">🛸</span><div class="lv-name" style="color:#8090b0">НОВИЧОК</div><div class="lv-pts">0 ★</div></div>
+      <div class="lv" id="lv2"><span class="lv-icon">🚀</span><div class="lv-name" style="color:#2d9cff">КОСМОНАВТ</div><div class="lv-pts">500 ★</div></div>
+      <div class="lv" id="lv3"><span class="lv-icon">⚡</span><div class="lv-name" style="color:#9b59ff">КОМАНДИР</div><div class="lv-pts">1500 ★</div></div>
+      <div class="lv" id="lv4"><span class="lv-icon">👑</span><div class="lv-name" style="color:#ffd166">ГАЛАКТИКА</div><div class="lv-pts">3000 ★</div></div>
     </div>
   </div>
 
-  <!-- PERKS TAB -->
-  <div class="sect tab-content" id="tab-perks">
-    <div class="sect-title">Привилегии</div>
-    <div class="perks-list" id="perksList">
-      <!-- dynamically rendered -->
-    </div>
+  <div class="tab-panel" id="tp-perks">
+    <div class="perks" id="perksList"></div>
   </div>
 
-  <!-- HISTORY TAB -->
-  <div class="sect tab-content" id="tab-history">
-    <div class="sect-title">История визитов</div>
-    <div class="history-list" id="historyList">
-      <!-- dynamically rendered -->
+  <div class="tab-panel" id="tp-history">
+    <div class="hist" id="histList">
+      <div style="text-align:center;color:var(--muted);padding:32px;font-size:0.85rem">История пуста</div>
     </div>
-  </div>
-
-</div>
-
-<!-- REGISTER PAGE -->
-<div class="register-wrap" id="registerPage">
-  <div class="reg-card">
-    <div class="reg-title">🚀 Добро пожаловать!</div>
-    <p class="reg-sub">Зарегистрируйся в Клубе Ракеты — копи звёзды, получай привилегии и эксклюзивные предложения</p>
-
-    <div class="reg-group">
-      <label>Ваше имя</label>
-      <input type="text" id="reg-name" placeholder="Мария Иванова" autocomplete="name">
-    </div>
-    <div class="reg-group">
-      <label>Телефон</label>
-      <input type="tel" id="reg-phone" placeholder="+7 (900) 000-00-00" autocomplete="tel">
-    </div>
-    <div class="reg-group">
-      <label>День рождения ребёнка</label>
-      <input type="date" id="reg-bday">
-    </div>
-    <button class="reg-btn" onclick="register()">⭐ Вступить в клуб бесплатно</button>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <div class="bnav-item active" onclick="openTab('levels')" id="nav-levels">
-    <span class="bnav-icon">🏠</span>
-    <span>Карта</span>
-  </div>
-  <div class="bnav-item" onclick="openTab('perks')" id="nav-perks">
-    <span class="bnav-icon">🎁</span>
-    <span>Привилегии</span>
-  </div>
-  <div class="bnav-item" onclick="openTab('history')" id="nav-history">
-    <span class="bnav-icon">📋</span>
-    <span>История</span>
-  </div>
-  <a class="bnav-item" href="index.html">
-    <span class="bnav-icon">🏠</span>
-    <span>На сайт</span>
-  </a>
+<nav class="bnav">
+  <div class="bn active" onclick="stab('levels')" id="bn-levels"><span class="bn-icon">⭐</span><span>Карта</span></div>
+  <div class="bn" onclick="stab('perks')"  id="bn-perks"><span class="bn-icon">🎁</span><span>Бонусы</span></div>
+  <div class="bn" onclick="stab('history')" id="bn-history"><span class="bn-icon">📋</span><span>История</span></div>
+  <a class="bn" href="index.html"><span class="bn-icon">🏠</span><span>Сайт</span></a>
 </nav>
 
 <!-- QR MODAL -->
-<div class="modal-overlay" id="qrModal" onclick="closeModal('qrModal')">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
-    <span class="modal-handle"></span>
-    <div class="modal-title">📲 Мой QR-код</div>
-    <div class="modal-body">
-      Покажи этот код на кассе, чтобы получить звёзды за визит. Каждый чек = +100 ★
+<div class="mo" id="qrMo" onclick="cm('qrMo')">
+  <div class="mo-sheet" onclick="event.stopPropagation()">
+    <span class="mo-handle"></span>
+    <div class="mo-title">📲 Мой QR-код</div>
+    <div class="mo-body">Покажи кассиру — он найдёт тебя по номеру телефона и начислит звёзды за визит</div>
+    <div style="background:#fff;border-radius:14px;padding:18px;text-align:center;margin-bottom:16px">
+      <div style="font-family:monospace;font-size:0.76rem;color:#222;word-break:break-all;line-height:1.6" id="qrCode">—</div>
     </div>
-    <div id="qrDisplay" style="text-align:center; padding: 16px; background: #fff; border-radius: 16px; margin-bottom: 20px;">
-      <div style="font-family: monospace; font-size: 0.9rem; color: #333; word-break: break-all;" id="qrCode">Загружаем...</div>
-    </div>
-    <button class="modal-close-btn" onclick="closeModal('qrModal')">Закрыть</button>
+    <div style="text-align:center;font-size:0.85rem;color:var(--muted2);margin-bottom:18px;font-weight:700" id="qrPhone">—</div>
+    <button class="mo-cancel" onclick="cm('qrMo')">Закрыть</button>
   </div>
 </div>
 
-<!-- NOTIF MODAL -->
-<div class="modal-overlay" id="notifModal" onclick="closeModal('notifModal')">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
-    <span class="modal-handle"></span>
-    <div class="modal-title">🔔 Уведомления</div>
-    <div class="modal-body" id="notifBody">Включи уведомления, чтобы первой узнавать об акциях, новых мероприятиях и бонусах.</div>
-    <button class="reg-btn" style="margin-bottom:12px" onclick="requestNotifs()">Включить уведомления</button>
-    <button class="modal-close-btn" onclick="closeModal('notifModal')">Позже</button>
-  </div>
-</div>
-
-<!-- PROMO MODAL -->
-<div class="modal-overlay" id="promoModal" onclick="closeModal('promoModal')">
-  <div class="modal-sheet" onclick="e=>e.stopPropagation()">
-    <span class="modal-handle"></span>
-    <div class="modal-title">🎂 Бонус в день рождения</div>
-    <div class="modal-body">Укажи дату дня рождения ребёнка — в этот день ты получишь ×3 звёзды за визит + персональный подарок от парка!</div>
-    <div class="reg-group">
-      <label>День рождения ребёнка</label>
-      <input type="date" id="promo-bday" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:13px 16px;color:var(--white);font-family:var(--font-body);font-size:1rem;outline:none;width:100%;-webkit-appearance:none;transition:all 0.2s">
+<!-- BDAY MODAL -->
+<div class="mo" id="bdayMo" onclick="cm('bdayMo')">
+  <div class="mo-sheet" onclick="event.stopPropagation()">
+    <span class="mo-handle"></span>
+    <div class="mo-title">🎂 День рождения ребёнка</div>
+    <div class="mo-body">Укажи дату — получишь ×3 звёзды и персональный подарок от парка!</div>
+    <div class="f-group">
+      <div class="f-label">Дата рождения</div>
+      <input class="f-input" type="date" id="bdayInp">
     </div>
-    <button class="reg-btn" style="margin-bottom:12px" onclick="saveBday()">Сохранить и получить бонус 🎉</button>
-    <button class="modal-close-btn" onclick="closeModal('promoModal')">Позже</button>
+    <button class="mo-btn" onclick="saveBday()">Сохранить 🎉</button>
+    <button class="mo-cancel" onclick="cm('bdayMo')">Позже</button>
   </div>
 </div>
 
 <script>
-/* ====================================
-   CONFIG
-==================================== */
-const SUPABASE_URL = 'https://yiqipulgofoschkccaxr.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
-
-const LEVELS = [
-  { name: 'Новичок',    icon: '🛸', min: 0,    max: 499,  color: '#8090b0', id: 1 },
-  { name: 'Космонавт',  icon: '🚀', min: 500,  max: 1499, color: '#2d9cff', id: 2 },
-  { name: 'Командир',   icon: '⚡', min: 1500, max: 2999, color: '#9b59ff', id: 3 },
-  { name: 'Галактика',  icon: '👑', min: 3000, max: 99999, color: '#ffd166', id: 4 },
+const SB='https://yiqipulgofoschkccaxr.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
+const LV=[
+  {n:'Новичок', i:'🛸',min:0,   max:499, c:'#8090b0',id:1},
+  {n:'Космонавт',i:'🚀',min:500, max:1499,c:'#2d9cff',id:2},
+  {n:'Командир', i:'⚡',min:1500,max:2999,c:'#9b59ff',id:3},
+  {n:'Галактика', i:'👑',min:3000,max:99999,c:'#ffd166',id:4},
 ];
-const PERKS = [
-  { emoji: '⭐', name: '100 звёзд за визит', desc: 'Каждое посещение = +100 ★ на карту', req: 0, action: 'Активна' },
-  { emoji: '🎂', name: '×3 в день рождения', desc: 'Тройные звёзды и подарок от парка', req: 0, action: 'Активна' },
-  { emoji: '🔔', name: 'Эксклюзивные акции', desc: 'Первыми узнавать о скидках и событиях', req: 0, action: 'Активна' },
-  { emoji: '🎟️', name: 'Бесплатный визит', desc: '1 000 ★ = 1 бесплатный час в парке', req: 1000, action: 'Обменять' },
-  { emoji: '🏷️', name: 'Скидка 10%', desc: 'На все услуги — с уровня «Командир»', req: 1500, action: 'Командир' },
-  { emoji: '👑', name: 'Скидка 15% навсегда', desc: 'Постоянная скидка и приоритет. Уровень «Галактика»', req: 3000, action: 'Галактика' },
-  { emoji: '🚀', name: 'Приоритетное бронирование', desc: 'Дата рождения — без очереди и ожидания', req: 3000, action: 'Галактика' },
+const PK=[
+  {e:'⭐',n:'100 звёзд за визит',   d:'Каждое посещение = +100 ★',        r:0,   a:'Активна'},
+  {e:'🎂',n:'×3 в день рождения',   d:'Тройные звёзды + подарок от парка', r:0,   a:'Активна'},
+  {e:'🎟️',n:'Бесплатный визит',     d:'1000 ★ = 1 бесплатный час',        r:1000,a:'Обменять'},
+  {e:'🏷️',n:'Скидка 10%',           d:'С уровня Командир',                 r:1500,a:'Командир'},
+  {e:'👑',n:'Скидка 15% навсегда',  d:'С уровня Галактика',                r:3000,a:'Галактика'},
 ];
-const STARS_PER_VISIT = 100;
 
-/* ====================================
-   STATE
-==================================== */
-let state = loadState();
+let G=null; // guest from Supabase
 
-function loadState() {
-  try {
-    const s = JSON.parse(localStorage.getItem('raketa_guest') || 'null');
-    if (s) return s;
-  } catch(e) {}
-  return null;
+// ── SUPABASE ──────────────────────────────────
+async function sbq(path,opts={}){
+  const r=await fetch(SB+'/rest/v1/'+path,{
+    headers:{'apikey':SK,'Authorization':'Bearer '+SK,
+      'Content-Type':'application/json',
+      'Prefer':opts.prefer||'return=representation',...(opts.headers||{})},
+    ...opts
+  });
+  const t=await r.text();
+  if(!r.ok) throw new Error(t);
+  return t?JSON.parse(t):null;
 }
 
-function saveState() {
-  localStorage.setItem('raketa_guest', JSON.stringify(state));
-}
+// ── INIT ─────────────────────────────────────
+window.addEventListener('DOMContentLoaded',async()=>{
+  initSW();
+  document.getElementById('rPhone').addEventListener('input',pMask);
 
-/* ====================================
-   INIT
-==================================== */
-window.addEventListener('DOMContentLoaded', () => {
-  // Скрываем загрузчик сразу — гарантированно
-  const pl = document.getElementById('pageLoading');
-  if (pl) { pl.style.display = 'none'; pl.remove(); }
-  initStars();
-  if (!state) {
-    showRegister();
-  } else {
-    showMain();
-    renderCard();
-    renderPerks();
-    renderHistory();
-    renderLevels();
-    checkInstallBanner();
+  // Убираем loader
+  const l=document.getElementById('loader');
+  if(l) l.remove();
+
+  // Ищем сохранённый телефон
+  const saved=localStorage.getItem('rkt_phone');
+  if(saved){
+    try{
+      const rows=await sbq(`raketa_guests?phone=eq.%2B7${saved}&limit=1`);
+      if(rows&&rows.length){
+        G=rows[0]; showMain(); render(); return;
+      }
+    }catch(e){ console.warn('SB offline',e.message); }
   }
-  document.getElementById('promoBanner').addEventListener('click', () => openModal('promoModal'));
-  document.getElementById('reg-phone').addEventListener('input', phoneMask);
+  showRegister();
 });
 
-function showRegister() {
-  document.getElementById('mainPage').style.display = 'none';
-  document.getElementById('registerPage').classList.add('active');
-  document.querySelector('.bottom-nav').style.display = 'none';
-}
+// ── REGISTER ─────────────────────────────────
+async function doReg(){
+  const name=document.getElementById('rName').value.trim();
+  const raw=document.getElementById('rPhone').value;
+  const bday=document.getElementById('rBday').value;
+  const digits=raw.replace(/\D/g,'').slice(-10);
+  let ok=true;
+  if(!name){shake('rName');ok=false;}
+  if(digits.length<10){shake('rPhone');ok=false;}
+  if(!ok){toast('⚠️ Заполни имя и телефон');return;}
 
-function showMain() {
-  document.getElementById('mainPage').style.display = 'block';
-  document.getElementById('registerPage').classList.remove('active');
-  document.querySelector('.bottom-nav').style.display = 'flex';
-}
+  const phone='+7'+digits;
+  const btn=document.getElementById('regBtn');
+  btn.textContent='⏳ Проверяем...';btn.disabled=true;
 
-/* ====================================
-   REGISTER
-==================================== */
-function register() {
-  const name = document.getElementById('reg-name').value.trim();
-  const phone = document.getElementById('reg-phone').value.trim();
-  const bday = document.getElementById('reg-bday').value;
-
-  if (!name || !phone) {
-    showToast('⚠️ Укажи имя и телефон');
-    return;
-  }
-
-  try {
-    state = {
-      name, phone, bday,
-      stars: 100,
-      visits: 0,
-      since: new Date().toLocaleDateString('ru-RU'),
-      history: [
-        { type: 'plus', action: '🎁 Бонус за регистрацию', date: new Date().toLocaleDateString('ru-RU'), pts: 100 }
-      ]
-    };
-    saveState();
-    showMain();
-    renderCard();
-    renderPerks();
-    renderHistory();
-    renderLevels();
-    showToast('🚀 Добро пожаловать в Клуб Ракеты!');
-    animStars();
-  } catch(e) {
-    showToast('⚠️ Ошибка регистрации, попробуй снова');
-    console.error(e);
-  }
-}
-
-/* ====================================
-   RENDER CARD
-==================================== */
-function renderCard() {
-  if (!state) return;
-  const stars = state.stars || 0;
-  const lvl = getLevel(stars);
-  const nextLvl = LEVELS[Math.min(lvl.id, LEVELS.length - 1)];
-  const isMax = lvl.id === LEVELS.length;
-
-  // Animate stars number
-  const starsEl = document.getElementById('starsNum');
-  const prev = parseInt(starsEl.textContent.replace(/\D/g,'')) || 0;
-  animateNum(starsEl, prev, stars, 800);
-
-  document.getElementById('starsSub').textContent = isMax
-    ? '🏆 Максимальный уровень достигнут!'
-    : `До уровня «${nextLvl.name}» осталось ${nextLvl.min - stars} ★`;
-
-  // Level badge
-  const badge = document.getElementById('levelBadge');
-  badge.textContent = `${lvl.icon} ${lvl.name}`;
-  badge.style.color = lvl.color;
-  badge.style.borderColor = lvl.color + '50';
-  badge.style.background = lvl.color + '18';
-
-  // Progress bar
-  const pct = isMax ? 100 : Math.min(100, ((stars - lvl.min) / (nextLvl.min - lvl.min)) * 100);
-  document.getElementById('barFill').style.width = pct + '%';
-  document.getElementById('barFrom').textContent = lvl.name;
-  document.getElementById('barTo').textContent = isMax ? 'Максимум' : `${nextLvl.name} ${nextLvl.min} ★`;
-
-  document.getElementById('guestName').textContent = state.name;
-  document.getElementById('guestSince').textContent = `С нами с ${state.since}`;
-  document.getElementById('visitsNum').textContent = state.visits || 0;
-  document.getElementById('qrCode').textContent = `RAKETA-${(state.phone || '').replace(/\D/g,'').slice(-7)}-${Date.now().toString(36).toUpperCase()}`;
-}
-
-function getLevel(stars) {
-  for (let i = LEVELS.length - 1; i >= 0; i--) {
-    if (stars >= LEVELS[i].min) return LEVELS[i];
-  }
-  return LEVELS[0];
-}
-
-/* ====================================
-   RENDER LEVELS
-==================================== */
-function renderLevels() {
-  if (!state) return;
-  const stars = state.stars || 0;
-  LEVELS.forEach((lv, i) => {
-    const el = document.getElementById(`lv-${i+1}`);
-    if (!el) return;
-    el.classList.remove('active', 'done');
-    const current = getLevel(stars);
-    if (lv.id === current.id) el.classList.add('active');
-    else if (stars >= lv.min) el.classList.add('done');
-    // Add check for done
-    let chk = el.querySelector('.level-check');
-    if (stars > lv.max) {
-      if (!chk) {
-        chk = document.createElement('div');
-        chk.className = 'level-check';
-        chk.textContent = '✓';
-        el.appendChild(chk);
-      }
-    } else if (chk) chk.remove();
-  });
-}
-
-/* ====================================
-   RENDER PERKS
-==================================== */
-function renderPerks() {
-  if (!state) return;
-  const stars = state.stars || 0;
-  const list = document.getElementById('perksList');
-  list.innerHTML = '';
-  PERKS.forEach(p => {
-    const unlocked = stars >= p.req;
-    const div = document.createElement('div');
-    div.className = 'perk-item' + (unlocked ? '' : ' locked');
-    div.innerHTML = `
-      <div class="perk-emoji">${p.emoji}</div>
-      <div class="perk-info">
-        <div class="perk-name">${p.name}</div>
-        <div class="perk-desc">${p.desc}</div>
-      </div>
-      <div class="perk-action ${unlocked ? 'available' : 'locked-badge'}">${unlocked ? p.action : '🔒 ' + p.req + '★'}</div>
-    `;
-    if (unlocked && p.req >= 1000) {
-      div.querySelector('.perk-action').addEventListener('click', () => redeemPerk(p));
+  try{
+    // Проверяем — вдруг уже есть
+    const ex=await sbq(`raketa_guests?phone=eq.${encodeURIComponent(phone)}&limit=1`);
+    if(ex&&ex.length){
+      G=ex[0];
+      localStorage.setItem('rkt_phone',digits);
+      showMain(); render();
+      toast('👋 С возвращением, '+G.name+'!');
+      return;
     }
-    list.appendChild(div);
-  });
-}
-
-function redeemPerk(p) {
-  if (!state) return;
-  if (state.stars < p.req) { showToast('⚠️ Недостаточно звёзд'); return; }
-  if (p.req === 1000) {
-    if (confirm(`Списать 1 000 ★ и получить бесплатный визит?`)) {
-      state.stars -= 1000;
-      state.history.unshift({ type: 'minus', action: '🎟️ Обмен: Бесплатный визит', date: new Date().toLocaleDateString('ru-RU'), pts: -1000 });
-      saveState();
-      renderCard();
-      renderPerks();
-      renderHistory();
-      renderLevels();
-      showToast('🎟️ Получена! Назови кассиру «Ракета-Клуб»');
+    // Создаём
+    const res=await sbq('raketa_guests',{
+      method:'POST',
+      body:JSON.stringify({name,phone,stars:100,visits:1,bday:bday||null})
+    });
+    G=Array.isArray(res)?res[0]:res;
+    // Пишем в историю
+    await sbq('raketa_visits',{
+      method:'POST',prefer:'',
+      body:JSON.stringify({guest_id:G.id,stars_delta:100,
+        reason:'🎁 Регистрация в клубе',staff_note:'Самостоятельно'})
+    });
+    localStorage.setItem('rkt_phone',digits);
+    showMain(); render(); stars();
+    toast('🚀 Добро пожаловать в Клуб Ракеты!');
+  }catch(e){
+    if(e.message&&e.message.includes('duplicate')){
+      // Телефон уже есть — входим
+      try{
+        const ex2=await sbq(`raketa_guests?phone=eq.${encodeURIComponent(phone)}&limit=1`);
+        if(ex2&&ex2.length){
+          G=ex2[0];
+          localStorage.setItem('rkt_phone',digits);
+          showMain(); render();
+          toast('👋 С возвращением, '+G.name+'!');
+        }
+      }catch(e2){ toast('❌ Нет связи с сервером'); }
+    }else{
+      toast('❌ Ошибка: '+(e.message.slice(0,60)||'нет связи'));
     }
+  }finally{
+    btn.textContent='🚀 Вступить бесплатно';btn.disabled=false;
   }
 }
 
-/* ====================================
-   RENDER HISTORY
-==================================== */
-function renderHistory() {
-  if (!state) return;
-  const list = document.getElementById('historyList');
-  list.innerHTML = '';
-  const items = (state.history || []).slice(0, 20);
-  if (!items.length) {
-    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.88rem">Визиты пока не отмечены</div>';
-    return;
-  }
-  items.forEach(h => {
-    const div = document.createElement('div');
-    div.className = 'hist-item';
-    const isPlus = h.type === 'plus';
-    div.innerHTML = `
-      <div class="hist-icon ${h.type}">
-        ${isPlus ? '⬆️' : '⬇️'}
-      </div>
-      <div class="hist-info">
-        <div class="hist-action">${h.action}</div>
-        <div class="hist-date">${h.date}</div>
-      </div>
-      <div class="hist-pts ${h.type}">${isPlus ? '+' : ''}${h.pts} ★</div>
-    `;
-    list.appendChild(div);
+// ── RENDER ───────────────────────────────────
+function getLv(s){
+  for(let i=LV.length-1;i>=0;i--) if(s>=LV[i].min) return LV[i];
+  return LV[0];
+}
+
+function render(){
+  if(!G) return;
+  const s=G.stars||0, lv=getLv(s);
+  const nx=LV[Math.min(lv.id,LV.length-1)];
+  const isMax=lv.id===LV.length;
+
+  animN(document.getElementById('hcNum'),s);
+  document.getElementById('hcSub').textContent=isMax?'🏆 Максимальный уровень!':
+    `До «${nx.n}» — ${nx.min-s} ★`;
+
+  const b=document.getElementById('hcLv');
+  b.textContent=lv.i+' '+lv.n;
+  b.style.color=lv.c; b.style.borderColor=lv.c+'55'; b.style.background=lv.c+'18';
+
+  const pct=isMax?100:Math.min(100,(s-lv.min)/(nx.min-lv.min)*100);
+  document.getElementById('hcFill').style.width=pct+'%';
+  document.getElementById('hcFrom').textContent=lv.n;
+  document.getElementById('hcTo').textContent=isMax?'MAX':nx.n+' '+nx.min+'★';
+  document.getElementById('hcName').textContent=G.name;
+  document.getElementById('hcSince').textContent='С нами с '+
+    new Date(G.registered_at).toLocaleDateString('ru-RU');
+  document.getElementById('hcVis').textContent=G.visits||0;
+
+  const ph=G.phone||'';
+  document.getElementById('qrCode').textContent=
+    'RAKETA-'+ph.replace(/\D/g,'').slice(-7)+'-'+(G.id||'').slice(0,8).toUpperCase();
+  document.getElementById('qrPhone').textContent=ph;
+
+  // Levels
+  LV.forEach((l,i)=>{
+    const el=document.getElementById('lv'+(i+1));
+    if(!el) return;
+    const active=l.id===lv.id;
+    el.style.border=active?`1px solid ${l.c}60`:'1px solid rgba(255,255,255,0.08)';
+    el.style.background=active?l.c+'12':'var(--card)';
   });
+
+  // Perks
+  document.getElementById('perksList').innerHTML=PK.map(p=>{
+    const u=s>=p.r;
+    const c=u?'var(--green)':'var(--muted)';
+    const bg=u?'rgba(6,214,160,0.08)':'rgba(255,255,255,0.04)';
+    return `<div class="perk${u?'':' locked'}">
+      <div class="pk-icon">${p.e}</div>
+      <div style="flex:1"><div class="pk-name">${p.n}</div><div class="pk-desc">${p.d}</div></div>
+      <div class="pk-badge" style="color:${c};border-color:${c}50;background:${bg}">${u?p.a:p.r+'★'}</div>
+    </div>`;
+  }).join('');
 }
 
-/* ====================================
-   ADD VISIT (демо-функция)
-==================================== */
-function addVisit() {
-  if (!state) return;
-
-  // Проверяем день рождения
-  let bonus = 1;
-  if (state.bday) {
-    const bday = new Date(state.bday);
-    const now = new Date();
-    if (bday.getMonth() === now.getMonth() && bday.getDate() === now.getDate()) {
-      bonus = 3;
-      showToast('🎂 ДЕНЬ РОЖДЕНИЯ! ×3 звёзды! Поздравляем!');
+async function renderHist(){
+  const list=document.getElementById('histList');
+  if(!G){list.innerHTML='<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.85rem">Нет данных</div>';return;}
+  try{
+    const rows=await sbq(`raketa_visits?guest_id=eq.${G.id}&order=created_at.desc&limit=20`)||[];
+    if(!rows.length){
+      list.innerHTML='<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.85rem">История пуста</div>';
+      return;
     }
+    list.innerHTML=rows.map(h=>{
+      const p=h.stars_delta>0;
+      return `<div class="hi">
+        <div class="hi-ico ${p?'p':'m'}">${p?'⬆️':'⬇️'}</div>
+        <div class="hi-info">
+          <div class="hi-action">${h.reason}</div>
+          <div class="hi-date">${new Date(h.created_at).toLocaleDateString('ru-RU')}</div>
+        </div>
+        <div class="hi-pts ${p?'p':'m'}">${p?'+':''}${h.stars_delta} ★</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    list.innerHTML='<div style="text-align:center;color:var(--muted);padding:32px;font-size:0.85rem">Нет связи</div>';
   }
+}
 
-  const pts = STARS_PER_VISIT * bonus;
-  state.stars = (state.stars || 0) + pts;
-  state.visits = (state.visits || 0) + 1;
-  state.history = state.history || [];
-  state.history.unshift({
-    type: 'plus',
-    action: `🚀 Визит в Ракету${bonus > 1 ? ` (×${bonus} день рождения!)` : ''}`,
-    date: new Date().toLocaleDateString('ru-RU'),
-    pts: pts
+// ── TABS ─────────────────────────────────────
+function stab(name){
+  ['levels','perks','history'].forEach(n=>{
+    document.getElementById('tp-'+n)?.classList.remove('active');
+    document.getElementById('tb-'+n)?.classList.remove('active');
+    document.getElementById('bn-'+n)?.classList.remove('active');
   });
-  saveState();
-
-  animStars();
-  renderCard();
-  renderPerks();
-  renderHistory();
-  renderLevels();
-
-  if (bonus === 1) showToast(`⭐ +${pts} звёзд! Всего: ${state.stars} ★`);
+  document.getElementById('tp-'+name)?.classList.add('active');
+  document.getElementById('tb-'+name)?.classList.add('active');
+  document.getElementById('bn-'+name)?.classList.add('active');
+  if(name==='history') renderHist();
 }
 
-/* ====================================
-   TABS
-==================================== */
-function openTab(name) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
-  const tabEl = document.getElementById(`tab-${name}`);
-  const navEl = document.getElementById(`nav-${name}`);
-  if (tabEl) tabEl.classList.add('active');
-  if (navEl) navEl.classList.add('active');
+// ── MODALS ────────────────────────────────────
+function om(id){document.getElementById(id).classList.add('active');}
+function cm(id){document.getElementById(id).classList.remove('active');}
+
+async function saveBday(){
+  if(!G) return;
+  const bday=document.getElementById('bdayInp').value;
+  if(!bday){toast('⚠️ Выбери дату');return;}
+  try{
+    await sbq(`raketa_guests?id=eq.${G.id}`,{method:'PATCH',prefer:'',body:JSON.stringify({bday})});
+    G.bday=bday; cm('bdayMo');
+    toast('🎂 День рождения сохранён!');
+  }catch(e){toast('❌ Ошибка');}
 }
 
-/* ====================================
-   MODALS
-==================================== */
-function openModal(id) { document.getElementById(id).classList.add('active'); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-function showQR() { openModal('qrModal'); }
-function showNotifModal() { openModal('notifModal'); }
-
-function saveBday() {
-  const bday = document.getElementById('promo-bday').value;
-  if (!bday) { showToast('⚠️ Укажи дату'); return; }
-  try {
-    state.bday = bday;
-    saveState();
-    closeModal('promoModal');
-    showToast('🎂 День рождения сохранён! Ждём вас!');
-  } catch(e) { showToast('⚠️ Не удалось сохранить'); }
+// ── SCREENS ───────────────────────────────────
+function showRegister(){
+  document.getElementById('regScreen').classList.add('active');
+  document.getElementById('mainScreen').classList.remove('active');
+}
+function showMain(){
+  document.getElementById('mainScreen').classList.add('active');
+  document.getElementById('regScreen').classList.remove('active');
 }
 
-async function requestNotifs() {
-  if (!('Notification' in window)) { showToast('⚠️ Браузер не поддерживает уведомления'); return; }
-  try {
-  const perm = await Notification.requestPermission();
-  if (perm === 'granted') {
-    closeModal('notifModal');
-    document.getElementById('notifDot').style.display = 'none';
-    showToast('✅ Уведомления включены!');
-    new Notification('🚀 Ракета · Клуб', { body: 'Теперь вы первыми узнаёте об акциях!' });
-  } else {
-    showToast('Разреши уведомления в настройках браузера');
-  }
-  } catch(e) { showToast('⚠️ Уведомления недоступны в этом браузере'); }
-}
-
-/* ====================================
-   TOAST
-==================================== */
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.innerHTML = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-/* ====================================
-   STAR BURST ANIMATION
-==================================== */
-function animStars() {
-  const card = document.getElementById('heroCard');
-  const rect = card.getBoundingClientRect();
-  for (let i = 0; i < 6; i++) {
-    setTimeout(() => {
-      const el = document.createElement('div');
-      el.className = 'star-burst';
-      el.textContent = '⭐';
-      el.style.left = (rect.left + Math.random() * rect.width) + 'px';
-      el.style.top = (rect.top + rect.height * 0.4 + Math.random() * 40) + 'px';
-      el.style.position = 'fixed';
-      el.style.zIndex = '999';
-      el.style.fontSize = (1 + Math.random()) + 'rem';
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 900);
-    }, i * 100);
-  }
-}
-
-/* ====================================
-   ANIMATE NUMBER
-==================================== */
-function animateNum(el, from, to, dur) {
-  const start = performance.now();
-  function step(now) {
-    const t = Math.min((now - start) / dur, 1);
-    const ease = 1 - Math.pow(1 - t, 3);
-    el.textContent = Math.round(from + (to - from) * ease).toLocaleString('ru');
-    if (t < 1) requestAnimationFrame(step);
-    else el.textContent = to.toLocaleString('ru');
+// ── HELPERS ───────────────────────────────────
+function animN(el,to){
+  const from=parseInt(el.textContent.replace(/\D/g,''))||0;
+  const dur=800,start=performance.now();
+  function step(now){
+    const t=Math.min((now-start)/dur,1),e=1-Math.pow(1-t,3);
+    el.textContent=Math.round(from+(to-from)*e).toLocaleString('ru');
+    if(t<1) requestAnimationFrame(step);
+    else el.textContent=to.toLocaleString('ru');
   }
   requestAnimationFrame(step);
 }
 
-/* ====================================
-   PHONE MASK
-==================================== */
-function phoneMask() {
-  const el = document.getElementById('reg-phone');
-  let v = el.value.replace(/\D/g,'');
-  if (v.startsWith('7') || v.startsWith('8')) v = v.slice(1);
-  let out = '+7';
-  if (v.length > 0) out += ' (' + v.slice(0,3);
-  if (v.length >= 3) out += ') ' + v.slice(3,6);
-  if (v.length >= 6) out += '-' + v.slice(6,8);
-  if (v.length >= 8) out += '-' + v.slice(8,10);
-  el.value = out;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-/* ====================================
-   PWA INSTALL
-==================================== */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const banner = document.getElementById('installBanner');
-  if (banner) banner.style.display = 'flex';
-});
-
-async function installPWA() {
-  if (!deferredPrompt) {
-    showToast('📱 Открой сайт в браузере для установки');
-    return;
-  }
-  deferredPrompt.prompt();
-  const res = await deferredPrompt.userChoice;
-  if (res.outcome === 'accepted') {
-    document.getElementById('installBanner').style.display = 'none';
-    showToast('✅ Ракета установлена!');
-  }
-  deferredPrompt = null;
+function shake(id){
+  const el=document.getElementById(id);if(!el) return;
+  el.classList.add('err');el.style.animation='shake 0.4s ease';
+  setTimeout(()=>{el.classList.remove('err');el.style.animation='';},500);
 }
 
-function checkInstallBanner() {
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    document.getElementById('installBanner').style.display = 'none';
-  }
+function pMask(){
+  const el=document.getElementById('rPhone');
+  let v=el.value.replace(/\D/g,'');
+  if(v.startsWith('7')||v.startsWith('8')) v=v.slice(1);
+  let o='+7';
+  if(v.length>0) o+=' ('+v.slice(0,3);
+  if(v.length>=3) o+=') '+v.slice(3,6);
+  if(v.length>=6) o+='-'+v.slice(6,8);
+  if(v.length>=8) o+='-'+v.slice(8,10);
+  el.value=o;
 }
 
-/* ====================================
-   STARFIELD
-==================================== */
-function initStars() {
-  const canvas = document.getElementById('stars-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, stars = [];
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    stars = Array.from({length: 120}, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      r: Math.random() * 1.4 + 0.2,
-      a: Math.random(),
-      da: (Math.random() * 0.004 + 0.001) * (Math.random() > 0.5 ? 1 : -1)
-    }));
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-    stars.forEach(s => {
-      s.a += s.da;
-      if (s.a > 1 || s.a < 0.05) s.da *= -1;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(180,200,255,${s.a * 0.7})`;
-      ctx.fill();
-    });
-    requestAnimationFrame(draw);
-  }
-
-  resize();
-  draw();
-  window.addEventListener('resize', resize);
+function stars(){
+  ['⭐','✨','🌟','💫','⭐'].forEach((s,i)=>{
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='sburst';el.textContent=s;
+      el.style.cssText=`position:fixed;left:${60+Math.random()*(window.innerWidth-120)}px;top:${window.innerHeight*0.4+Math.random()*60}px`;
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(),1000);
+    },i*90);
+  });
 }
 
-/* ====================================
-   SERVICE WORKER
-==================================== */
-(function() {
-  if (!('serviceWorker' in navigator)) return;
-  navigator.serviceWorker.register('sw.js').then(reg => {
+// ── SERVICE WORKER ────────────────────────────
+function initSW(){
+  if(!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('sw.js').then(reg=>{
     reg.update();
-    reg.addEventListener('updatefound', () => {
-      const worker = reg.installing;
-      worker.addEventListener('statechange', () => {
-        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-          showUpdateBanner();
-        }
+    reg.addEventListener('updatefound',()=>{
+      const w=reg.installing;
+      w.addEventListener('statechange',()=>{
+        if(w.state==='installed'&&navigator.serviceWorker.controller)
+          document.getElementById('upd').classList.add('show');
       });
     });
   });
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!refreshing) { refreshing = true; location.reload(); }
+  let ref=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(!ref){ref=true;location.reload();}
   });
-  function showUpdateBanner() {
-    const b = document.createElement('div');
-    b.innerHTML = '<span>🚀 Новая версия</span><button onclick="navigator.serviceWorker.getRegistration().then(r=>r&&r.waiting&&r.waiting.postMessage('SKIP_WAITING'))">Обновить</button>';
-    b.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:#ff3cac;color:#fff;padding:12px 20px;border-radius:100px;display:flex;align-items:center;gap:12px;font-size:0.85rem;font-weight:700;box-shadow:0 4px 20px rgba(255,60,172,0.4);white-space:nowrap';
-    b.querySelector('button').style.cssText = 'background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 14px;border-radius:100px;cursor:pointer;font-weight:800;font-size:0.82rem';
-    document.body.appendChild(b);
-  }
-})();
+}
+function applyUpd(){
+  navigator.serviceWorker.getRegistration().then(r=>{
+    if(r&&r.waiting) r.waiting.postMessage('SKIP_WAITING');
+  });
+}
 </script>
 </body>
 </html>
