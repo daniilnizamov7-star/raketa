@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#04050e">
+<meta name="robots" content="noindex">
+<title>🚀 Ракета · Касса</title>
+<style>
+:root {
+  --bg:     #04050e;
+  --deep:   #07081a;
+  --card:   #0e1028;
+  --card2:  #13152e;
+  --border: rgba(255,255,255,0.08);
+  --b2:     rgba(255,255,255,0.14);
+
+  --neon:   #ff3cac;
+  --blue:   #2d9cff;
+  --green:  #06d6a0;
+  --yellow: #ffd166;
+  --purple: #9b59ff;
+  --red:    #ff5c5c;
+
+  --white:  #eef2ff;
+  --muted:  #5a6a90;
+  --muted2: #8090b0;
+
+  --font-h: 'SF Pro Display', -apple-system, 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-b: -apple-system, 'Segoe UI', system-ui, sans-serif;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-b);
+  background: var(--bg); color: var(--white);
+  padding-top: var(--safe-top);
+  padding-bottom: calc(var(--safe-bot) + 70px);
+  overflow-x: hidden;
+  min-height: 100%;
+}
+
+/* ── HEADER ── */
+.hdr {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(4,5,14,0.94); backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.hdr-logo {
+  font-family: var(--font-h); font-size: 1rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--neon), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: flex; align-items: center; gap: 7px;
+}
+.hdr-role {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 12px; border-radius: 100px;
+  background: rgba(255,60,172,0.1); border: 1px solid rgba(255,60,172,0.2);
+  color: var(--neon);
+}
+
+/* ── LOGIN ── */
+.login-wrap {
+  min-height: calc(100vh - 57px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.login-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 24px; padding: 36px 28px; max-width: 360px; width: 100%;
+  text-align: center;
+}
+.login-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+.login-title {
+  font-family: var(--font-h); font-size: 1.3rem; font-weight: 900;
+  margin-bottom: 6px; letter-spacing: -0.02em;
+}
+.login-sub { font-size: 0.85rem; color: var(--muted2); margin-bottom: 28px; line-height: 1.5; }
+.f-input {
+  width: 100%; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 13px 16px; color: var(--white);
+  font-family: var(--font-b); font-size: 1rem;
+  outline: none; margin-bottom: 12px; transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.f-input::placeholder { color: var(--muted); }
+.f-input:focus { border-color: var(--neon); box-shadow: 0 0 0 3px rgba(255,60,172,0.1); }
+.btn-main {
+  width: 100%; padding: 15px; border: none; border-radius: 100px;
+  background: linear-gradient(135deg, var(--neon), #c4007a);
+  color: #fff; font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
+  cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 0 28px rgba(255,60,172,0.25);
+  letter-spacing: -0.01em;
+}
+.btn-main:active { transform: scale(0.97); }
+.login-err { font-size: 0.8rem; color: var(--red); margin-top: 10px; min-height: 18px; }
+
+/* ── MAIN SCREEN ── */
+.screen { display: none; padding: 0 0 20px; }
+.screen.active { display: block; }
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 8px; padding: 16px 20px;
+}
+.tab {
+  flex: 1; padding: 12px 8px; border-radius: 14px;
+  background: var(--card); border: 1px solid var(--border);
+  font-family: var(--font-h); font-size: 0.78rem; font-weight: 700;
+  color: var(--muted2); cursor: pointer; transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.tab-icon { font-size: 1.4rem; }
+.tab.active {
+  border-color: var(--neon); color: var(--white);
+  background: rgba(255,60,172,0.08);
+  box-shadow: 0 0 20px rgba(255,60,172,0.1);
+}
+
+/* ── TAB CONTENT ── */
+.tab-panel { display: none; padding: 0 20px; }
+.tab-panel.active { display: block; }
+
+/* ── SEARCH GUEST ── */
+.search-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px; margin-bottom: 16px;
+}
+.sc-title {
+  font-family: var(--font-h); font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.phone-row { display: flex; gap: 10px; }
+.phone-input {
+  flex: 1; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 16px; color: var(--white);
+  font-family: var(--font-b); font-size: 1.05rem;
+  outline: none; transition: all 0.2s; -webkit-appearance: none;
+}
+.phone-input::placeholder { color: var(--muted); }
+.phone-input:focus { border-color: var(--blue); }
+.btn-search {
+  padding: 14px 20px; border: none; border-radius: 12px;
+  background: var(--blue); color: #fff;
+  font-family: var(--font-h); font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-search:active { transform: scale(0.96); background: #1a7de0; }
+
+/* QR SECTION */
+.qr-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 16px 0; color: var(--muted); font-size: 0.78rem; font-weight: 700;
+}
+.qr-divider::before, .qr-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.qr-btn {
+  width: 100%; padding: 15px; border: 1.5px dashed rgba(45,156,255,0.3);
+  border-radius: 14px; background: rgba(45,156,255,0.05);
+  color: var(--blue); font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+}
+.qr-btn:active { background: rgba(45,156,255,0.1); }
+
+/* ── GUEST RESULT CARD ── */
+.guest-result {
+  background: linear-gradient(145deg, #18104a, #0c1540, #1e0a2a);
+  border: 1px solid rgba(155,89,255,0.25);
+  border-radius: 20px; padding: 24px; margin-bottom: 16px;
+  position: relative; overflow: hidden;
+  display: none;
+}
+.guest-result.found { display: block; }
+.gr-glow {
+  position: absolute; top: -40px; right: -40px;
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,60,172,0.2), transparent 70%);
+  pointer-events: none;
+}
+.gr-top {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 16px;
+}
+.gr-name {
+  font-family: var(--font-h); font-size: 1.1rem; font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.gr-phone { font-size: 0.8rem; color: var(--muted2); margin-top: 3px; }
+.gr-level {
+  font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 100px;
+  border: 1px solid; letter-spacing: 0.06em;
+}
+.gr-stars-row {
+  display: flex; align-items: flex-end; gap: 8px; margin-bottom: 8px;
+}
+.gr-stars-num {
+  font-family: var(--font-h); font-size: 2.6rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--yellow), var(--neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.gr-stars-lbl { font-size: 0.78rem; color: var(--muted2); padding-bottom: 6px; }
+.gr-bar-track {
+  height: 6px; background: rgba(255,255,255,0.08); border-radius: 100px;
+  overflow: hidden; margin-bottom: 5px;
+}
+.gr-bar-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--neon), var(--purple), var(--blue));
+  transition: width 1s cubic-bezier(.22,1,.36,1);
+}
+.gr-bar-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.68rem; color: var(--muted); margin-bottom: 6px;
+}
+.gr-visits { font-size: 0.78rem; color: var(--muted2); }
+.gr-visits strong { color: var(--white); }
+
+/* ── AWARD BUTTONS ── */
+.award-section { margin-top: 20px; }
+.award-title {
+  font-family: var(--font-h); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 12px;
+}
+.award-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.award-btn {
+  padding: 16px 12px; border-radius: 16px; border: 1px solid var(--border);
+  background: var(--card2); cursor: pointer; transition: all 0.25s;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-family: var(--font-b);
+}
+.award-btn:active { transform: scale(0.95); }
+.award-btn.visit {
+  border-color: rgba(6,214,160,0.3);
+  background: rgba(6,214,160,0.06);
+}
+.award-btn.bday {
+  border-color: rgba(255,209,102,0.3);
+  background: rgba(255,209,102,0.06);
+}
+.award-btn.bonus {
+  border-color: rgba(45,156,255,0.3);
+  background: rgba(45,156,255,0.06);
+}
+.award-btn.redeem {
+  border-color: rgba(255,60,172,0.3);
+  background: rgba(255,60,172,0.06);
+}
+.award-icon { font-size: 1.6rem; }
+.award-label {
+  font-size: 0.75rem; font-weight: 800; text-align: center; line-height: 1.3;
+}
+.award-pts { font-size: 0.68rem; color: var(--muted2); }
+.award-btn.visit .award-label { color: var(--green); }
+.award-btn.bday .award-label { color: var(--yellow); }
+.award-btn.bonus .award-label { color: var(--blue); }
+.award-btn.redeem .award-label { color: var(--neon); }
+
+/* NOT FOUND */
+.not-found {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px; text-align: center;
+  margin-bottom: 16px; display: none;
+}
+.not-found.show { display: block; }
+.nf-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.nf-title {
+  font-family: var(--font-h); font-size: 1rem; font-weight: 700;
+  margin-bottom: 6px;
+}
+.nf-sub { font-size: 0.85rem; color: var(--muted2); margin-bottom: 20px; line-height: 1.5; }
+.btn-register {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 24px; border-radius: 100px;
+  background: linear-gradient(135deg, var(--neon), #c4007a);
+  color: #fff; font-family: var(--font-h); font-size: 0.82rem; font-weight: 700;
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+
+/* ── REGISTER NEW GUEST ── */
+.reg-section {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px; margin-bottom: 16px;
+  display: none;
+}
+.reg-section.show { display: block; }
+.reg-title {
+  font-family: var(--font-h); font-size: 0.78rem; font-weight: 700;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.reg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+/* ── QR SCANNER (simulated) ── */
+.qr-scanner-wrap {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px; text-align: center;
+  margin-bottom: 16px; display: none;
+}
+.qr-scanner-wrap.show { display: block; }
+.qr-viewfinder {
+  width: 220px; height: 220px; margin: 0 auto 20px;
+  border-radius: 20px; position: relative;
+  background: #000; overflow: hidden;
+}
+video { width: 100%; height: 100%; object-fit: cover; border-radius: 20px; }
+.qr-corners {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.qr-corner {
+  position: absolute; width: 24px; height: 24px;
+  border-color: var(--neon); border-style: solid;
+}
+.qr-corner.tl { top: 8px; left: 8px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+.qr-corner.tr { top: 8px; right: 8px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+.qr-corner.bl { bottom: 8px; left: 8px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+.qr-corner.br { bottom: 8px; right: 8px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+.qr-scan-line {
+  position: absolute; left: 8px; right: 8px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon), transparent);
+  animation: scanMove 2s ease-in-out infinite;
+  top: 0;
+}
+@keyframes scanMove {
+  0%   { top: 10px; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 210px; opacity: 0; }
+}
+.qr-hint { font-size: 0.83rem; color: var(--muted2); margin-bottom: 14px; line-height: 1.5; }
+.btn-cancel-qr {
+  padding: 10px 24px; border: 1px solid var(--border); border-radius: 100px;
+  background: transparent; color: var(--muted2);
+  font-family: var(--font-h); font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s;
+}
+
+/* ── HISTORY TAB ── */
+.hist-list { display: flex; flex-direction: column; gap: 10px; }
+.hist-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.hi-icon {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.hi-icon.plus { background: rgba(6,214,160,0.12); }
+.hi-icon.minus { background: rgba(255,60,172,0.1); }
+.hi-info { flex: 1; }
+.hi-guest { font-weight: 800; font-size: 0.88rem; }
+.hi-action { font-size: 0.78rem; color: var(--muted2); margin-top: 2px; }
+.hi-time { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+.hi-pts {
+  font-family: var(--font-h); font-size: 0.92rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.hi-pts.plus { color: var(--green); }
+.hi-pts.minus { color: var(--neon); }
+
+/* ── STATS TAB ── */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.stat-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px 16px; text-align: center;
+}
+.stat-box-num {
+  font-family: var(--font-h); font-size: 2rem; font-weight: 900; line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-box-lbl { font-size: 0.72rem; color: var(--muted2); font-weight: 700; }
+
+/* ── SUCCESS OVERLAY ── */
+.success-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(4,5,14,0.92); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.success-overlay.show { opacity: 1; pointer-events: all; }
+.success-card {
+  background: var(--card2); border: 1px solid rgba(6,214,160,0.3);
+  border-radius: 28px; padding: 40px 32px; max-width: 340px; width: 100%;
+  text-align: center;
+  transform: scale(0.85) translateY(20px);
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 0 60px rgba(6,214,160,0.15);
+}
+.success-overlay.show .success-card { transform: scale(1) translateY(0); }
+.success-emoji { font-size: 4rem; display: block; margin-bottom: 16px; animation: pop 0.5s cubic-bezier(.22,1,.36,1) both; }
+@keyframes pop { from { transform: scale(0.3) rotate(-15deg); } to { transform: scale(1) rotate(0); } }
+.success-title {
+  font-family: var(--font-h); font-size: 1.4rem; font-weight: 900;
+  margin-bottom: 8px; letter-spacing: -0.02em;
+}
+.success-sub { font-size: 0.9rem; color: var(--muted2); line-height: 1.6; margin-bottom: 8px; }
+.success-stars {
+  font-family: var(--font-h); font-size: 2.2rem; font-weight: 900;
+  color: var(--yellow); margin: 12px 0;
+  animation: starPulse 0.6s 0.3s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes starPulse { from { transform: scale(0.5); opacity: 0; } }
+.success-new-total { font-size: 0.82rem; color: var(--muted2); margin-bottom: 28px; }
+.success-close {
+  width: 100%; padding: 14px; border-radius: 100px;
+  background: linear-gradient(135deg, var(--green), #04a07a);
+  color: #fff; font-family: var(--font-h); font-size: 0.88rem; font-weight: 700;
+  border: none; cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 0 24px rgba(6,214,160,0.3);
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: calc(80px + var(--safe-bot)); left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--card2); border: 1px solid var(--b2);
+  border-radius: 100px; padding: 11px 20px;
+  font-size: 0.85rem; font-weight: 700;
+  opacity: 0; transition: all 0.35s; pointer-events: none;
+  white-space: nowrap; z-index: 400;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── BOTTOM NAV ── */
+.bnav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(7,8,26,0.96); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 10px 0 calc(10px + var(--safe-bot));
+}
+.bn-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 0.6rem; font-weight: 800; color: var(--muted);
+  cursor: pointer; padding: 4px 20px; border-radius: 12px;
+  transition: all 0.2s; text-decoration: none;
+}
+.bn-item.active { color: var(--neon); }
+.bn-icon { font-size: 1.3rem; }
+
+/* ── LOADING ── */
+.loading {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* STARS BURST */
+.star-burst {
+  position: fixed; pointer-events: none; z-index: 999;
+  font-size: 1.6rem; animation: sburst 0.9s ease forwards;
+}
+@keyframes sburst {
+  0%  { transform: translate(-50%,-50%) scale(0.2); opacity: 1; }
+  60% { transform: translate(-50%,-140%) scale(1.3); opacity: 1; }
+  100%{ transform: translate(-50%,-200%) scale(0.8); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-logo">🚀 РАКЕТА</div>
+  <div class="hdr-role" id="staffRole">Касса</div>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ========================
+     LOGIN SCREEN
+======================== -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="login-card">
+      <span class="login-icon">🔐</span>
+      <div class="login-title">Вход для персонала</div>
+      <p class="login-sub">Введите код кассира для начала работы</p>
+      <input class="f-input" type="text" id="staffName" placeholder="Имя кассира (напр. Алёна)" autocomplete="off">
+      <input class="f-input" type="password" id="staffPass" placeholder="Код доступа" onkeydown="if(event.key==='Enter')staffLogin()">
+      <button class="btn-main" onclick="staffLogin()">Войти</button>
+      <div class="login-err" id="loginErr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================
+     MAIN SCREEN
+======================== -->
+<div id="mainScreen" class="screen">
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('search')" id="tab-search">
+      <span class="tab-icon">🔍</span>
+      <span>Гость</span>
+    </div>
+    <div class="tab" onclick="switchTab('history')" id="tab-history">
+      <span class="tab-icon">📋</span>
+      <span>Смена</span>
+    </div>
+    <div class="tab" onclick="switchTab('stats')" id="tab-stats">
+      <span class="tab-icon">📊</span>
+      <span>Итоги</span>
+    </div>
+  </div>
+
+  <!-- ── TAB: ПОИСК ГОСТЯ ── -->
+  <div class="tab-panel active" id="panel-search">
+    <!-- Поиск по телефону -->
+    <div class="search-card">
+      <div class="sc-title">Найти гостя</div>
+      <div class="phone-row">
+        <input class="phone-input" type="tel" id="phoneInput"
+          placeholder="+7 (900) 000-00-00"
+          oninput="phoneMask(this)"
+          onkeydown="if(event.key==='Enter')searchGuest()">
+        <button class="btn-search" onclick="searchGuest()" id="searchBtn">Найти</button>
+      </div>
+      <div class="qr-divider">или</div>
+      <button class="qr-btn" onclick="startQR()">
+        📷 Сканировать QR-карту гостя
+      </button>
+    </div>
+
+    <!-- QR СКАНЕР -->
+    <div class="qr-scanner-wrap" id="qrScanner">
+      <div class="qr-viewfinder">
+        <video id="qrVideo" playsinline autoplay muted></video>
+        <div class="qr-corners">
+          <div class="qr-corner tl"></div>
+          <div class="qr-corner tr"></div>
+          <div class="qr-corner bl"></div>
+          <div class="qr-corner br"></div>
+          <div class="qr-scan-line"></div>
+        </div>
+      </div>
+      <p class="qr-hint">Наведите камеру на QR-код из карты гостя. Код определится автоматически.</p>
+      <button class="btn-cancel-qr" onclick="stopQR()">Отмена</button>
+    </div>
+
+    <!-- КАРТОЧКА НАЙДЕННОГО ГОСТЯ -->
+    <div class="guest-result" id="guestResult">
+      <div class="gr-glow"></div>
+      <div class="gr-top">
+        <div>
+          <div class="gr-name" id="gr-name">—</div>
+          <div class="gr-phone" id="gr-phone">—</div>
+        </div>
+        <div class="gr-level" id="gr-level">Новичок</div>
+      </div>
+      <div class="gr-stars-row">
+        <div class="gr-stars-num" id="gr-stars">0</div>
+        <div class="gr-stars-lbl">звёзд</div>
+      </div>
+      <div class="gr-bar-track">
+        <div class="gr-bar-fill" id="gr-bar" style="width:0%"></div>
+      </div>
+      <div class="gr-bar-labels">
+        <span id="gr-bar-from">Новичок</span>
+        <span id="gr-bar-to">Космонавт 500★</span>
+      </div>
+      <div class="gr-visits">Визитов: <strong id="gr-visits">0</strong></div>
+
+      <!-- КНОПКИ НАЧИСЛЕНИЯ -->
+      <div class="award-section">
+        <div class="award-title">Начислить звёзды</div>
+        <div class="award-grid">
+          <button class="award-btn visit" onclick="awardStars(100,'Визит в Ракету')">
+            <span class="award-icon">🚀</span>
+            <span class="award-label">Визит</span>
+            <span class="award-pts">+100 ★</span>
+          </button>
+          <button class="award-btn bday" onclick="awardBday()">
+            <span class="award-icon">🎂</span>
+            <span class="award-label">День рождения</span>
+            <span class="award-pts">+300 ★ (×3)</span>
+          </button>
+          <button class="award-btn bonus" onclick="promptBonus()">
+            <span class="award-icon">⭐</span>
+            <span class="award-label">Бонус</span>
+            <span class="award-pts">вручную</span>
+          </button>
+          <button class="award-btn redeem" onclick="redeemStars()">
+            <span class="award-icon">🎟️</span>
+            <span class="award-label">Обмен</span>
+            <span class="award-pts">−1000 ★ = билет</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ГОСТЬ НЕ НАЙДЕН -->
+    <div class="not-found" id="notFound">
+      <div class="nf-icon">🔭</div>
+      <div class="nf-title">Гость не найден</div>
+      <p class="nf-sub">Этот номер не зарегистрирован в клубе.<br>Зарегистрировать прямо сейчас?</p>
+      <button class="btn-register" onclick="showRegForm()">+ Зарегистрировать гостя</button>
+    </div>
+
+    <!-- ФОРМА РЕГИСТРАЦИИ -->
+    <div class="reg-section" id="regSection">
+      <div class="reg-title">Новый гость</div>
+      <div class="reg-row">
+        <input class="f-input" type="text" id="reg-name" placeholder="Имя" style="margin-bottom:0">
+        <input class="f-input" type="text" id="reg-bday" placeholder="ДР (дд.мм)" style="margin-bottom:0">
+      </div>
+      <button class="btn-main" onclick="registerGuest()" style="margin-top:4px">
+        Зарегистрировать + начислить визит
+      </button>
+    </div>
+  </div>
+
+  <!-- ── TAB: ИСТОРИЯ СМЕНЫ ── -->
+  <div class="tab-panel" id="panel-history">
+    <div class="sc-title" style="padding:0 0 12px">Действия за смену</div>
+    <div class="hist-list" id="histList">
+      <div style="text-align:center;color:var(--muted);padding:40px 0;font-size:0.88rem">
+        Пока нет действий в эту смену
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: ИТОГИ ── -->
+  <div class="tab-panel" id="panel-stats">
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-box-num" id="st-visits" style="color:var(--green)">0</div>
+        <div class="stat-box-lbl">Визитов за смену</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num" id="st-stars" style="color:var(--yellow)">0</div>
+        <div class="stat-box-lbl">Звёзд начислено</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num" id="st-new" style="color:var(--blue)">0</div>
+        <div class="stat-box-lbl">Новых гостей</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num" id="st-redeem" style="color:var(--neon)">0</div>
+        <div class="stat-box-lbl">Обменов билетов</div>
+      </div>
+    </div>
+    <button class="btn-main" style="margin-top:8px" onclick="endShift()">
+      Завершить смену и отправить отчёт
+    </button>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <span class="success-emoji" id="su-emoji">⭐</span>
+    <div class="success-title" id="su-title">Начислено!</div>
+    <p class="success-sub" id="su-guest">—</p>
+    <div class="success-stars" id="su-pts">+100 ★</div>
+    <div class="success-new-total" id="su-total">Итого: 0 ★</div>
+    <button class="success-close" onclick="closeSuccess()">Готово ✓</button>
+  </div>
+</div>
+
+<script>
+/* ============================================
+   CONFIG
+============================================ */
+const SUPABASE_URL  = 'https://yiqipulgofoschkccaxr.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
+
+// Код доступа для персонала (сменить перед деплоем)
+const STAFF_CODE = 'raketa2026';
+
+const LEVELS = [
+  { name:'Новичок',   icon:'🛸', min:0,    max:499,  color:'#8090b0' },
+  { name:'Космонавт', icon:'🚀', min:500,  max:1499, color:'#2d9cff' },
+  { name:'Командир',  icon:'⚡', min:1500, max:2999, color:'#9b59ff' },
+  { name:'Галактика', icon:'👑', min:3000, max:99999,color:'#ffd166' },
+];
+
+/* ============================================
+   STATE
+============================================ */
+let currentGuest = null;
+let staffName    = '';
+let shiftLog     = [];        // действия за смену
+let shiftStats   = { visits:0, stars:0, newGuests:0, redeems:0 };
+let qrStream     = null;
+let qrInterval   = null;
+
+/* ============================================
+   SUPABASE HELPERS
+============================================ */
+async function sbFetch(path, opts = {}) {
+  const url = SUPABASE_URL + '/rest/v1/' + path;
+  const res = await fetch(url, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...opts.headers
+    },
+    ...opts
+  });
+  if (!res.ok) throw new Error(await res.text());
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function findGuest(phone) {
+  const clean = phone.replace(/\D/g,'');
+  const rows = await sbFetch(`raketa_guests?phone=ilike.*${clean.slice(-10)}*&limit=1`);
+  return rows && rows.length ? rows[0] : null;
+}
+
+async function upsertGuest(data) {
+  return await sbFetch('raketa_guests', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    prefer: 'return=representation',
+    headers: { 'Prefer': 'return=representation,resolution=merge-duplicates' }
+  });
+}
+
+async function updateGuestStars(id, deltaStars, deltaVisits = 0) {
+  // Получаем текущие звёзды
+  const rows = await sbFetch(`raketa_guests?id=eq.${id}&select=stars,visits`);
+  if (!rows || !rows.length) throw new Error('Гость не найден');
+  const cur = rows[0];
+  const newStars  = Math.max(0, cur.stars + deltaStars);
+  const newVisits = cur.visits + deltaVisits;
+  const newLevel  = getLevel(newStars).name;
+  await sbFetch(`raketa_guests?id=eq.${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ stars: newStars, visits: newVisits, level: newLevel, last_visit: new Date().toISOString() }),
+    prefer: 'return=representation'
+  });
+  return { ...rows[0], stars: newStars, visits: newVisits, level: newLevel };
+}
+
+async function logVisit(guestId, delta, reason, note) {
+  await sbFetch('raketa_visits', {
+    method: 'POST',
+    body: JSON.stringify({ guest_id: guestId, stars_delta: delta, reason, staff_note: note || staffName }),
+    prefer: ''
+  });
+}
+
+/* ============================================
+   LOGIN
+============================================ */
+function staffLogin() {
+  const name = document.getElementById('staffName').value.trim();
+  const pass = document.getElementById('staffPass').value;
+  if (!name) { showErr('Введите имя'); return; }
+  if (pass !== STAFF_CODE) { showErr('Неверный код'); return; }
+  staffName = name;
+  document.getElementById('staffRole').textContent = name;
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainScreen').classList.add('active');
+  showToast('👋 Добро пожаловать, ' + name + '!');
+}
+function showErr(msg) {
+  const el = document.getElementById('loginErr');
+  el.textContent = msg;
+  setTimeout(() => el.textContent = '', 2000);
+}
+
+/* ============================================
+   SEARCH GUEST
+============================================ */
+async function searchGuest() {
+  const phone = document.getElementById('phoneInput').value;
+  if (phone.replace(/\D/g,'').length < 10) { showToast('⚠️ Введи номер телефона'); return; }
+
+  const btn = document.getElementById('searchBtn');
+  btn.innerHTML = '<span class="loading"></span>';
+  btn.disabled = true;
+
+  hideAll();
+  try {
+    const guest = await findGuest(phone);
+    if (guest) showGuestCard(guest);
+    else showNotFound();
+  } catch(e) {
+    showToast('❌ Ошибка: ' + e.message);
+    console.error(e);
+  }
+  btn.innerHTML = 'Найти';
+  btn.disabled = false;
+}
+
+function hideAll() {
+  document.getElementById('guestResult').classList.remove('found');
+  document.getElementById('notFound').classList.remove('show');
+  document.getElementById('regSection').classList.remove('show');
+}
+
+function showGuestCard(guest) {
+  currentGuest = guest;
+  const lv = getLevel(guest.stars);
+  const nextLv = LEVELS[Math.min(lv.id || 0, LEVELS.length-1)];
+  const isMax = guest.stars >= 3000;
+
+  document.getElementById('gr-name').textContent   = guest.name;
+  document.getElementById('gr-phone').textContent  = guest.phone;
+  document.getElementById('gr-stars').textContent  = guest.stars.toLocaleString('ru');
+  document.getElementById('gr-visits').textContent = guest.visits;
+
+  const badge = document.getElementById('gr-level');
+  badge.textContent = lv.icon + ' ' + lv.name;
+  badge.style.color = lv.color;
+  badge.style.borderColor = lv.color + '50';
+  badge.style.background = lv.color + '15';
+
+  const pct = isMax ? 100 : Math.min(100, ((guest.stars - lv.min) / (nextLv.min - lv.min)) * 100);
+  document.getElementById('gr-bar').style.width = pct + '%';
+  document.getElementById('gr-bar-from').textContent = lv.name;
+  document.getElementById('gr-bar-to').textContent   = isMax ? 'MAX' : nextLv.name + ' ' + nextLv.min + '★';
+
+  document.getElementById('guestResult').classList.add('found');
+}
+
+function showNotFound() {
+  document.getElementById('notFound').classList.add('show');
+}
+
+/* ============================================
+   AWARD STARS
+============================================ */
+async function awardStars(delta, reason, emoji = '⭐') {
+  if (!currentGuest) { showToast('⚠️ Сначала найди гостя'); return; }
+  try {
+    const updated = await updateGuestStars(currentGuest.id, delta, delta > 0 ? 1 : 0);
+    await logVisit(currentGuest.id, delta, reason, staffName);
+
+    // Обновляем карточку
+    currentGuest = { ...currentGuest, ...updated };
+    showGuestCard(currentGuest);
+
+    // Смена лог
+    shiftLog.unshift({ name: currentGuest.name, reason, delta, time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}) });
+    if (delta > 0) { shiftStats.visits++; shiftStats.stars += delta; }
+    else shiftStats.redeems++;
+    updateStats();
+    renderHistory();
+
+    // Анимация звёздочек
+    if (delta > 0) spawnStars();
+
+    // Success overlay
+    showSuccess(emoji, reason, currentGuest.name, delta, currentGuest.stars);
+  } catch(e) {
+    showToast('❌ ' + e.message);
+    console.error(e);
+  }
+}
+
+function awardBday() {
+  if (!currentGuest) return;
+  if (!confirm(`Подтвердить день рождения для ${currentGuest.name}? Будет начислено ×3 (300★)`)) return;
+  awardStars(300, 'День рождения ×3', '🎂');
+}
+
+function promptBonus() {
+  if (!currentGuest) return;
+  const pts = prompt('Сколько бонусных звёзд начислить?');
+  if (!pts || isNaN(+pts) || +pts < 1) return;
+  const reason = prompt('Причина (например: Мастер-класс)') || 'Бонус';
+  awardStars(+pts, reason, '⭐');
+}
+
+function redeemStars() {
+  if (!currentGuest) return;
+  if (currentGuest.stars < 1000) { showToast('⚠️ Недостаточно звёзд (нужно 1000★)'); return; }
+  if (!confirm(`Списать 1000★ у ${currentGuest.name} и выдать бесплатный билет?`)) return;
+  awardStars(-1000, 'Обмен: Бесплатный билет', '🎟️');
+}
+
+/* ============================================
+   REGISTER NEW GUEST
+============================================ */
+function showRegForm() {
+  document.getElementById('regSection').classList.add('show');
+  document.getElementById('reg-name').focus();
+}
+
+async function registerGuest() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const bday  = document.getElementById('reg-bday').value.trim();
+  const phone = document.getElementById('phoneInput').value;
+
+  if (!name) { showToast('⚠️ Введи имя гостя'); return; }
+
+  let bdayISO = null;
+  if (bday) {
+    const [d,m] = bday.split('.');
+    if (d && m) {
+      const y = new Date().getFullYear();
+      bdayISO = `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+    }
+  }
+
+  try {
+    const cleanPhone = phone.replace(/\D/g,'');
+    const result = await sbFetch('raketa_guests', {
+      method: 'POST',
+      body: JSON.stringify({ name, phone: '+7' + cleanPhone.slice(-10), stars: 100, visits: 1, bday: bdayISO }),
+      prefer: 'return=representation'
+    });
+    const guest = Array.isArray(result) ? result[0] : result;
+    await logVisit(guest.id, 100, 'Регистрация + первый визит', staffName);
+
+    shiftStats.newGuests++;
+    shiftStats.stars += 100;
+    updateStats();
+
+    currentGuest = guest;
+    document.getElementById('regSection').classList.remove('show');
+    document.getElementById('notFound').classList.remove('show');
+    showGuestCard(guest);
+    spawnStars();
+    showSuccess('🎉', 'Регистрация в клубе!', guest.name, 100, guest.stars);
+    shiftLog.unshift({ name: guest.name, reason: 'Новый гость + визит', delta: 100, time: new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'}) });
+    renderHistory();
+  } catch(e) {
+    showToast('❌ ' + e.message);
+    console.error(e);
+  }
+}
+
+/* ============================================
+   QR SCANNER
+============================================ */
+async function startQR() {
+  const wrap = document.getElementById('qrScanner');
+  const video = document.getElementById('qrVideo');
+  try {
+    qrStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    video.srcObject = qrStream;
+    wrap.classList.add('show');
+    // Используем BarcodeDetector если доступен
+    if ('BarcodeDetector' in window) {
+      const detector = new BarcodeDetector({ formats: ['qr_code'] });
+      qrInterval = setInterval(async () => {
+        try {
+          const codes = await detector.detect(video);
+          if (codes.length) {
+            const raw = codes[0].rawValue; // RAKETA-XXXXXXX-...
+            stopQR();
+            const phoneChunk = raw.split('-')[1];
+            if (phoneChunk) {
+              // Ищем гостя по последним 7 цифрам телефона
+              const rows = await sbFetch(`raketa_guests?phone=ilike.*${phoneChunk}*&limit=1`);
+              if (rows && rows.length) showGuestCard(rows[0]);
+              else showToast('❌ Гость не найден по QR');
+            }
+          }
+        } catch(e) {}
+      }, 400);
+    } else {
+      showToast('📷 Наведите камеру — распознавание идёт');
+    }
+  } catch(e) {
+    showToast('⚠️ Нет доступа к камере');
+    wrap.classList.remove('show');
+  }
+}
+
+function stopQR() {
+  if (qrStream) { qrStream.getTracks().forEach(t => t.stop()); qrStream = null; }
+  if (qrInterval) { clearInterval(qrInterval); qrInterval = null; }
+  document.getElementById('qrScanner').classList.remove('show');
+}
+
+/* ============================================
+   SUCCESS OVERLAY
+============================================ */
+function showSuccess(emoji, title, guestName, pts, total) {
+  document.getElementById('su-emoji').textContent = emoji;
+  document.getElementById('su-title').textContent = title;
+  document.getElementById('su-guest').textContent = guestName;
+  document.getElementById('su-pts').textContent   = (pts > 0 ? '+' : '') + pts + ' ★';
+  document.getElementById('su-pts').style.color   = pts > 0 ? 'var(--yellow)' : 'var(--neon)';
+  document.getElementById('su-total').textContent = 'Итого на карте: ' + total.toLocaleString('ru') + ' ★';
+  document.getElementById('successOverlay').classList.add('show');
+}
+
+function closeSuccess() {
+  document.getElementById('successOverlay').classList.remove('show');
+}
+
+/* ============================================
+   TABS
+============================================ */
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+/* ============================================
+   HISTORY
+============================================ */
+function renderHistory() {
+  const list = document.getElementById('histList');
+  if (!shiftLog.length) {
+    list.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 0;font-size:0.88rem">Пока нет действий</div>';
+    return;
+  }
+  list.innerHTML = shiftLog.slice(0,30).map(h => `
+    <div class="hist-item">
+      <div class="hi-icon ${h.delta > 0 ? 'plus' : 'minus'}">${h.delta > 0 ? '⬆️' : '⬇️'}</div>
+      <div class="hi-info">
+        <div class="hi-guest">${h.name}</div>
+        <div class="hi-action">${h.reason}</div>
+        <div class="hi-time">${h.time}</div>
+      </div>
+      <div class="hi-pts ${h.delta > 0 ? 'plus' : 'minus'}">${h.delta > 0 ? '+' : ''}${h.delta} ★</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================
+   STATS
+============================================ */
+function updateStats() {
+  document.getElementById('st-visits').textContent  = shiftStats.visits;
+  document.getElementById('st-stars').textContent   = shiftStats.stars;
+  document.getElementById('st-new').textContent     = shiftStats.newGuests;
+  document.getElementById('st-redeem').textContent  = shiftStats.redeems;
+}
+
+async function endShift() {
+  const msg = `🚀 *Итоги смены · Ракета*\n\n` +
+    `👤 Кассир: ${staffName}\n` +
+    `📅 ${new Date().toLocaleDateString('ru-RU')}\n\n` +
+    `✅ Визитов: ${shiftStats.visits}\n` +
+    `⭐ Звёзд начислено: ${shiftStats.stars}\n` +
+    `🆕 Новых гостей: ${shiftStats.newGuests}\n` +
+    `🎟️ Обменов: ${shiftStats.redeems}`;
+
+  // Отправка в Telegram директору
+  try {
+    const token = 'YOUR_BOT_TOKEN'; // из настроек
+    const chatId = '@parkraketa74';
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
+    });
+  } catch(e) {}
+  showToast('✅ Смена завершена! Отчёт отправлен директору');
+}
+
+/* ============================================
+   HELPERS
+============================================ */
+function getLevel(stars) {
+  for (let i = LEVELS.length - 1; i >= 0; i--)
+    if (stars >= LEVELS[i].min) return { ...LEVELS[i], id: i };
+  return { ...LEVELS[0], id: 0 };
+}
+
+function phoneMask(el) {
+  let v = el.value.replace(/\D/g,'');
+  if (v.startsWith('7') || v.startsWith('8')) v = v.slice(1);
+  let out = '+7';
+  if (v.length > 0) out += ' (' + v.slice(0,3);
+  if (v.length >= 3) out += ') ' + v.slice(3,6);
+  if (v.length >= 6) out += '-' + v.slice(6,8);
+  if (v.length >= 8) out += '-' + v.slice(8,10);
+  el.value = out;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function spawnStars() {
+  const btn = document.getElementById('guestResult');
+  const rect = btn.getBoundingClientRect();
+  ['⭐','✨','🌟','💫','⭐'].forEach((s, i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'star-burst';
+      el.textContent = s;
+      el.style.left = (rect.left + 40 + Math.random() * (rect.width - 80)) + 'px';
+      el.style.top  = (rect.top + rect.height * 0.5) + 'px';
+      el.style.fontSize = (1.2 + Math.random() * 0.8) + 'rem';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }, i * 80);
+  });
+}
+
+/* ── AUTO LOGIN FROM SESSION ── */
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = sessionStorage.getItem('raketa_staff');
+  if (saved) {
+    staffName = saved;
+    document.getElementById('staffRole').textContent = saved;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainScreen').classList.add('active');
+  }
+  document.getElementById('staffPass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') staffLogin();
+  });
+});
+
+window.addEventListener('beforeunload', () => {
+  if (staffName) sessionStorage.setItem('raketa_staff', staffName);
+});
+
+/* SERVICE WORKER */
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
