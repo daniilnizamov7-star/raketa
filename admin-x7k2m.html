@@ -305,6 +305,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .sidebar { display: none; }
   .admin-main { margin-left: 0; }
 }
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 </style>
 </head>
 <body>
@@ -581,7 +582,7 @@ const LEVELS = [
    LOGIN
 =========================== */
 function doLogin() {
-  const pass = document.getElementById('loginPass').value;
+  const pass = document.getElementById('loginPass').value.trim();
   if (pass === ADMIN_PASS) {
     sessionStorage.setItem('raketa_admin', '1');
     document.getElementById('loginScreen').style.display = 'none';
@@ -589,8 +590,12 @@ function doLogin() {
     initAdmin();
   } else {
     const err = document.getElementById('loginError');
-    err.textContent = '❌ Неверный пароль';
-    setTimeout(() => err.textContent = '', 2000);
+    err.textContent = '❌ Неверный пароль: ' + pass.length + ' симв.';
+    // Shake input
+    const inp = document.getElementById('loginPass');
+    inp.style.borderColor = '#ff5c5c';
+    inp.style.animation = 'shake 0.4s ease';
+    setTimeout(() => { err.textContent = ''; inp.style.borderColor = ''; inp.style.animation = ''; }, 2000);
   }
 }
 
@@ -636,10 +641,11 @@ async function sbFetch(path, opts = {}) {
    INIT
 =========================== */
 function initAdmin() {
-  renderDashboard();
-  renderGuestsTable();
-  renderBookings();
   loadSettings();
+  // Все render функции защищены от ошибок Supabase
+  renderDashboard().catch(() => showToast('⚠️ Supabase не настроен — залейте схему'));
+  renderGuestsTable().catch(() => {});
+  renderBookings().catch(() => {});
 }
 
 /* ===========================
@@ -666,6 +672,7 @@ async function getBookings() {
    DASHBOARD
 =========================== */
 async function renderDashboard() {
+  try {
   const guests   = await getGuests();
   const bookings = await getBookings();
   const totalStars  = guests.reduce((s, g) => s + (g.stars || 0), 0);
@@ -699,12 +706,14 @@ async function renderDashboard() {
       <span style="float:right;font-size:0.72rem;color:var(--muted)">${new Date(b.created_at).toLocaleDateString('ru-RU')}</span>
     </div>
   `).join('') || '<div style="color:var(--muted);padding:12px">Нет заявок</div>';
+  } catch(e) { console.warn('Dashboard error:', e.message); }
 }
 
 /* ===========================
    GUESTS TABLE
 =========================== */
 async function renderGuestsTable() {
+  try {
   const guests = await getGuests();
   const q = (document.getElementById('guestSearch')?.value || '').toLowerCase();
   const filtered = q ? guests.filter(g => g.name.toLowerCase().includes(q) || (g.phone||'').includes(q)) : guests;
@@ -728,6 +737,7 @@ async function renderGuestsTable() {
       </td>
     </tr>`;
   }).join('');
+  } catch(e) { console.warn('Guests error:', e.message); }
 }
 
 async function quickAddStars(id, name) {
