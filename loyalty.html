@@ -9,8 +9,17 @@
 <meta name="apple-mobile-web-app-title" content="Ракета">
 <meta name="theme-color" content="#04050e">
 <title>🚀 Ракета · Карта гостя</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest-client.json">
 <style>
+
+/* LOADING SKELETON */
+.skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.page-loading { position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px; }
+.page-loading .pl-logo { font-size:3rem; animation: plFloat 1s ease-in-out infinite alternate; }
+@keyframes plFloat { from{transform:translateY(0)} to{transform:translateY(-12px)} }
+.page-loading .pl-text { font-size:0.82rem;color:var(--muted2);font-weight:700; }
+
 /* ============================
    TOKENS
 ============================ */
@@ -490,6 +499,7 @@ body {
 </head>
 <body>
 
+<div class="page-loading" id="pageLoading"><div class="pl-logo">🚀</div><div class="pl-text">Загружаем...</div></div>
 <canvas id="stars-canvas"></canvas>
 
 <!-- HEADER -->
@@ -762,6 +772,7 @@ function saveState() {
    INIT
 ==================================== */
 window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { const pl = document.getElementById('pageLoading'); if(pl) pl.style.display='none'; }, 300);
   initStars();
   if (!state) {
     showRegister();
@@ -1181,9 +1192,31 @@ function initStars() {
 /* ====================================
    SERVICE WORKER
 ==================================== */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
-}
+(function() {
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    reg.update();
+    reg.addEventListener('updatefound', () => {
+      const worker = reg.installing;
+      worker.addEventListener('statechange', () => {
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+          showUpdateBanner();
+        }
+      });
+    });
+  });
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) { refreshing = true; location.reload(); }
+  });
+  function showUpdateBanner() {
+    const b = document.createElement('div');
+    b.innerHTML = '<span>🚀 Новая версия</span><button onclick="navigator.serviceWorker.getRegistration().then(r=>r&&r.waiting&&r.waiting.postMessage('SKIP_WAITING'))">Обновить</button>';
+    b.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:#ff3cac;color:#fff;padding:12px 20px;border-radius:100px;display:flex;align-items:center;gap:12px;font-size:0.85rem;font-weight:700;box-shadow:0 4px 20px rgba(255,60,172,0.4);white-space:nowrap';
+    b.querySelector('button').style.cssText = 'background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 14px;border-radius:100px;cursor:pointer;font-weight:800;font-size:0.82rem';
+    document.body.appendChild(b);
+  }
+})();
 </script>
 </body>
 </html>
