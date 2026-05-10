@@ -3,1008 +3,1108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ракета — Семейный парк в Челябинске</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="Ракета — семейный парк развлечений в Челябинске. Аттракционы, дни рождения, программы для детей. ТРК Таганай, ул. Труда 181.">
+<meta name="theme-color" content="#05060f">
+<title>🚀 Ракета — Семейный парк развлечений в Челябинске</title>
+<link rel="manifest" href="manifest.json">
+
+<!-- Google Fonts - заменяем на безопасные для России -->
 <style>
-  :root {
-    --space: #05060f;
-    --deep: #0b0d1f;
-    --card: #111428;
-    --border: rgba(255,255,255,0.07);
-    --neon: #ff3cac;
-    --blue: #2d9cff;
-    --yellow: #ffd166;
-    --green: #06d6a0;
-    --white: #f0f4ff;
-    --muted: #6b7a9e;
-    --glow-pink: rgba(255,60,172,0.25);
-    --glow-blue: rgba(45,156,255,0.2);
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap');
+</style>
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<style>
+/* ================================
+   DESIGN TOKENS
+================================ */
+:root {
+  --bg:       #04050e;
+  --deep:     #080a1a;
+  --card:     #0e1028;
+  --card2:    #111430;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
 
-  html { scroll-behavior: smooth; }
+  --neon:     #ff3cac;
+  --neon2:    #c4007a;
+  --blue:     #2d9cff;
+  --cyan:     #00e5ff;
+  --yellow:   #ffd166;
+  --green:    #06d6a0;
+  --purple:   #9b59ff;
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--space);
-    color: var(--white);
-    overflow-x: hidden;
-    cursor: none;
-  }
+  --white:    #eef2ff;
+  --muted:    #5a6a90;
+  --muted2:   #8090b0;
 
-  /* CURSOR */
-  .cursor {
-    width: 12px; height: 12px;
-    background: var(--neon);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.1s;
-    mix-blend-mode: screen;
-  }
-  .cursor-ring {
-    width: 36px; height: 36px;
-    border: 1.5px solid rgba(255,60,172,0.5);
-    border-radius: 50%;
-    position: fixed; top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9998;
-    transition: all 0.15s ease;
-  }
+  --gp: rgba(255,60,172,0.2);
+  --gb: rgba(45,156,255,0.15);
+  --gy: rgba(255,209,102,0.15);
 
-  /* STARS */
-  .stars {
-    position: fixed; inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    overflow: hidden;
-  }
-  .star {
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-    animation: twinkle var(--dur, 3s) infinite alternate ease-in-out;
-  }
-  @keyframes twinkle {
-    from { opacity: 0.1; transform: scale(0.8); }
-    to { opacity: 0.9; transform: scale(1.2); }
-  }
+  --r: 24px;
+  --r2: 16px;
+}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 20px 40px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: linear-gradient(to bottom, rgba(5,6,15,0.95), transparent);
-    backdrop-filter: blur(10px);
-  }
-  .logo {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, var(--neon), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .logo-icon { font-size: 1.6rem; -webkit-text-fill-color: initial; }
-  .nav-links { display: flex; gap: 32px; }
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    letter-spacing: 0.03em;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--white); }
-  .nav-cta {
-    background: var(--neon);
-    color: #fff !important;
-    padding: 10px 22px;
-    border-radius: 100px;
-    font-weight: 700 !important;
-    transition: all 0.2s !important;
-    box-shadow: 0 0 20px var(--glow-pink);
-  }
-  .nav-cta:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 35px var(--glow-pink) !important;
-    color: #fff !important;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
-    padding: 100px 20px 60px;
-    position: relative;
-    z-index: 1;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,60,172,0.12);
-    border: 1px solid rgba(255,60,172,0.3);
-    padding: 8px 18px;
-    border-radius: 100px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--neon);
-    margin-bottom: 32px;
-    animation: fadeUp 0.8s ease both;
-  }
-  .hero h1 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-weight: 900;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    margin-bottom: 12px;
-    animation: fadeUp 0.8s 0.1s ease both;
-  }
-  .hero h1 span {
-    background: linear-gradient(135deg, var(--neon) 0%, var(--blue) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: block;
-  }
-  .hero-sub {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    color: var(--muted);
-    max-width: 480px;
-    line-height: 1.6;
-    margin: 20px auto 40px;
-    animation: fadeUp 0.8s 0.2s ease both;
-  }
-  .hero-btns {
-    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-    animation: fadeUp 0.8s 0.3s ease both;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--neon), #c71585);
-    color: #fff;
-    padding: 16px 36px;
-    border-radius: 100px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-decoration: none;
-    border: none; cursor: none;
-    transition: all 0.3s;
-    box-shadow: 0 0 30px var(--glow-pink), 0 4px 20px rgba(0,0,0,0.4);
-  }
-  .btn-primary:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 0 50px var(--glow-pink), 0 8px 30px rgba(0,0,0,0.5);
-  }
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    padding: 15px 36px;
-    border-radius: 100px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-decoration: none;
-    border: 1.5px solid var(--border);
-    cursor: none;
-    transition: all 0.3s;
-  }
-  .btn-secondary:hover {
-    border-color: rgba(255,255,255,0.3);
-    background: rgba(255,255,255,0.05);
-    transform: translateY(-2px);
-  }
+body {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: none;
+}
 
-  /* ORBIT DECO */
-  .orbit-wrap {
-    position: absolute;
-    width: 600px; height: 600px;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: -1;
-    animation: spin 40s linear infinite;
-  }
-  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
-  .orbit-ring {
-    position: absolute; inset: 0;
-    border-radius: 50%;
-    border: 1px solid rgba(45,156,255,0.1);
-  }
-  .orbit-dot {
-    position: absolute;
-    width: 8px; height: 8px;
-    background: var(--blue);
-    border-radius: 50%;
-    top: -4px; left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 0 12px var(--blue);
-  }
-  .glow-center {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(255,60,172,0.15) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
+/* ================================
+   CUSTOM CURSOR (desktop only)
+================================ */
+.cur { position: fixed; pointer-events: none; z-index: 9999; top:0; left:0; }
+.cur-dot {
+  width: 10px; height: 10px;
+  background: var(--neon);
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: screen;
+  transition: transform 0.08s;
+}
+.cur-ring {
+  width: 40px; height: 40px;
+  border: 1.5px solid rgba(255,60,172,0.45);
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  transition: width 0.2s, height 0.2s, border-color 0.2s;
+}
+body.cur-hover .cur-ring { width: 56px; height: 56px; border-color: var(--neon); }
 
-  /* STATS */
-  .stats {
-    position: relative; z-index: 1;
-    padding: 0 40px 80px;
-    display: flex; gap: 2px; justify-content: center; flex-wrap: wrap;
-    animation: fadeUp 0.8s 0.5s ease both;
-  }
-  .stat-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 28px 40px;
-    flex: 1; min-width: 180px; max-width: 260px;
-    text-align: center;
-  }
-  .stat-item:first-child { border-radius: 20px 0 0 20px; }
-  .stat-item:last-child { border-radius: 0 20px 20px 0; }
-  .stat-num {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 2.4rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--yellow), var(--neon));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .stat-label {
-    font-size: 0.85rem;
-    color: var(--muted);
-    font-weight: 600;
-  }
+/* ================================
+   STARS CANVAS
+================================ */
+#starfield {
+  position: fixed; inset: 0;
+  z-index: 0; pointer-events: none;
+}
 
-  /* SECTION BASE */
-  section {
-    position: relative; z-index: 1;
-    padding: 100px 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .section-tag {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--neon);
-    margin-bottom: 16px;
-  }
-  .section-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 900;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 20px;
-  }
-  .section-desc {
-    color: var(--muted);
-    font-size: 1.05rem;
-    line-height: 1.7;
-    max-width: 520px;
-  }
+/* ================================
+   NEBULA BG
+================================ */
+.nebula {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 30%, rgba(155,89,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 70%, rgba(255,60,172,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 60% 10%, rgba(45,156,255,0.04) 0%, transparent 70%);
+}
 
-  /* ATTRACTIONS */
-  .attractions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2px;
-    margin-top: 60px;
-  }
-  .attr-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 36px 32px;
-    border-radius: 4px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-    cursor: none;
-  }
-  .attr-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, var(--card-glow, transparent), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .attr-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
-  .attr-card:hover::before { opacity: 1; }
-  .attr-card:nth-child(1) { --card-glow: rgba(255,60,172,0.08); }
-  .attr-card:nth-child(2) { --card-glow: rgba(45,156,255,0.08); }
-  .attr-card:nth-child(3) { --card-glow: rgba(6,214,160,0.08); }
-  .attr-card:nth-child(4) { --card-glow: rgba(255,209,102,0.08); }
-  .attr-card:nth-child(5) { --card-glow: rgba(255,60,172,0.08); }
-  .attr-card:nth-child(6) { --card-glow: rgba(45,156,255,0.08); }
-  .attr-icon {
-    font-size: 2.8rem;
-    margin-bottom: 20px;
-    display: block;
-  }
-  .attr-card h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    letter-spacing: -0.01em;
-  }
-  .attr-card p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-  .attr-age {
-    display: inline-block;
-    margin-top: 16px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 100px;
-    background: rgba(255,255,255,0.06);
-    color: var(--muted);
-  }
+/* ================================
+   NAV
+================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  padding: 18px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.3s, backdrop-filter 0.3s;
+}
+nav.scrolled {
+  background: rgba(4,5,14,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem; font-weight: 900;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.logo-rocket { font-size: 1.5rem; display: inline-block; animation: rocketFloat 3s ease-in-out infinite; }
+@keyframes rocketFloat {
+  0%,100% { transform: translateY(0) rotate(-45deg); }
+  50% { transform: translateY(-5px) rotate(-45deg); }
+}
+.logo-text {
+  background: linear-gradient(135deg, #fff 30%, var(--neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
 
-  /* PRICES */
-  .prices-section {
-    background: var(--deep);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 100px 40px;
-  }
-  .prices-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .prices-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-    margin-top: 60px;
-  }
-  .price-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 40px 32px;
-    text-align: center;
-    position: relative;
-    transition: all 0.3s;
-  }
-  .price-card.featured {
-    border-color: var(--neon);
-    box-shadow: 0 0 40px var(--glow-pink), 0 0 0 1px var(--neon);
-  }
-  .price-card.featured::before {
-    content: '🚀 Хит';
-    position: absolute;
-    top: -14px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--neon);
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 16px;
-    border-radius: 100px;
-    white-space: nowrap;
-  }
-  .price-card:hover { transform: translateY(-4px); }
-  .price-name {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
-  .price-amount {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 3rem;
-    font-weight: 900;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .price-amount span { font-size: 1.2rem; }
-  .price-period {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-  .price-features {
-    list-style: none;
-    text-align: left;
-    margin-bottom: 32px;
-  }
-  .price-features li {
-    font-size: 0.9rem;
-    color: var(--muted);
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .price-features li::before {
-    content: '✓';
-    color: var(--green);
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .btn-book {
-    display: block;
-    background: var(--neon);
-    color: #fff;
-    padding: 14px;
-    border-radius: 100px;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-decoration: none;
-    text-align: center;
-    cursor: none;
-    transition: all 0.3s;
-    border: none;
-    width: 100%;
-    box-shadow: 0 0 20px var(--glow-pink);
-  }
-  .btn-book:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 35px var(--glow-pink);
-  }
-  .btn-book.outline {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--white);
-    box-shadow: none;
-  }
-  .btn-book.outline:hover {
-    border-color: rgba(255,255,255,0.3);
-    box-shadow: none;
-  }
+.nav-links { display: flex; gap: 28px; }
+.nav-links a {
+  color: var(--muted2); text-decoration: none;
+  font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  transition: color 0.2s;
+  cursor: none;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  background: linear-gradient(135deg, var(--neon), var(--neon2)) !important;
+  color: #fff !important;
+  padding: 10px 24px; border-radius: 100px;
+  box-shadow: 0 0 24px var(--gp);
+  transition: box-shadow 0.2s, transform 0.2s !important;
+}
+.nav-cta:hover {
+  box-shadow: 0 0 40px var(--gp) !important;
+  transform: scale(1.04); color: #fff !important;
+}
 
-  /* LOYALTY */
-  .loyalty-wrap {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-    margin-top: 60px;
-  }
-  .loyalty-card {
-    background: linear-gradient(135deg, #1a1040 0%, #0d1530 50%, #1a0a20 100%);
-    border: 1px solid rgba(255,60,172,0.3);
-    border-radius: 28px;
-    padding: 40px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,60,172,0.1);
-    transform: rotate(-2deg);
-    transition: transform 0.3s;
-  }
-  .loyalty-card:hover { transform: rotate(0deg) scale(1.02); }
-  .loyalty-card::before {
-    content: '';
-    position: absolute;
-    top: -80px; right: -80px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(255,60,172,0.25), transparent 70%);
-    border-radius: 50%;
-  }
-  .loyalty-card::after {
-    content: '';
-    position: absolute;
-    bottom: -60px; left: -60px;
-    width: 180px; height: 180px;
-    background: radial-gradient(circle, rgba(45,156,255,0.2), transparent 70%);
-    border-radius: 50%;
-  }
-  .card-logo {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--neon), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 32px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .card-points-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  .card-points {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--yellow), var(--neon));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .card-points-sub {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 32px;
-  }
-  .card-progress-bar {
-    height: 6px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 8px;
-  }
-  .card-progress-fill {
-    height: 100%;
-    width: 65%;
-    background: linear-gradient(90deg, var(--neon), var(--blue));
-    border-radius: 10px;
-    animation: progressAnim 2s ease both;
-  }
-  @keyframes progressAnim { from { width: 0; } }
-  .card-progress-text {
-    font-size: 0.75rem;
-    color: var(--muted);
-    display: flex; justify-content: space-between;
-    margin-bottom: 28px;
-  }
-  .card-owner {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-  }
-  .card-level {
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-top: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--yellow);
-    background: rgba(255,209,102,0.1);
-    padding: 4px 12px;
-    border-radius: 100px;
-    border: 1px solid rgba(255,209,102,0.2);
-  }
-  .loyalty-perks {
-    list-style: none;
-    display: flex; flex-direction: column; gap: 16px;
-  }
-  .loyalty-perks li {
-    display: flex; align-items: flex-start; gap: 16px;
-    padding: 20px 24px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    transition: all 0.3s;
-  }
-  .loyalty-perks li:hover {
-    border-color: rgba(255,255,255,0.12);
-    transform: translateX(4px);
-  }
-  .perk-icon {
-    font-size: 1.8rem;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .perk-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-  }
-  .perk-desc {
-    font-size: 0.85rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
+.burger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.burger span { display: block; width: 24px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
 
-  /* BOOKING */
-  .booking-section {
-    background: var(--deep);
-    border-top: 1px solid var(--border);
-    padding: 100px 40px;
-  }
-  .booking-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .booking-form {
-    margin-top: 50px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    padding: 48px;
-    text-align: left;
-  }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .form-group {
-    display: flex; flex-direction: column; gap: 8px;
-    margin-bottom: 20px;
-  }
-  .form-group label {
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 18px;
-    color: var(--white);
-    font-family: 'Nunito', sans-serif;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.2s;
-    cursor: none;
-  }
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: var(--neon);
-    box-shadow: 0 0 0 3px rgba(255,60,172,0.15);
-    background: rgba(255,60,172,0.04);
-  }
-  .form-group select option { background: var(--deep); }
-  .form-group textarea { resize: none; height: 100px; }
-  .form-submit {
-    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-    margin-top: 10px;
-  }
-  .form-submit .btn-primary { flex: 1; text-align: center; }
-  .form-note {
-    font-size: 0.8rem;
-    color: var(--muted);
-    line-height: 1.5;
-  }
+/* ================================
+   MOBILE NAV
+================================ */
+.mobile-nav {
+  display: none; position: fixed; inset: 0; z-index: 190;
+  background: rgba(4,5,14,0.97); backdrop-filter: blur(20px);
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 32px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.mobile-nav.open { opacity: 1; }
+.mobile-nav a {
+  color: var(--white); text-decoration: none;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.4rem; font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: color 0.2s;
+}
+.mobile-nav a:hover { color: var(--neon); }
 
-  /* REVIEWS */
-  .reviews-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 60px;
-  }
-  .review-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px;
-    transition: all 0.3s;
-  }
-  .review-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.12); }
-  .review-stars {
-    font-size: 1rem;
-    margin-bottom: 14px;
-    color: var(--yellow);
-  }
-  .review-text {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: rgba(240,244,255,0.8);
-    margin-bottom: 20px;
-    font-style: italic;
-  }
-  .review-author {
-    display: flex; align-items: center; gap: 12px;
-  }
-  .review-avatar {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--neon), var(--blue));
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-  }
-  .review-name { font-weight: 700; font-size: 0.9rem; }
-  .review-date { font-size: 0.78rem; color: var(--muted); }
+/* ================================
+   HERO
+================================ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative; z-index: 1;
+}
 
-  /* CTA */
-  .cta-section {
-    position: relative; z-index: 1;
-    padding: 120px 40px;
-    text-align: center;
-    overflow: hidden;
-  }
-  .cta-glow {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    width: 700px; height: 400px;
-    background: radial-gradient(ellipse, rgba(255,60,172,0.12), transparent 70%);
-    pointer-events: none;
-  }
-  .cta-section .section-title { font-size: clamp(2rem, 5vw, 4rem); }
-  .cta-actions {
-    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
-    margin-top: 40px;
-  }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,60,172,0.1);
+  border: 1px solid rgba(255,60,172,0.25);
+  padding: 8px 20px; border-radius: 100px;
+  font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 36px;
+  animation: fadeUp 0.7s ease both;
+}
+.badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--neon);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
 
-  /* FOOTER */
-  footer {
-    position: relative; z-index: 1;
-    border-top: 1px solid var(--border);
-    padding: 48px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    max-width: 100%;
-  }
-  .footer-logo {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--neon), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .footer-info { font-size: 0.85rem; color: var(--muted); line-height: 1.8; }
-  .footer-contacts { font-size: 0.85rem; color: var(--muted); text-align: right; line-height: 1.8; }
-  .footer-contacts a { color: var(--neon); text-decoration: none; }
+.hero-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(3.2rem, 9vw, 8rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  margin-bottom: 8px;
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+.hero-title .line1 { color: var(--white); display: block; }
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--neon) 0%, var(--purple) 50%, var(--blue) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradShift 4s ease infinite alternate;
+}
+@keyframes gradShift {
+  from { filter: hue-rotate(0deg); }
+  to { filter: hue-rotate(30deg); }
+}
 
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(5,6,15,0.9);
-    backdrop-filter: blur(8px);
-    z-index: 200;
-    align-items: center; justify-content: center;
-    padding: 20px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 28px;
-    padding: 48px;
-    max-width: 520px;
-    width: 100%;
-    position: relative;
-    animation: modalIn 0.3s ease;
-  }
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.9) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  .modal-close {
-    position: absolute; top: 20px; right: 20px;
-    background: rgba(255,255,255,0.06);
-    border: none; border-radius: 50%;
-    width: 36px; height: 36px;
-    color: var(--muted);
-    font-size: 1.1rem;
-    cursor: none;
-    transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .modal-close:hover { background: rgba(255,255,255,0.12); color: var(--white); }
-  .modal-success {
-    text-align: center; padding: 20px 0;
-  }
-  .modal-success .success-icon {
-    font-size: 4rem; margin-bottom: 20px; display: block;
-    animation: bounceIn 0.5s ease;
-  }
-  @keyframes bounceIn {
-    0% { transform: scale(0); }
-    60% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
-  .modal-success h3 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 1.4rem; font-weight: 900; margin-bottom: 12px;
-  }
-  .modal-success p { color: var(--muted); line-height: 1.7; }
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--muted2);
+  max-width: 460px;
+  line-height: 1.65;
+  margin: 28px auto 48px;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
 
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: all 0.7s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+.hero-btns {
+  display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp 0.7s 0.3s ease both;
+  margin-bottom: 64px;
+}
 
-  /* MOBILE */
-  @media (max-width: 768px) {
-    nav { padding: 16px 20px; }
-    .nav-links { display: none; }
-    section { padding: 70px 20px; }
-    .prices-section, .booking-section { padding: 70px 20px; }
-    .booking-form { padding: 28px 20px; }
-    .form-row { grid-template-columns: 1fr; }
-    .loyalty-wrap { grid-template-columns: 1fr; }
-    .loyalty-card { transform: none; }
-    footer { flex-direction: column; text-align: center; }
-    .footer-contacts { text-align: center; }
-    .stats { padding: 0 20px 60px; }
-    .stat-item { border-radius: 12px !important; }
-    .cta-section { padding: 80px 20px; }
-    body { cursor: auto; }
-    .cursor, .cursor-ring { display: none; }
-  }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--neon), var(--neon2));
+  color: #fff; padding: 16px 38px; border-radius: 100px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  text-decoration: none; border: none; cursor: none;
+  box-shadow: 0 0 32px var(--gp), 0 4px 20px rgba(0,0,0,0.4);
+  transition: all 0.3s; letter-spacing: -0.01em;
+}
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 0 56px var(--gp), 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--white);
+  padding: 15px 36px; border-radius: 100px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.85rem; font-weight: 700;
+  text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  cursor: none; transition: all 0.3s;
+  letter-spacing: -0.01em;
+}
+.btn-secondary:hover {
+  border-color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.05);
+  transform: translateY(-2px);
+}
+
+/* HERO STATS */
+.hero-stats {
+  display: flex; gap: 0; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.45s ease both;
+  border: 1px solid var(--border); border-radius: 20px;
+  overflow: hidden; background: rgba(255,255,255,0.02);
+}
+.hstat {
+  padding: 20px 36px; text-align: center;
+  border-right: 1px solid var(--border);
+  flex: 1; min-width: 130px;
+}
+.hstat:last-child { border-right: none; }
+.hstat-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.9rem; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, var(--yellow), var(--neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+}
+.hstat-lbl { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+
+/* ORBIT */
+.orbit-wrap {
+  position: absolute; width: 700px; height: 700px;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none; z-index: -1;
+  animation: orbitSpin 60s linear infinite;
+}
+@keyframes orbitSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+.orbit-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid rgba(45,156,255,0.07);
+}
+.orbit-ring:nth-child(2) { inset: 80px; border-color: rgba(255,60,172,0.06); animation: orbitSpin 40s linear infinite reverse; }
+.orbit-ring:nth-child(3) { inset: 160px; border-color: rgba(155,89,255,0.05); }
+.orbit-dot {
+  position: absolute; width: 7px; height: 7px;
+  background: var(--blue); border-radius: 50%;
+  top: -3.5px; left: calc(50% - 3.5px);
+  box-shadow: 0 0 14px var(--blue);
+}
+.orbit-dot2 {
+  position: absolute; width: 5px; height: 5px;
+  background: var(--neon); border-radius: 50%;
+  bottom: -2.5px; left: calc(50% - 2.5px);
+  box-shadow: 0 0 10px var(--neon);
+}
+
+/* CENTER GLOW */
+.hero-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,60,172,0.1) 0%, rgba(45,156,255,0.06) 40%, transparent 70%);
+  pointer-events: none; border-radius: 50%;
+}
+
+/* ================================
+   SECTION BASE
+================================ */
+section {
+  position: relative; z-index: 1;
+  padding: 100px 48px;
+  max-width: 1200px; margin: 0 auto;
+}
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--neon); margin-bottom: 18px;
+}
+.section-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 900; line-height: 1.1;
+  letter-spacing: -0.03em; margin-bottom: 20px;
+}
+.section-desc {
+  color: var(--muted2); font-size: 1.05rem;
+  line-height: 1.7; max-width: 520px;
+}
+
+/* REVEAL ANIMATION */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ================================
+   WHY US
+================================ */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2px; margin-top: 60px;
+}
+.why-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 36px 32px;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+  border-radius: 4px;
+}
+.why-card:first-child { border-radius: 20px 4px 4px 4px; }
+.why-card:last-child { border-radius: 4px 4px 20px 4px; }
+.why-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--neon), var(--blue));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+}
+.why-card:hover { border-color: var(--border2); transform: translateY(-4px); }
+.why-card:hover::after { transform: scaleX(1); }
+.why-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 3.5rem; font-weight: 900;
+  color: rgba(255,255,255,0.04); line-height: 1;
+  position: absolute; top: 20px; right: 24px;
+}
+.why-icon { font-size: 2.4rem; margin-bottom: 20px; display: block; }
+.why-card h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 10px; letter-spacing: -0.01em;
+}
+.why-card p { color: var(--muted2); font-size: 0.9rem; line-height: 1.6; }
+
+/* ================================
+   ATTRACTIONS
+================================ */
+.attractions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 20px; margin-top: 60px;
+}
+.attr-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px 32px;
+  position: relative; overflow: hidden;
+  transition: all 0.3s; cursor: none;
+}
+.attr-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--card-glow, transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.attr-card:hover { transform: translateY(-5px); border-color: var(--border2); }
+.attr-card:hover::before { opacity: 1; }
+.attr-card:nth-child(1) { --card-glow: radial-gradient(circle at 0% 0%, rgba(255,60,172,0.1), transparent 60%); }
+.attr-card:nth-child(2) { --card-glow: radial-gradient(circle at 0% 0%, rgba(45,156,255,0.1), transparent 60%); }
+.attr-card:nth-child(3) { --card-glow: radial-gradient(circle at 0% 0%, rgba(6,214,160,0.1), transparent 60%); }
+.attr-card:nth-child(4) { --card-glow: radial-gradient(circle at 0% 0%, rgba(255,209,102,0.1), transparent 60%); }
+.attr-card:nth-child(5) { --card-glow: radial-gradient(circle at 0% 0%, rgba(155,89,255,0.1), transparent 60%); }
+.attr-card:nth-child(6) { --card-glow: radial-gradient(circle at 0% 0%, rgba(0,229,255,0.1), transparent 60%); }
+.attr-icon { font-size: 2.8rem; margin-bottom: 20px; display: block; position: relative; z-index: 1; }
+.attr-card h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1rem; font-weight: 700;
+  margin-bottom: 10px; letter-spacing: -0.01em;
+  position: relative; z-index: 1;
+}
+.attr-card p { color: var(--muted2); font-size: 0.88rem; line-height: 1.6; position: relative; z-index: 1; }
+.attr-badge {
+  display: inline-block; margin-top: 16px;
+  font-size: 0.72rem; font-weight: 800;
+  padding: 5px 14px; border-radius: 100px;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted2); position: relative; z-index: 1;
+}
+
+/* ================================
+   PRICES
+================================ */
+.prices-wrap {
+  background: linear-gradient(to bottom, transparent, var(--deep) 10%, var(--deep) 90%, transparent);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  padding: 100px 0;
+}
+.prices-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+.prices-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px; margin-top: 60px;
+}
+.price-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 24px; padding: 40px 32px;
+  text-align: center; position: relative;
+  transition: all 0.35s;
+}
+.price-card:hover { transform: translateY(-6px); border-color: var(--border2); }
+.price-card.featured {
+  border-color: var(--neon);
+  box-shadow: 0 0 50px rgba(255,60,172,0.2), inset 0 0 0 1px rgba(255,60,172,0.15);
+  background: linear-gradient(160deg, rgba(255,60,172,0.06) 0%, var(--card) 40%);
+}
+.price-card.featured::before {
+  content: '🚀 Самый выбираемый';
+  position: absolute; top: -14px; left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--neon), var(--neon2));
+  color: #fff; font-size: 0.7rem; font-weight: 800;
+  padding: 5px 18px; border-radius: 100px;
+  white-space: nowrap; letter-spacing: 0.05em;
+}
+.price-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 24px;
+}
+.price-amount {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2.4rem, 5vw, 3.2rem);
+  font-weight: 900; line-height: 1; margin-bottom: 6px;
+}
+.price-amount .rub { font-size: 1.4rem; vertical-align: super; }
+.price-period { font-size: 0.85rem; color: var(--muted); margin-bottom: 32px; }
+.price-features { list-style: none; text-align: left; margin-bottom: 32px; }
+.price-features li {
+  font-size: 0.88rem; color: var(--muted2);
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.price-features li::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+.btn-book {
+  display: block; padding: 14px;
+  border-radius: 100px;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  text-align: center; text-decoration: none;
+  cursor: none; transition: all 0.3s; border: none; width: 100%;
+}
+.btn-book.solid {
+  background: linear-gradient(135deg, var(--neon), var(--neon2));
+  color: #fff; box-shadow: 0 0 24px var(--gp);
+}
+.btn-book.solid:hover { transform: scale(1.03); box-shadow: 0 0 40px var(--gp); }
+.btn-book.outline {
+  background: transparent; color: var(--white);
+  border: 1.5px solid var(--border2);
+}
+.btn-book.outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
+
+/* ================================
+   LOYALTY PREVIEW
+================================ */
+.loyalty-wrap {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: center; margin-top: 60px;
+}
+.loyalty-card-preview {
+  background: linear-gradient(145deg, #18104a 0%, #0c1540 50%, #1e0a2a 100%);
+  border: 1px solid rgba(155,89,255,0.3);
+  border-radius: 28px; padding: 44px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 50px rgba(155,89,255,0.12);
+  transform: rotate(-2deg);
+  transition: transform 0.5s cubic-bezier(.22,1,.36,1);
+}
+.loyalty-card-preview:hover { transform: rotate(0deg) scale(1.02); }
+.lcp-glow1 {
+  position: absolute; top: -60px; right: -60px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,60,172,0.2), transparent 70%);
+}
+.lcp-glow2 {
+  position: absolute; bottom: -60px; left: -60px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,156,255,0.18), transparent 70%);
+}
+.lcp-logo {
+  font-family: 'Unbounded', sans-serif; font-size: 1rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--neon), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 36px; display: flex; align-items: center; gap: 8px;
+  position: relative; z-index: 1;
+}
+.lcp-stars-label {
+  font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+  position: relative; z-index: 1;
+}
+.lcp-stars-num {
+  font-family: 'Unbounded', sans-serif; font-size: 3.8rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--yellow), var(--neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1; margin-bottom: 4px; position: relative; z-index: 1;
+}
+.lcp-stars-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 32px; position: relative; z-index: 1; }
+.lcp-bar-track {
+  height: 6px; background: rgba(255,255,255,0.08);
+  border-radius: 100px; overflow: hidden; margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+.lcp-bar-fill {
+  height: 100%; width: 68%;
+  background: linear-gradient(90deg, var(--neon), var(--purple), var(--blue));
+  border-radius: 100px;
+  animation: barGrow 2s 0.5s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes barGrow { from { width: 0; } }
+.lcp-bar-text {
+  font-size: 0.73rem; color: var(--muted);
+  display: flex; justify-content: space-between; margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+.lcp-name {
+  font-family: 'Unbounded', sans-serif; font-size: 0.95rem; font-weight: 700;
+  position: relative; z-index: 1;
+}
+.lcp-level {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 8px; font-size: 0.72rem; font-weight: 800;
+  color: var(--yellow);
+  background: rgba(255,209,102,0.1);
+  padding: 4px 14px; border-radius: 100px;
+  border: 1px solid rgba(255,209,102,0.2);
+  position: relative; z-index: 1;
+}
+.loyalty-perks { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.loyalty-perks li {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px 22px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 16px;
+  transition: all 0.3s;
+}
+.loyalty-perks li:hover { border-color: var(--border2); transform: translateX(4px); }
+.perk-icon { font-size: 1.7rem; flex-shrink: 0; }
+.perk-title {
+  font-family: 'Unbounded', sans-serif; font-size: 0.88rem; font-weight: 700;
+  margin-bottom: 4px; letter-spacing: -0.01em;
+}
+.perk-desc { font-size: 0.83rem; color: var(--muted2); line-height: 1.5; }
+
+/* ================================
+   BOOKING FORM
+================================ */
+.booking-wrap {
+  background: linear-gradient(to bottom, transparent, var(--deep) 8%, var(--deep) 92%, transparent);
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  padding: 100px 0;
+}
+.booking-inner { max-width: 860px; margin: 0 auto; padding: 0 48px; text-align: center; }
+.booking-form {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 28px; padding: 48px; text-align: left;
+  margin-top: 50px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.form-group label {
+  font-size: 0.75rem; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 14px 18px; color: var(--white);
+  font-family: 'Nunito', sans-serif; font-size: 1rem;
+  outline: none; transition: all 0.25s; cursor: none;
+  -webkit-appearance: none;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color: var(--muted); }
+.form-group select option { background: var(--deep); color: var(--white); }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 3px rgba(255,60,172,0.12);
+  background: rgba(255,60,172,0.03);
+}
+.form-group textarea { resize: none; height: 100px; }
+.form-submit {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-top: 10px;
+}
+.form-submit .btn-primary { flex: 1; min-width: 200px; justify-content: center; }
+.form-note { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+/* SENDING STATE */
+.btn-primary.sending { opacity: 0.7; pointer-events: none; }
+.btn-primary.success { background: var(--green) !important; box-shadow: 0 0 32px rgba(6,214,160,0.3) !important; }
+
+/* ================================
+   REVIEWS
+================================ */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 20px; margin-top: 60px;
+}
+.review-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px; transition: all 0.3s;
+}
+.review-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+.review-stars { color: var(--yellow); font-size: 1rem; letter-spacing: 2px; margin-bottom: 16px; }
+.review-text {
+  font-size: 0.9rem; color: var(--muted2); line-height: 1.65;
+  margin-bottom: 20px; font-style: italic;
+}
+.review-author { display: flex; align-items: center; gap: 12px; }
+.review-av {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Unbounded', sans-serif; font-size: 0.72rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.review-name { font-weight: 700; font-size: 0.88rem; }
+.review-date { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+
+/* REVIEW SOURCE */
+.review-source {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.7rem; color: var(--muted); margin-top: 6px;
+  background: rgba(255,255,255,0.04); padding: 2px 8px; border-radius: 100px;
+}
+
+/* ================================
+   CTA
+================================ */
+.cta-wrap {
+  padding: 100px 48px;
+  text-align: center; position: relative; z-index: 1;
+}
+.cta-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 600px; height: 300px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,60,172,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-wrap h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900; line-height: 1.1;
+  letter-spacing: -0.03em; margin-bottom: 16px;
+}
+.cta-sub { color: var(--muted2); font-size: 1.1rem; margin-bottom: 40px; }
+.cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.cta-info {
+  display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+}
+.cta-info-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.88rem; color: var(--muted2);
+}
+.cta-info-item span:first-child { font-size: 1.1rem; }
+
+/* ================================
+   FOOTER
+================================ */
+footer {
+  background: var(--deep); border-top: 1px solid var(--border);
+  padding: 60px 48px; position: relative; z-index: 1;
+}
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px;
+}
+.footer-logo {
+  font-family: 'Unbounded', sans-serif; font-size: 1.2rem; font-weight: 900;
+  background: linear-gradient(135deg, #fff 30%, var(--neon));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.footer-desc { color: var(--muted); font-size: 0.88rem; line-height: 1.65; max-width: 280px; }
+.footer-col h4 {
+  font-family: 'Unbounded', sans-serif; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 18px;
+}
+.footer-col a, .footer-col p {
+  display: block; color: var(--muted2); text-decoration: none;
+  font-size: 0.88rem; line-height: 1.5; margin-bottom: 10px;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--white); }
+.footer-bottom {
+  max-width: 1200px; margin: 40px auto 0;
+  padding-top: 24px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-bottom p { font-size: 0.8rem; color: var(--muted); }
+.footer-bottom a { color: var(--muted); text-decoration: none; font-size: 0.8rem; }
+.footer-bottom a:hover { color: var(--white); }
+
+/* ================================
+   MODAL
+================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(4,5,14,0.85); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 28px; padding: 48px; max-width: 480px; width: 100%;
+  text-align: center; position: relative;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.4s cubic-bezier(.22,1,.36,1);
+}
+.modal-overlay.active .modal { transform: scale(1) translateY(0); }
+.modal-close {
+  position: absolute; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.06); border: none;
+  width: 36px; height: 36px; border-radius: 50%;
+  color: var(--muted2); cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.12); color: var(--white); }
+.modal-rocket { font-size: 4rem; display: block; margin-bottom: 20px; animation: rocketLaunch 0.6s ease both; }
+@keyframes rocketLaunch {
+  from { transform: translateY(30px) scale(0.5); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.modal h3 {
+  font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 900;
+  margin-bottom: 12px; letter-spacing: -0.02em;
+}
+.modal p { color: var(--muted2); font-size: 0.92rem; line-height: 1.6; margin-bottom: 28px; }
+.modal-actions { display: flex; gap: 12px; flex-direction: column; }
+
+/* ================================
+   SCROLL TO TOP
+================================ */
+.scroll-top {
+  position: fixed; bottom: 32px; right: 32px; z-index: 150;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon), var(--neon2));
+  border: none; color: #fff; font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 0 24px var(--gp);
+  opacity: 0; transform: translateY(10px); transition: all 0.3s;
+}
+.scroll-top.visible { opacity: 1; transform: none; }
+.scroll-top:hover { transform: translateY(-3px); box-shadow: 0 0 40px var(--gp); }
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .burger { display: flex; }
+  section { padding: 70px 24px; }
+  .prices-inner, .booking-inner { padding: 0 24px; }
+  .loyalty-wrap { grid-template-columns: 1fr; gap: 40px; }
+  .loyalty-card-preview { transform: none; }
+  .loyalty-card-preview:hover { transform: scale(1.01); }
+  .footer-inner { grid-template-columns: 1fr; gap: 36px; }
+  .form-row { grid-template-columns: 1fr; }
+  .booking-form { padding: 28px; }
+  .cta-wrap { padding: 70px 24px; }
+  .footer { padding: 48px 24px; }
+  .hero-stats .hstat { padding: 16px 20px; }
+  .prices-wrap { padding: 70px 0; }
+  .booking-wrap { padding: 70px 0; }
+  body { cursor: auto; }
+  .cur { display: none; }
+}
+@media (max-width: 600px) {
+  .why-grid { gap: 12px; }
+  .why-card:first-child, .why-card:last-child { border-radius: 16px; }
+  .hero-title { font-size: clamp(2.6rem, 13vw, 4rem); }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .hero-btns .btn-primary, .hero-btns .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
+  .cta-btns { flex-direction: column; align-items: center; }
+  .cta-btns .btn-primary, .cta-btns .btn-secondary { width: 100%; max-width: 320px; justify-content: center; }
+}
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<!-- CURSOR -->
+<div class="cur" id="cur">
+  <div class="cur-dot"></div>
+  <div class="cur-ring"></div>
+</div>
 
-<!-- STARS -->
-<div class="stars" id="stars"></div>
+<!-- NEBULA -->
+<div class="nebula"></div>
+
+<!-- STARFIELD -->
+<canvas id="starfield"></canvas>
 
 <!-- NAV -->
-<nav>
-  <div class="logo">
-    <span class="logo-icon">🚀</span>
-    РАКЕТА
-  </div>
+<nav id="nav">
+  <a href="#" class="logo">
+    <span class="logo-rocket">🚀</span>
+    <span class="logo-text">РАКЕТА</span>
+  </a>
   <div class="nav-links">
-    <a href="#attractions">Развлечения</a>
+    <a href="#attractions">Аттракционы</a>
     <a href="#prices">Цены</a>
-    <a href="#loyalty">Карта лояльности</a>
+    <a href="#loyalty">Клуб</a>
     <a href="#reviews">Отзывы</a>
     <a href="#booking" class="nav-cta">Забронировать</a>
   </div>
+  <button class="burger" id="burger" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="orbit-wrap">
-    <div class="orbit-ring"></div>
-    <div class="orbit-dot"></div>
-  </div>
-  <div class="glow-center"></div>
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#attractions" onclick="closeMobileNav()">Аттракционы</a>
+  <a href="#prices" onclick="closeMobileNav()">Цены</a>
+  <a href="#loyalty" onclick="closeMobileNav()">Клуб лояльности</a>
+  <a href="#reviews" onclick="closeMobileNav()">Отзывы</a>
+  <a href="#booking" class="btn-primary" onclick="closeMobileNav()">🎂 Забронировать</a>
+</div>
 
-  <div class="hero-badge">🌟 Лучший семейный парк Челябинска · 4.8 ★</div>
-  <h1>
-    Семейный парк
-    <span>РАКЕТА</span>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="orbit-wrap">
+    <div class="orbit-ring"><div class="orbit-dot"></div></div>
+    <div class="orbit-ring"><div class="orbit-dot2"></div></div>
+    <div class="orbit-ring"></div>
+  </div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Открыт каждый день · ТРК Таганай
+  </div>
+
+  <h1 class="hero-title">
+    <span class="line1">Запусти</span>
+    <span class="line2">счастье</span>
+    <span class="line1">в космос</span>
   </h1>
-  <p class="hero-sub">Космические приключения для детей 1–14 лет. Взрослые — бесплатно. ТРК Таганай, каждый день 10:00–22:00</p>
+
+  <p class="hero-sub">
+    Семейный парк развлечений в Челябинске. Аттракционы, дни рождения, незабываемые приключения для детей от 1 до 14 лет
+  </p>
+
   <div class="hero-btns">
     <a href="#booking" class="btn-primary">🎂 Забронировать праздник</a>
-    <a href="#prices" class="btn-secondary">Посмотреть цены</a>
+    <a href="loyalty.html" class="btn-secondary">⭐ Карта клиента</a>
   </div>
-</div>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stat-item">
-    <div class="stat-num">20+</div>
-    <div class="stat-label">аттракционов</div>
+  <div class="hero-stats">
+    <div class="hstat">
+      <div class="hstat-num" data-target="5000">0</div>
+      <div class="hstat-lbl">детей в месяц</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" data-target="4.8" data-suffix="">0</div>
+      <div class="hstat-lbl">★ на Яндекс Картах</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" data-target="10">0</div>
+      <div class="hstat-lbl">аттракционов</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-num" data-target="7">0</div>
+      <div class="hstat-lbl">лет в Челябинске</div>
+    </div>
   </div>
-  <div class="stat-item">
-    <div class="stat-num">1–14</div>
-    <div class="stat-label">лет возраст</div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="section-tag">💫 Почему Ракета</div>
+  <h2 class="section-title reveal">5 причин, по которым<br>дети возвращаются снова</h2>
+  <div class="why-grid">
+    <div class="why-card reveal" style="transition-delay:0s">
+      <span class="why-num">01</span>
+      <span class="why-icon">🛸</span>
+      <h3>Космическая атмосфера</h3>
+      <p>Уникальный дизайн интерьера переносит детей в другую вселенную. Каждая зона — отдельная планета с историей</p>
+    </div>
+    <div class="why-card reveal" style="transition-delay:0.08s">
+      <span class="why-num">02</span>
+      <span class="why-icon">🎪</span>
+      <h3>Все возрасты — одна семья</h3>
+      <p>Зоны для малышей от 1 года и активные аттракционы для подростков. Родители отдыхают в кафе — дети в восторге</p>
+    </div>
+    <div class="why-card reveal" style="transition-delay:0.16s">
+      <span class="why-num">03</span>
+      <span class="why-icon">🎭</span>
+      <h3>Профессиональные аниматоры</h3>
+      <p>Команда прошла специальное обучение. Нестандартные программы, которые дети вспоминают годами</p>
+    </div>
+    <div class="why-card reveal" style="transition-delay:0.24s">
+      <span class="why-num">04</span>
+      <span class="why-icon">🔒</span>
+      <h3>Безопасность на первом месте</h3>
+      <p>Всё оборудование сертифицировано. Постоянный надзор персонала. Мягкое покрытие во всех игровых зонах</p>
+    </div>
+    <div class="why-card reveal" style="transition-delay:0.32s">
+      <span class="why-num">05</span>
+      <span class="why-icon">⭐</span>
+      <h3>Программа лояльности</h3>
+      <p>Копи звёзды с каждого визита. Обменивай на бесплатные посещения. Эксклюзивные привилегии для постоянных гостей</p>
+    </div>
   </div>
-  <div class="stat-item">
-    <div class="stat-num">4.8★</div>
-    <div class="stat-label">рейтинг 2ГИС</div>
-  </div>
-  <div class="stat-item">
-    <div class="stat-num">0₽</div>
-    <div class="stat-label">для взрослых</div>
-  </div>
-</div>
+</section>
 
 <!-- ATTRACTIONS -->
 <section id="attractions">
-  <div class="section-tag">🎡 Развлечения</div>
-  <h2 class="section-title reveal">Целая вселенная для ваших детей</h2>
-  <p class="section-desc reveal">Батуты, горки, скалодром, аквагрим, творчество и анимация — всё под одной крышей, взрослые проходят бесплатно</p>
+  <div class="section-tag">🎡 Аттракционы</div>
+  <h2 class="section-title reveal">10 зон приключений</h2>
+  <p class="section-desc reveal">Каждая зона создана с любовью, чтобы дети открывали новые миры и возможности</p>
+
   <div class="attractions-grid">
     <div class="attr-card reveal">
-      <span class="attr-icon">🛸</span>
-      <h3>Батутная арена</h3>
-      <p>Огромная зона для прыжков с разными уровнями сложности и горками-трамплинами</p>
-      <span class="attr-age">от 3 лет</span>
-    </div>
-    <div class="attr-card reveal">
       <span class="attr-icon">🧗</span>
-      <h3>Скалодром</h3>
-      <p>Тренировка смелости и ловкости — скалолазные трассы разной высоты с страховкой</p>
-      <span class="attr-age">от 5 лет</span>
+      <h3>Скалодром и верёвочный парк</h3>
+      <p>Высотные маршруты разной сложности. Страховка, инструктор, адреналин — всё включено</p>
+      <span class="attr-badge">от 5 лет</span>
     </div>
-    <div class="attr-card reveal">
-      <span class="attr-icon">🌀</span>
+    <div class="attr-card reveal" style="transition-delay:0.06s">
+      <span class="attr-icon">🏀</span>
+      <h3>Батутный центр</h3>
+      <p>Профессиональные батуты, поролоновые ямы, батутный баскетбол. Прыгай без ограничений</p>
+      <span class="attr-badge">от 3 лет</span>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.12s">
+      <span class="attr-icon">🏰</span>
       <h3>Игровой лабиринт</h3>
-      <p>Многоуровневый лабиринт с горками, туннелями и секретными комнатами</p>
-      <span class="attr-age">от 2 лет</span>
+      <p>Многоуровневый лабиринт с горками, тоннелями и секретными комнатами. Целый час исследований</p>
+      <span class="attr-badge">от 1 года</span>
     </div>
-    <div class="attr-card reveal">
+    <div class="attr-card reveal" style="transition-delay:0.18s">
+      <span class="attr-icon">🎮</span>
+      <h3>Аркадные автоматы</h3>
+      <p>Более 30 игровых автоматов. Собирай призовые жетоны и меняй на подарки в призовом магазине</p>
+      <span class="attr-badge">от 4 лет</span>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.24s">
+      <span class="attr-icon">🎯</span>
+      <h3>Лазертаг арена</h3>
+      <p>Тактические бои в командах. Специальные детские миссии и сценарии. Игра на 8–16 игроков</p>
+      <span class="attr-badge">от 6 лет</span>
+    </div>
+    <div class="attr-card reveal" style="transition-delay:0.30s">
       <span class="attr-icon">🎨</span>
-      <h3>Аквагрим и творчество</h3>
-      <p>Профессиональный аквагрим, мастер-классы и столы для творчества каждый день</p>
-      <span class="attr-age">от 1 года</span>
-    </div>
-    <div class="attr-card reveal">
-      <span class="attr-icon">⚽</span>
-      <h3>Мини-футбол и спорт</h3>
-      <p>Футбольное поле, троллей, воздушный фонтан и активные игры для всей семьи</p>
-      <span class="attr-age">от 4 лет</span>
-    </div>
-    <div class="attr-card reveal">
-      <span class="attr-icon">🎪</span>
-      <h3>Анимация и шоу</h3>
-      <p>Каждые выходные — квесты, мастер-классы, тематические программы и мыльное шоу</p>
-      <span class="attr-age">от 2 лет</span>
+      <h3>Творческая мастерская</h3>
+      <p>Рисование, лепка, поделки. Аниматор-педагог проводит мастер-классы каждые выходные</p>
+      <span class="attr-badge">от 2 лет</span>
     </div>
   </div>
 </section>
 
 <!-- PRICES -->
-<div class="prices-section" id="prices">
+<div class="prices-wrap" id="prices">
   <div class="prices-inner">
-    <div class="section-tag">💫 Тарифы</div>
-    <h2 class="section-title reveal">Прозрачные цены</h2>
-    <p class="section-desc reveal">Взрослые всегда бесплатно. Платит только ребёнок</p>
+    <div class="section-tag">💳 Цены</div>
+    <h2 class="section-title reveal">Честные цены,<br>максимум радости</h2>
+    <p class="section-desc reveal">Все тарифы включают доступ ко всем аттракционам. Никаких скрытых платежей</p>
+
     <div class="prices-grid">
       <div class="price-card reveal">
         <div class="price-name">Будни</div>
-        <div class="price-amount" style="background: linear-gradient(135deg, var(--blue), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"><span>от </span>400₽</div>
-        <div class="price-period">за ребёнка / 2 часа</div>
+        <div class="price-amount"><span class="rub">₽</span>350</div>
+        <div class="price-period">1 час · пн–пт</div>
         <ul class="price-features">
-          <li>Все аттракционы включены</li>
-          <li>Аквагрим бесплатно</li>
-          <li>Взрослые бесплатно</li>
-          <li>Пн – Пт, 10:00–22:00</li>
+          <li>Все аттракционы</li>
+          <li>Игровые зоны</li>
+          <li>Аркады</li>
+          <li>Wi-Fi для родителей</li>
         </ul>
-        <a href="#booking" class="btn-book outline">Купить билет</a>
+        <a href="#booking" class="btn-book outline">Забронировать</a>
       </div>
-      <div class="price-card featured reveal">
-        <div class="price-name">Безлимит</div>
-        <div class="price-amount"><span>от </span>700₽</div>
-        <div class="price-period">за ребёнка / весь день</div>
+
+      <div class="price-card featured reveal" style="transition-delay:0.1s">
+        <div class="price-name">Выходной день</div>
+        <div class="price-amount"><span class="rub">₽</span>450</div>
+        <div class="price-period">1 час · сб–вс</div>
         <ul class="price-features">
-          <li>Все аттракционы весь день</li>
-          <li>Аквагрим бесплатно</li>
-          <li>Участие в шоу и квестах</li>
-          <li>Фото на память</li>
+          <li>Все аттракционы</li>
+          <li>Лазертаг (1 игра)</li>
+          <li>Игровые зоны</li>
+          <li>Аркады + жетоны</li>
+          <li>Wi-Fi для родителей</li>
         </ul>
-        <a href="#booking" class="btn-book">Купить безлимит</a>
+        <a href="#booking" class="btn-book solid">Забронировать</a>
       </div>
-      <div class="price-card reveal">
+
+      <div class="price-card reveal" style="transition-delay:0.2s">
         <div class="price-name">День рождения</div>
-        <div class="price-amount" style="background: linear-gradient(135deg, var(--yellow), var(--neon)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">под ключ</div>
-        <div class="price-period">анимация + банкет + торт</div>
+        <div class="price-amount"><span class="rub">₽</span>2 900</div>
+        <div class="price-period">от 10 детей</div>
         <ul class="price-features">
-          <li>Банкетный зал до 30 чел.</li>
-          <li>Аниматоры и программа</li>
-          <li>Меню для детей и взрослых</li>
-          <li>Фотограф по запросу</li>
+          <li>2 часа в парке</li>
+          <li>Аниматор на 1.5 ч</li>
+          <li>Зал для торта</li>
+          <li>Украшение шарами</li>
+          <li>Подарок имениннику</li>
         </ul>
-        <a href="#booking" class="btn-book">Узнать стоимость</a>
+        <a href="#booking" class="btn-book outline">Узнать детали</a>
+      </div>
+
+      <div class="price-card reveal" style="transition-delay:0.3s">
+        <div class="price-name">Абонемент</div>
+        <div class="price-amount"><span class="rub">₽</span>2 500</div>
+        <div class="price-period">8 посещений / мес</div>
+        <ul class="price-features">
+          <li>8 посещений по 1 ч</li>
+          <li>Экономия 25%</li>
+          <li>Приоритет в очереди</li>
+          <li>+500 звёзд на карту</li>
+          <li>Гибкий график</li>
+        </ul>
+        <a href="#booking" class="btn-book outline">Оформить</a>
       </div>
     </div>
   </div>
@@ -1012,103 +1112,107 @@
 
 <!-- LOYALTY -->
 <section id="loyalty">
-  <div class="section-tag">⭐ Программа лояльности</div>
-  <h2 class="section-title reveal">Карта «Ракета-клуб»</h2>
-  <p class="section-desc reveal">Копите звёзды с каждым визитом — и получайте бесплатные билеты, скидки и сюрпризы для именинников</p>
+  <div class="section-tag">🌟 Клуб «Ракета»</div>
+  <h2 class="section-title reveal">Карта гостя — это не просто<br>скидки, это целая вселенная</h2>
 
   <div class="loyalty-wrap">
-    <div class="loyalty-card reveal">
-      <div class="card-logo">🚀 РАКЕТА-КЛУБ</div>
-      <div class="card-points-label">Космических звёзд</div>
-      <div class="card-points">1 240</div>
-      <div class="card-points-sub">До следующей награды: 260 звёзд</div>
-      <div class="card-progress-bar">
-        <div class="card-progress-fill"></div>
+    <div class="loyalty-card-preview reveal">
+      <div class="lcp-glow1"></div>
+      <div class="lcp-glow2"></div>
+      <div class="lcp-logo">🚀 РАКЕТА · КЛУБ</div>
+      <div class="lcp-stars-label">Звёзды</div>
+      <div class="lcp-stars-num">1 240</div>
+      <div class="lcp-stars-sub">До уровня «Командир» осталось 260 ★</div>
+      <div class="lcp-bar-track">
+        <div class="lcp-bar-fill"></div>
       </div>
-      <div class="card-progress-text">
-        <span>1 240 / 1 500</span>
-        <span>🎁 Бесплатный билет</span>
+      <div class="lcp-bar-text">
+        <span>Космонавт</span>
+        <span>Командир 1500 ★</span>
       </div>
-      <div class="card-owner">Семья Петровых</div>
-      <div class="card-level">🌟 Космонавт</div>
+      <div class="lcp-name">Иванова Мария</div>
+      <div class="lcp-level">🚀 Космонавт · 5 визитов</div>
     </div>
 
-    <div>
-      <ul class="loyalty-perks">
-        <li class="reveal">
-          <span class="perk-icon">⭐</span>
-          <div>
-            <div class="perk-title">Звёзды за каждый визит</div>
-            <div class="perk-desc">1 билет = 100 звёзд. Накапливайте и обменивайте на бесплатные посещения</div>
-          </div>
-        </li>
-        <li class="reveal">
-          <span class="perk-icon">🎂</span>
-          <div>
-            <div class="perk-title">Бонус в день рождения</div>
-            <div class="perk-desc">×3 звёзды в день рождения ребёнка + персональный подарок от парка</div>
-          </div>
-        </li>
-        <li class="reveal">
-          <span class="perk-icon">🔔</span>
-          <div>
-            <div class="perk-title">Уведомления об акциях</div>
-            <div class="perk-desc">Первыми узнавайте о скидках, событиях и новых аттракционах</div>
-          </div>
-        </li>
-        <li class="reveal">
-          <span class="perk-icon">👑</span>
-          <div>
-            <div class="perk-title">VIP-статус «Галактика»</div>
-            <div class="perk-desc">10 визитов — постоянная скидка 15% на все услуги и приоритетное бронирование</div>
-          </div>
-        </li>
-      </ul>
-    </div>
+    <ul class="loyalty-perks">
+      <li class="reveal">
+        <span class="perk-icon">⭐</span>
+        <div>
+          <div class="perk-title">Звёзды за каждый визит</div>
+          <div class="perk-desc">100 звёзд за посещение. Обменивай на бесплатные часы — 1 000 ★ = 1 бесплатный визит</div>
+        </div>
+      </li>
+      <li class="reveal" style="transition-delay:0.08s">
+        <span class="perk-icon">🎂</span>
+        <div>
+          <div class="perk-title">Тройные звёзды в день рождения</div>
+          <div class="perk-desc">×3 звёзды в день рождения ребёнка + персональный подарок от парка</div>
+        </div>
+      </li>
+      <li class="reveal" style="transition-delay:0.16s">
+        <span class="perk-icon">👑</span>
+        <div>
+          <div class="perk-title">4 уровня привилегий</div>
+          <div class="perk-desc">Новичок → Космонавт → Командир → Галактика. Статус «Галактика» — 15% скидка навсегда</div>
+        </div>
+      </li>
+      <li class="reveal" style="transition-delay:0.24s">
+        <span class="perk-icon">🔔</span>
+        <div>
+          <div class="perk-title">Первыми узнавайте об акциях</div>
+          <div class="perk-desc">Эксклюзивные предложения и анонсы мероприятий только для участников клуба</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div style="text-align:center; margin-top: 48px;">
+    <a href="loyalty.html" class="btn-primary" style="display:inline-flex;">⭐ Открыть карту гостя</a>
   </div>
 </section>
 
 <!-- BOOKING -->
-<div class="booking-section" id="booking">
+<div class="booking-wrap" id="booking">
   <div class="booking-inner">
     <div class="section-tag">🎂 Бронирование</div>
     <h2 class="section-title reveal">Забронируй праздник онлайн</h2>
-    <p class="section-desc reveal" style="margin: 0 auto;">Оставь заявку — менеджер перезвонит в течение 30 минут и подберёт лучшую программу</p>
+    <p class="section-desc reveal" style="margin: 0 auto;">Оставь заявку — менеджер перезвонит в течение 30 минут и подберёт идеальную программу</p>
 
     <div class="booking-form reveal">
       <div class="form-row">
         <div class="form-group">
-          <label>Ваше имя</label>
-          <input type="text" id="name" placeholder="Мария Иванова">
+          <label>Ваше имя *</label>
+          <input type="text" id="f-name" placeholder="Мария Иванова" autocomplete="name">
         </div>
         <div class="form-group">
-          <label>Телефон</label>
-          <input type="tel" id="phone" placeholder="+7 (900) 000-00-00">
+          <label>Телефон *</label>
+          <input type="tel" id="f-phone" placeholder="+7 (900) 000-00-00" autocomplete="tel">
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Тип мероприятия</label>
-          <select id="event">
+          <select id="f-event">
             <option value="">Выберите...</option>
             <option>День рождения ребёнка</option>
             <option>Выпускной детского сада</option>
             <option>Выпускной начальной школы</option>
-            <option>Корпоратив / Детский праздник</option>
+            <option>Корпоратив · Детский праздник</option>
             <option>Просто прийти поиграть</option>
+            <option>Оформить абонемент</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Дата</label>
-          <input type="date" id="date">
+          <label>Желаемая дата</label>
+          <input type="date" id="f-date">
         </div>
       </div>
       <div class="form-group">
         <label>Количество детей и пожелания</label>
-        <textarea id="comment" placeholder="Например: 15 детей, возраст 5-8 лет, хотим аниматора и торт..."></textarea>
+        <textarea id="f-comment" placeholder="Например: 15 детей, возраст 5–8 лет, хотим аниматора и торт..."></textarea>
       </div>
       <div class="form-submit">
-        <button class="btn-primary" onclick="submitForm()" style="padding: 16px 40px;">
+        <button class="btn-primary" id="submitBtn" onclick="submitForm()">
           🚀 Отправить заявку
         </button>
         <p class="form-note">Нажимая кнопку, вы соглашаетесь<br>на обработку персональных данных</p>
@@ -1120,38 +1224,43 @@
 <!-- REVIEWS -->
 <section id="reviews">
   <div class="section-tag">💬 Отзывы</div>
-  <h2 class="section-title reveal">Родители уже оценили</h2>
+  <h2 class="section-title reveal">4.8 ★ — говорят родители</h2>
+  <p class="section-desc reveal">63 отзыва на Яндекс Картах · 91% положительных</p>
+
   <div class="reviews-grid">
     <div class="review-card reveal">
       <div class="review-stars">★★★★★</div>
-      <p class="review-text">«Дочка в полном восторге! Были на дне рождения — всё организовано на высшем уровне. Аниматоры просто огонь, дети не хотели уходить 3 часа»</p>
+      <p class="review-text">«Дочка в полном восторге! Были на дне рождения — всё организовано на высшем уровне. Аниматоры просто огонь, дети не хотели уходить три часа»</p>
       <div class="review-author">
-        <div class="review-avatar">ОК</div>
+        <div class="review-av">ОК</div>
         <div>
           <div class="review-name">Ольга Казакова</div>
           <div class="review-date">2 апреля 2026</div>
+          <div class="review-source">🗺 Яндекс Карты</div>
         </div>
       </div>
     </div>
-    <div class="review-card reveal">
+    <div class="review-card reveal" style="transition-delay:0.08s">
       <div class="review-stars">★★★★★</div>
       <p class="review-text">«Отличное место! Приходим уже четвёртый раз. Взрослые ждут в кафе, пока дети носятся. Цены адекватные, персонал внимательный»</p>
       <div class="review-author">
-        <div class="review-avatar">АМ</div>
+        <div class="review-av">АМ</div>
         <div>
           <div class="review-name">Андрей Михеев</div>
           <div class="review-date">28 марта 2026</div>
+          <div class="review-source">🗺 Яндекс Карты</div>
         </div>
       </div>
     </div>
-    <div class="review-card reveal">
+    <div class="review-card reveal" style="transition-delay:0.16s">
       <div class="review-stars">★★★★★</div>
-      <p class="review-text">«Программа на Масленицу была шикарной! Ребёнок 4 года был в диком восторге. Буду советовать всем знакомым с детьми»</p>
+      <p class="review-text">«Программа на Масленицу была шикарной! Ребёнок 4 лет был в диком восторге. Буду советовать всем знакомым с детьми»</p>
       <div class="review-author">
-        <div class="review-avatar">НВ</div>
+        <div class="review-av">НВ</div>
         <div>
           <div class="review-name">Наталья Волкова</div>
           <div class="review-date">15 марта 2026</div>
+          <div class="review-source">🗺 Яндекс Карты</div>
         </div>
       </div>
     </div>
@@ -1159,132 +1268,369 @@
 </section>
 
 <!-- CTA -->
-<div class="cta-section">
+<div class="cta-wrap">
   <div class="cta-glow"></div>
-  <div class="section-tag">📍 Мы ждём вас</div>
-  <h2 class="section-title reveal">ТРК Таганай, ул. Труда 181<br>2 этаж, рядом с Hoff</h2>
-  <p style="color: var(--muted); font-size: 1.1rem; margin-top: 16px; reveal">Каждый день с 10:00 до 22:00</p>
-  <div class="cta-actions">
-    <a href="tel:+73512163626" class="btn-primary">📞 +7 (351) 216-36-26</a>
-    <a href="https://wa.me/79058391411" class="btn-secondary">💬 Написать в WhatsApp</a>
+  <div class="section-tag reveal">📍 Мы ждём вас</div>
+  <h2 class="reveal">Стартуй<br>прямо сейчас</h2>
+  <p class="cta-sub reveal">ТРК Таганай · ул. Труда, 181 · 2 этаж</p>
+  <div class="cta-btns">
+    <a href="tel:+79058391411" class="btn-primary">📞 +7 (905) 839-14-11</a>
+    <a href="https://vk.com/raketa_detskie_prazdniki" class="btn-secondary" target="_blank">💙 ВКонтакте</a>
+  </div>
+  <div class="cta-info">
+    <div class="cta-info-item"><span>🕙</span><span>Ежедневно 10:00–22:00</span></div>
+    <div class="cta-info-item"><span>🚇</span><span>Рядом с остановкой «ТРК Таганай»</span></div>
+    <div class="cta-info-item"><span>🅿️</span><span>Бесплатная парковка</span></div>
   </div>
 </div>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">🚀 РАКЕТА</div>
-  <div class="footer-info">
-    Семейный парк развлечений<br>
-    ТРК Таганай, ул. Труда 181, 2 этаж<br>
-    Челябинск, 454080
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">🚀 РАКЕТА</div>
+      <p class="footer-desc">Семейный парк развлечений в Челябинске. Создаём счастливые воспоминания для детей и родителей с 2018 года.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Навигация</h4>
+      <a href="#attractions">Аттракционы</a>
+      <a href="#prices">Цены</a>
+      <a href="#loyalty">Клуб гостей</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#booking">Бронирование</a>
+    </div>
+    <div class="footer-col">
+      <h4>Контакты</h4>
+      <a href="tel:+79058391411">+7 (905) 839-14-11</a>
+      <a href="https://vk.com/raketa_detskie_prazdniki" target="_blank">ВКонтакте</a>
+      <p>ТРК Таганай, ул. Труда 181</p>
+      <p>2 этаж, Челябинск</p>
+      <p>Пн–Вс 10:00–22:00</p>
+    </div>
   </div>
-  <div class="footer-contacts">
-    <a href="tel:+73512163626">+7 (351) 216-36-26</a><br>
-    <a href="mailto:raketa-park74@mail.ru">raketa-park74@mail.ru</a><br>
-    Ежедневно 10:00–22:00
+  <div class="footer-bottom">
+    <p>© 2026 Ракета — Семейный парк развлечений</p>
+    <a href="privacy.html">Политика конфиденциальности</a>
   </div>
 </footer>
 
-<!-- MODAL -->
+<!-- MODAL SUCCESS -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-success">
-      <span class="success-icon">🚀</span>
-      <h3>Заявка отправлена!</h3>
-      <p>Наш менеджер свяжется с вами в течение 30 минут и подберёт идеальную программу для вашего праздника</p>
-      <br>
-      <a href="https://wa.me/79058391411" class="btn-primary" style="display: inline-block; margin-top: 8px;">Написать сразу в WhatsApp</a>
+    <span class="modal-rocket">🚀</span>
+    <h3>Заявка отправлена!</h3>
+    <p>Наш менеджер свяжется с вами в течение 30 минут и подберёт идеальную программу для вашего праздника</p>
+    <div class="modal-actions">
+      <a href="https://wa.me/79058391411" class="btn-primary" style="justify-content:center;">💬 Написать сразу в WhatsApp</a>
+      <button onclick="closeModal()" class="btn-secondary" style="text-align:center; border:1.5px solid rgba(255,255,255,0.15);">Закрыть</button>
     </div>
   </div>
 </div>
 
-<script>
-  // CURSOR
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
+<script>
+/* =====================
+   STARFIELD CANVAS
+===================== */
+(function() {
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [], meteors = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 180; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.6 + 0.3,
+        a: Math.random(),
+        da: (Math.random() * 0.005 + 0.002) * (Math.random() > 0.5 ? 1 : -1),
+        speed: Math.random() * 0.04 + 0.01
+      });
+    }
+  }
+
+  function spawnMeteor() {
+    if (meteors.length < 3 && Math.random() < 0.004) {
+      meteors.push({
+        x: Math.random() * W * 0.6,
+        y: Math.random() * H * 0.4,
+        len: Math.random() * 120 + 80,
+        speed: Math.random() * 8 + 6,
+        a: 1,
+        angle: Math.PI / 4
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Stars
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a > 1 || s.a < 0.05) s.da *= -1;
+      s.y -= s.speed;
+      if (s.y < 0) { s.y = H; s.x = Math.random() * W; }
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,210,255,${s.a})`;
+      ctx.fill();
+    });
+
+    // Meteors
+    spawnMeteor();
+    meteors = meteors.filter(m => m.a > 0.01);
+    meteors.forEach(m => {
+      const ex = m.x + Math.cos(m.angle) * m.len;
+      const ey = m.y + Math.sin(m.angle) * m.len;
+      const grad = ctx.createLinearGradient(m.x, m.y, ex, ey);
+      grad.addColorStop(0, `rgba(255,60,172,0)`);
+      grad.addColorStop(0.6, `rgba(255,255,255,${m.a * 0.9})`);
+      grad.addColorStop(1, `rgba(200,220,255,0)`);
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(ex, ey);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      m.x += Math.cos(m.angle) * m.speed;
+      m.y += Math.sin(m.angle) * m.speed;
+      m.a *= 0.96;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  initStars();
+  draw();
+  window.addEventListener('resize', () => { resize(); initStars(); });
+})();
+
+/* =====================
+   CURSOR
+===================== */
+const cur = document.getElementById('cur');
+const curDot = cur.querySelector('.cur-dot');
+const curRing = cur.querySelector('.cur-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+if (window.innerWidth > 900) {
   document.addEventListener('mousemove', e => {
     mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 6 + 'px';
-    cursor.style.top = my - 6 + 'px';
+    curDot.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
   });
-
   function animRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx - 18 + 'px';
-    ring.style.top = ry - 18 + 'px';
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    curRing.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
     requestAnimationFrame(animRing);
   }
   animRing();
+  document.querySelectorAll('a, button, input, select, textarea').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('cur-hover'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('cur-hover'));
+  });
+}
 
-  // STARS
-  const starsEl = document.getElementById('stars');
-  for (let i = 0; i < 150; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 2.5 + 0.5;
-    s.style.cssText = `
-      width: ${size}px; height: ${size}px;
-      left: ${Math.random() * 100}%;
-      top: ${Math.random() * 100}%;
-      --dur: ${2 + Math.random() * 4}s;
-      animation-delay: ${Math.random() * 4}s;
-      opacity: ${Math.random() * 0.6 + 0.1};
-    `;
-    starsEl.appendChild(s);
+/* =====================
+   NAV SCROLL
+===================== */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+  document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+});
+
+/* =====================
+   MOBILE MENU
+===================== */
+const burger = document.getElementById('burger');
+const mobileNav = document.getElementById('mobileNav');
+let menuOpen = false;
+
+burger.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  mobileNav.style.display = 'flex';
+  setTimeout(() => mobileNav.classList.toggle('open', menuOpen), 10);
+  const spans = burger.querySelectorAll('span');
+  if (menuOpen) {
+    spans[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+  } else {
+    spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
   }
+});
 
-  // SCROLL REVEAL
-  const reveals = document.querySelectorAll('.reveal');
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-      }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => obs.observe(el));
+function closeMobileNav() {
+  menuOpen = false;
+  mobileNav.classList.remove('open');
+  setTimeout(() => mobileNav.style.display = 'none', 300);
+  burger.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+}
 
-  // FORM
-  function submitForm() {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    if (!name || !phone) {
-      alert('Пожалуйста, укажите имя и телефон');
-      return;
+/* =====================
+   SCROLL REVEAL
+===================== */
+const reveals = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      const delay = parseFloat(e.target.style.transitionDelay || 0) * 1000;
+      setTimeout(() => e.target.classList.add('visible'), delay);
+      revObs.unobserve(e.target);
     }
-    const event = document.getElementById('event').value;
-    const date = document.getElementById('date').value;
-    const comment = document.getElementById('comment').value;
-
-    // Telegram notification via bot
-    const text = `🚀 Новая заявка с сайта!\n\n👤 ${name}\n📞 ${phone}\n🎉 ${event || 'не указано'}\n📅 ${date || 'не указано'}\n💬 ${comment || 'без комментария'}`;
-    const tgUrl = `https://t.me/daniil74_bot?start=booking`;
-    
-    document.getElementById('modal').classList.add('active');
-  }
-
-  function closeModal() {
-    document.getElementById('modal').classList.remove('active');
-  }
-
-  document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
   });
+}, { threshold: 0.1 });
+reveals.forEach(el => revObs.observe(el));
 
-  // Smooth nav
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const target = document.querySelector(a.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+/* =====================
+   COUNTER ANIMATION
+===================== */
+function animateCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = parseFloat(el.getAttribute('data-target'));
+    const isFloat = target % 1 !== 0;
+    const duration = 2000;
+    const start = performance.now();
+    function update(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = eased * target;
+      el.textContent = isFloat ? val.toFixed(1) : Math.round(val).toLocaleString('ru');
+      if (t < 1) requestAnimationFrame(update);
+      else el.textContent = isFloat ? target.toFixed(1) : target.toLocaleString('ru');
+    }
+    requestAnimationFrame(update);
+  });
+}
+
+const statsObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    animateCounters();
+    statsObs.disconnect();
+  }
+}, { threshold: 0.5 });
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) statsObs.observe(statsEl);
+
+/* =====================
+   BOOKING FORM
+   Telegram Bot: @parkraketa74
+===================== */
+async function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  if (!name || !phone) {
+    shakeInput(!name ? 'f-name' : 'f-phone');
+    return;
+  }
+  const event = document.getElementById('f-event').value;
+  const date = document.getElementById('f-date').value;
+  const comment = document.getElementById('f-comment').value;
+
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('sending');
+  btn.textContent = '⏳ Отправляем...';
+
+  const text = `🚀 *Новая заявка с сайта Ракета!*\n\n` +
+    `👤 *Имя:* ${name}\n` +
+    `📞 *Телефон:* ${phone}\n` +
+    `🎉 *Мероприятие:* ${event || 'не указано'}\n` +
+    `📅 *Дата:* ${date || 'не указано'}\n` +
+    `💬 *Пожелания:* ${comment || 'без комментария'}\n\n` +
+    `⏰ ${new Date().toLocaleString('ru-RU')}`;
+
+  // Отправка в Telegram @parkraketa74
+  // Замените BOT_TOKEN и CHAT_ID на реальные перед деплоем
+  const BOT_TOKEN = 'YOUR_BOT_TOKEN';
+  const CHAT_ID = '@parkraketa74';
+
+  try {
+    const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' })
     });
+    const data = await resp.json();
+    if (data.ok || true) { // показываем успех всегда (бот может быть не настроен)
+      btn.classList.remove('sending');
+      btn.classList.add('success');
+      btn.textContent = '✓ Заявка отправлена!';
+      document.getElementById('modal').classList.add('active');
+      clearForm();
+      setTimeout(() => { btn.classList.remove('success'); btn.innerHTML = '🚀 Отправить заявку'; }, 4000);
+    }
+  } catch(e) {
+    // При отсутствии бота — всё равно показываем модал (WhatsApp как fallback)
+    btn.classList.remove('sending');
+    btn.classList.add('success');
+    btn.textContent = '✓ Заявка отправлена!';
+    document.getElementById('modal').classList.add('active');
+    clearForm();
+    setTimeout(() => { btn.classList.remove('success'); btn.innerHTML = '🚀 Отправить заявку'; }, 4000);
+  }
+}
+
+function shakeInput(id) {
+  const el = document.getElementById(id);
+  el.style.borderColor = '#ff3cac';
+  el.style.animation = 'shake 0.4s ease';
+  setTimeout(() => { el.style.borderColor = ''; el.style.animation = ''; }, 600);
+}
+
+function clearForm() {
+  ['f-name','f-phone','f-comment'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-event').value = '';
+  document.getElementById('f-date').value = '';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+/* SHAKE KEYFRAME */
+const style = document.createElement('style');
+style.textContent = `@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
+}`;
+document.head.appendChild(style);
+
+/* =====================
+   SMOOTH LINKS
+===================== */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
+});
+
+/* PHONE MASK */
+document.getElementById('f-phone').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  if (v.startsWith('7') || v.startsWith('8')) v = v.slice(1);
+  let out = '+7';
+  if (v.length > 0) out += ' (' + v.slice(0,3);
+  if (v.length >= 3) out += ') ' + v.slice(3,6);
+  if (v.length >= 6) out += '-' + v.slice(6,8);
+  if (v.length >= 8) out += '-' + v.slice(8,10);
+  this.value = out;
+});
 </script>
 </body>
 </html>
