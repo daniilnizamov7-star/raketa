@@ -46,7 +46,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
 
 *, *::before, *::after { -webkit-font-smoothing: antialiased; }
 body {
@@ -299,11 +299,12 @@ nav.scrolled {
 
 /* ORBIT */
 .orbit-wrap {
-  position: absolute; width: 700px; height: 700px;
+  position: absolute; width: min(700px, 100vw); height: min(700px, 100vw);
   top: 50%; left: 50%;
   transform: translate(-50%,-50%);
   pointer-events: none; z-index: -1;
   animation: orbitSpin 60s linear infinite;
+  overflow: hidden;
 }
 @keyframes orbitSpin { to { transform: translate(-50%,-50%) rotate(360deg); } }
 .orbit-ring {
@@ -329,7 +330,7 @@ nav.scrolled {
 .hero-glow {
   position: absolute; top: 50%; left: 50%;
   transform: translate(-50%,-50%);
-  width: 400px; height: 400px;
+  width: min(400px, 90vw); height: min(400px, 90vw);
   background: radial-gradient(circle, rgba(255,60,172,0.1) 0%, rgba(45,156,255,0.06) 40%, transparent 70%);
   pointer-events: none; border-radius: 50%;
 }
@@ -341,6 +342,7 @@ section {
   position: relative; z-index: 1;
   padding: 100px 48px;
   max-width: 1200px; margin: 0 auto;
+  overflow-x: hidden;
 }
 .section-tag {
   display: inline-flex; align-items: center; gap: 6px;
@@ -371,7 +373,7 @@ section {
 ================================ */
 .why-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 2px; margin-top: 60px;
 }
 .why-card {
@@ -1126,15 +1128,15 @@ footer {
     </div>
 
     <!-- Льготы -->
-    <div style="margin-top:28px; background:var(--card); border:1px solid rgba(6,214,160,0.2); border-radius:20px; padding:24px 28px;">
+    <div style="margin-top:28px; background:linear-gradient(135deg,rgba(6,214,160,0.08),rgba(45,156,255,0.05)); border:1px solid rgba(6,214,160,0.3); border-radius:20px; padding:24px 28px; box-shadow:0 0 40px rgba(6,214,160,0.08);">
       <div class="section-tag" style="color:var(--green);margin-bottom:14px">💚 Льготы и скидки</div>
       <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:8px 24px;">
-        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−30% детям 1–4 лет в будни до 14:00</div>
-        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−30% многодетным семьям</div>
-        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−50% детям с ОВЗ</div>
-        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−50% с 20:00 до 22:00</div>
-        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">−30% семьям участников СВО</div>
-        <div style="color:var(--muted2);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border)">Пенсионеры 700₽ · «Ракета 60+»</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:8px 0;border-bottom:1px solid rgba(6,214,160,0.1);display:flex;align-items:center;gap:8px">👶 −30% детям 1–4 лет в будни до 14:00</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:8px 0;border-bottom:1px solid rgba(6,214,160,0.1);display:flex;align-items:center;gap:8px">👨‍👩‍👧‍👦 −30% многодетным семьям</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:8px 0;border-bottom:1px solid rgba(6,214,160,0.1);display:flex;align-items:center;gap:8px">💚 −50% детям с ОВЗ</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:8px 0;border-bottom:1px solid rgba(6,214,160,0.1);display:flex;align-items:center;gap:8px">🌙 −50% с 20:00 до 22:00</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:8px 0;border-bottom:1px solid rgba(6,214,160,0.1);display:flex;align-items:center;gap:8px">🎖️ −30% семьям участников СВО</div>
+        <div style="color:var(--white);font-size:0.85rem;padding:8px 0;border-bottom:1px solid rgba(6,214,160,0.1);display:flex;align-items:center;gap:8px">👴 Пенсионеры 700₽ · «Ракета 60+»</div>
         <div style="color:var(--white);font-size:0.85rem;padding:6px 0;border-bottom:1px solid var(--border);font-weight:700">🎂 Имениннику −50% (3 дня до и 7 после)</div>
         <div style="color:var(--white);font-size:0.85rem;padding:6px 0;font-weight:700">🎉 При банкете — именинник БЕСПЛАТНО</div>
       </div>
