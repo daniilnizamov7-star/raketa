@@ -239,7 +239,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--white);
 
 <header class="hdr">
   <a href="index.html" class="hdr-logo">🚀 РАКЕТА</a>
-  <div class="hdr-btn" onclick="om('bdayMo')">🎂</div>
+  <div class="hdr-btn" onclick="openBdayModal()">🎂</div>
 </header>
 
 <!-- REGISTER -->
@@ -301,11 +301,11 @@ body{font-family:var(--fb);background:var(--bg);color:var(--white);
     <a class="qa" href="index.html#booking"><span class="qa-icon">🎂</span><span class="qa-lbl">Праздник</span></a>
   </div>
 
-  <div class="promo" onclick="om('bdayMo')">
+  <div class="promo" onclick="openBdayModal()" id="bdayPromo">
     <div class="promo-icon">🎂</div>
     <div>
-      <div class="promo-title">Бонус в день рождения!</div>
-      <div class="promo-desc">×3 звёзды + подарок от парка</div>
+      <div class="promo-title" id="bdayPromoTitle">Бонус в день рождения!</div>
+      <div class="promo-desc" id="bdayPromoDesc">×3 звёзды + подарок от парка</div>
     </div>
     <span style="margin-left:auto;color:var(--muted);font-size:1.1rem">›</span>
   </div>
@@ -361,14 +361,27 @@ body{font-family:var(--fb);background:var(--bg);color:var(--white);
 <div class="mo" id="bdayMo" onclick="cm('bdayMo')">
   <div class="mo-sheet" onclick="event.stopPropagation()">
     <span class="mo-handle"></span>
-    <div class="mo-title">🎂 День рождения ребёнка</div>
-    <div class="mo-body">Укажи дату — получишь ×3 звёзды и персональный подарок от парка!</div>
-    <div class="f-group">
-      <div class="f-label">Дата рождения</div>
-      <input class="f-input" type="date" id="bdayInp">
+    <div class="mo-title">🎂 Дни рождения детей</div>
+    <div class="mo-body">Добавь детей — в день рождения получишь ×3 звёзды и подарок от парка!</div>
+
+    <!-- Список детей -->
+    <div id="kidsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+
+    <!-- Форма добавления -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">
+      <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Добавить ребёнка</div>
+      <div class="f-group" style="margin-bottom:10px">
+        <div class="f-label">Имя ребёнка</div>
+        <input class="f-input" type="text" id="kidName" placeholder="Например: Вадим">
+      </div>
+      <div class="f-group" style="margin-bottom:10px">
+        <div class="f-label">День рождения</div>
+        <input class="f-input" type="date" id="kidBday">
+      </div>
+      <button class="mo-btn" style="margin-bottom:0" onclick="addKid()">+ Добавить</button>
     </div>
-    <button class="mo-btn" onclick="saveBday()">Сохранить 🎉</button>
-    <button class="mo-cancel" onclick="cm('bdayMo')">Позже</button>
+
+    <button class="mo-cancel" onclick="cm('bdayMo')">Закрыть</button>
   </div>
 </div>
 
@@ -584,15 +597,96 @@ function stab(name){
 function om(id){document.getElementById(id).classList.add('active');}
 function cm(id){document.getElementById(id).classList.remove('active');}
 
-async function saveBday(){
+// Список детей (массив объектов {name, bday})
+let kids = [];
+
+function renderKids(){
+  const el = document.getElementById('kidsList');
+  if(!el) return;
+  if(!kids.length){
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:0.82rem;padding:8px">Дети не добавлены</div>';
+    return;
+  }
+  el.innerHTML = kids.map((k,i) => `
+    <div style="display:flex;align-items:center;gap:10px;background:rgba(255,209,102,0.06);border:1px solid rgba(255,209,102,0.2);border-radius:12px;padding:10px 14px">
+      <span style="font-size:1.2rem">🎂</span>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:0.88rem">${k.name}</div>
+        <div style="font-size:0.75rem;color:var(--muted2)">${formatBday(k.bday)}</div>
+      </div>
+      <button onclick="removeKid(${i})" style="background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.2);border-radius:100px;color:#ff5c5c;font-size:0.7rem;font-weight:700;padding:4px 10px;cursor:pointer">Удалить</button>
+    </div>
+  `).join('');
+}
+
+function formatBday(bday){
+  if(!bday) return '';
+  const [y,m,d] = bday.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+async function addKid(){
+  const name = document.getElementById('kidName').value.trim();
+  const bday = document.getElementById('kidBday').value;
+  if(!name){ toast('⚠️ Введи имя ребёнка'); return; }
+  if(!bday){ toast('⚠️ Выбери дату'); return; }
+  kids.push({name, bday});
+  document.getElementById('kidName').value = '';
+  document.getElementById('kidBday').value = '';
+  renderKids();
+  await saveKids();
+  toast('🎂 ' + name + ' добавлен!');
+}
+
+async function removeKid(i){
+  kids.splice(i,1);
+  renderKids();
+  await saveKids();
+  toast('Удалено');
+}
+
+async function saveKids(){
   if(!G) return;
-  const bday=document.getElementById('bdayInp').value;
-  if(!bday){toast('⚠️ Выбери дату');return;}
   try{
-    await sbq(`raketa_guests?id=eq.${G.id}`,{method:'PATCH',prefer:'',body:JSON.stringify({bday})});
-    G.bday=bday; cm('bdayMo');
-    toast('🎂 День рождения сохранён!');
-  }catch(e){toast('❌ Ошибка');}
+    const bdayJson = JSON.stringify(kids);
+    await sbq(`raketa_guests?id=eq.${G.id}`,{
+      method:'PATCH', prefer:'',
+      body:JSON.stringify({bday: bdayJson})
+    });
+    G.bday = bdayJson;
+  }catch(e){ toast('❌ Ошибка сохранения'); }
+}
+
+function loadKids(){
+  kids = [];
+  if(!G || !G.bday) return;
+  try{
+    const parsed = JSON.parse(G.bday);
+    if(Array.isArray(parsed)) kids = parsed;
+    else if(G.bday) kids = [{name:'Ребёнок', bday: G.bday}];
+  }catch(e){
+    if(G.bday) kids = [{name:'Ребёнок', bday: G.bday}];
+  }
+  // Обновляем промо-баннер
+  const title = document.getElementById('bdayPromoTitle');
+  const desc  = document.getElementById('bdayPromoDesc');
+  if(title && desc){
+    if(kids.length){
+      title.textContent = kids.length === 1
+        ? '🎂 ' + kids[0].name + ' · ' + formatBday(kids[0].bday)
+        : '🎂 ' + kids.length + ' детей добавлено';
+      desc.textContent = 'Нажми чтобы управлять';
+    } else {
+      title.textContent = 'Бонус в день рождения!';
+      desc.textContent = '×3 звёзды + подарок от парка';
+    }
+  }
+}
+
+function openBdayModal(){
+  loadKids();
+  renderKids();
+  om('bdayMo');
 }
 
 // ── SCREENS ───────────────────────────────────
@@ -603,6 +697,7 @@ function showRegister(){
 function showMain(){
   document.getElementById('mainScreen').classList.add('active');
   document.getElementById('regScreen').classList.remove('active');
+  loadKids(); // загружаем детей из данных гостя
 }
 
 // ── HELPERS ───────────────────────────────────
