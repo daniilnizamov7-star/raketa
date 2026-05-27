@@ -227,6 +227,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--white);
 
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -350,7 +351,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--white);
     <div class="mo-title">📲 Мой QR-код</div>
     <div class="mo-body">Покажи кассиру — он найдёт тебя по номеру телефона и начислит звёзды за визит</div>
     <div style="background:#fff;border-radius:14px;padding:18px;text-align:center;margin-bottom:16px">
-      <div style="font-family:monospace;font-size:0.76rem;color:#222;word-break:break-all;line-height:1.6" id="qrCode">—</div>
+      <div id="qrCanvas" style="display:flex;justify-content:center"></div>
+      <div style="font-family:monospace;font-size:0.68rem;color:#999;margin-top:8px;word-break:break-all" id="qrCode"></div>
     </div>
     <div style="text-align:center;font-size:0.85rem;color:var(--muted2);margin-bottom:18px;font-weight:700" id="qrPhone">—</div>
     <button class="mo-cancel" onclick="cm('qrMo')">Закрыть</button>
@@ -529,9 +531,14 @@ function render(){
   document.getElementById('hcVis').textContent=G.visits||0;
 
   const ph=G.phone||'';
-  document.getElementById('qrCode').textContent=
-    'RAKETA-'+ph.replace(/\D/g,'').slice(-7)+'-'+(G.id||'').slice(0,8).toUpperCase();
+  const qrVal='RAKETA-'+ph.replace(/\D/g,'').slice(-7)+'-'+(G.id||'').slice(0,8).toUpperCase();
+  document.getElementById('qrCode').textContent=qrVal;
   document.getElementById('qrPhone').textContent=ph;
+  const qrContainer=document.getElementById('qrCanvas');
+  if(window.QRCode&&qrContainer){
+    qrContainer.innerHTML='';
+    new window.QRCode(qrContainer,{text:qrVal,width:200,height:200,colorDark:'#111111',colorLight:'#ffffff',correctLevel:window.QRCode.CorrectLevel.M});
+  }
 
   // Levels
   LV.forEach((l,i)=>{
