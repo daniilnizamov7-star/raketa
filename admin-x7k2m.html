@@ -8,176 +8,128 @@
 <title>Ракета · Управление</title>
 <link rel="manifest" href="manifest-admin.json">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
-  background: #04050e; color: #eef2ff;
-  min-height: 100vh; overflow-x: hidden;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050e;color:#eef2ff;min-height:100vh;overflow-x:hidden}
 
-/* ── LOGIN ── */
-#loginScreen {
-  position: fixed; inset: 0; z-index: 1000;
-  background: #04050e;
-  display: flex; align-items: center; justify-content: center; padding: 24px;
-}
-#loginScreen.hide { display: none; }
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;z-index:1000;background:#04050e;display:flex;align-items:center;justify-content:center;padding:24px}
+#loginScreen.hide{display:none}
+.lcard{background:#0e1028;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:40px 28px;width:100%;max-width:380px;text-align:center}
+.llogo{font-size:1.3rem;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#ff3cac,#2d9cff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.lsub{font-size:0.85rem;color:#8090b0;margin-bottom:24px;line-height:1.5}
+.linput{width:100%;padding:14px 18px;margin-bottom:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#eef2ff;font-size:1rem;outline:none;-webkit-appearance:none;transition:border 0.2s}
+.linput:focus{border-color:#ff3cac}
+.lbtn{width:100%;padding:15px;border:none;border-radius:100px;background:linear-gradient(135deg,#ff3cac,#c4007a);color:#fff;font-size:0.95rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;-webkit-tap-highlight-color:transparent}
+.lbtn:active{opacity:0.8}
+.lerr{font-size:0.82rem;color:#ff5c5c;margin-top:10px;min-height:20px}
 
-.lcard {
-  background: #0e1028; border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 24px; padding: 40px 28px; width: 100%; max-width: 380px;
-  text-align: center;
-}
-.llogo {
-  font-size: 1.3rem; font-weight: 900; margin-bottom: 8px;
-  background: linear-gradient(135deg, #ff3cac, #2d9cff);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.lsub { font-size: 0.85rem; color: #8090b0; margin-bottom: 32px; line-height: 1.5; }
-.linput {
-  width: 100%; padding: 14px 18px; margin-bottom: 14px;
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px; color: #eef2ff; font-size: 1rem; outline: none;
-  -webkit-appearance: none; transition: border 0.2s;
-}
-.linput:focus { border-color: #ff3cac; }
-.lbtn {
-  width: 100%; padding: 15px; border: none; border-radius: 100px;
-  background: linear-gradient(135deg, #ff3cac, #c4007a);
-  color: #fff; font-size: 0.95rem; font-weight: 700;
-  cursor: pointer; transition: opacity 0.2s;
-  -webkit-tap-highlight-color: transparent;
-}
-.lbtn:active { opacity: 0.8; }
-.lerr { font-size: 0.82rem; color: #ff5c5c; margin-top: 12px; min-height: 20px; }
+/* NAME SCREEN (кассир вводит имя) */
+#nameScreen{position:fixed;inset:0;z-index:999;background:#04050e;display:none;align-items:center;justify-content:center;padding:24px}
+#nameScreen.show{display:flex}
+.ncard{background:#0e1028;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:40px 28px;width:100%;max-width:380px;text-align:center}
+.nicon{font-size:2.5rem;margin-bottom:12px}
+.ntitle{font-size:1.1rem;font-weight:900;margin-bottom:6px}
+.nsub{font-size:0.84rem;color:#8090b0;margin-bottom:24px;line-height:1.5}
 
-/* ── ADMIN ── */
-#adminScreen { display: none; }
-#adminScreen.show { display: block; }
+/* ROLE BADGE */
+.role-badge{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:800;padding:4px 12px;border-radius:100px;letter-spacing:0.05em}
+.role-cashier{background:rgba(45,156,255,0.15);color:#2d9cff;border:1px solid rgba(45,156,255,0.3)}
+.role-manager{background:rgba(155,89,255,0.15);color:#9b59ff;border:1px solid rgba(155,89,255,0.3)}
+.role-director{background:rgba(255,60,172,0.15);color:#ff3cac;border:1px solid rgba(255,60,172,0.3)}
 
-/* Верхняя шапка */
-.atop {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(4,5,14,0.95); backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-  padding: 14px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.atop-title { font-size: 1rem; font-weight: 900; }
-.atop-logout {
-  font-size: 0.75rem; font-weight: 700; color: #8090b0;
-  background: rgba(255,255,255,0.06); border: none;
-  padding: 7px 14px; border-radius: 100px; cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
+/* ADMIN */
+#adminScreen{display:none}
+#adminScreen.show{display:block}
+#cashierScreen{display:none}
+#cashierScreen.show{display:block}
 
-/* Навигация вкладок */
-.anav {
-  display: grid; grid-template-columns: repeat(4,1fr);
-  background: #08091a; border-bottom: 1px solid rgba(255,255,255,0.07);
-}
-.atab {
-  padding: 12px 4px; text-align: center;
-  font-size: 0.65rem; font-weight: 800; color: #5a6a90;
-  cursor: pointer; border: none; background: none;
-  transition: all 0.2s; -webkit-tap-highlight-color: transparent;
-}
-.atab .ti { font-size: 1.2rem; display: block; margin-bottom: 3px; }
-.atab.on { color: #ff3cac; background: rgba(255,60,172,0.07); }
+.atop{position:sticky;top:0;z-index:100;background:rgba(4,5,14,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.atop-left{display:flex;align-items:center;gap:10px;min-width:0}
+.atop-title{font-size:1rem;font-weight:900;white-space:nowrap}
+.atop-logout{font-size:0.75rem;font-weight:700;color:#8090b0;background:rgba(255,255,255,0.06);border:none;padding:7px 14px;border-radius:100px;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0}
 
-/* Контент панелей */
-.apanel { display: none; padding: 16px; }
-.apanel.on { display: block; }
+.anav{display:flex;background:#08091a;border-bottom:1px solid rgba(255,255,255,0.07);overflow-x:auto;scrollbar-width:none}
+.anav::-webkit-scrollbar{display:none}
+.atab{flex:1;min-width:64px;padding:12px 4px;text-align:center;font-size:0.65rem;font-weight:800;color:#5a6a90;cursor:pointer;border:none;background:none;transition:all 0.2s;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.atab .ti{font-size:1.2rem;display:block;margin-bottom:3px}
+.atab.on{color:#ff3cac;background:rgba(255,60,172,0.07)}
+.atab.hidden{display:none}
 
-/* Статистика */
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.scard {
-  background: #0e1028; border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 16px; padding: 18px 14px; text-align: center;
-}
-.snum { font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
-.slbl { font-size: 0.72rem; color: #8090b0; font-weight: 700; }
+.apanel{display:none;padding:16px}
+.apanel.on{display:block}
 
-/* Таблица гостей */
-.section-title {
-  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.09em;
-  text-transform: uppercase; color: #5a6a90; margin-bottom: 10px;
-}
-.search-inp {
-  width: 100%; padding: 11px 16px; margin-bottom: 12px;
-  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px; color: #eef2ff; font-size: 0.9rem; outline: none;
-  -webkit-appearance: none;
-}
-.glist { display: flex; flex-direction: column; gap: 8px; }
-.gcard {
-  background: #0e1028; border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px; padding: 14px 16px;
-  display: flex; align-items: center; gap: 12px;
-}
-.gav {
-  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, #ff3cac, #9b59ff);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.78rem; font-weight: 700;
-}
-.ginfo { flex: 1; }
-.gname { font-weight: 700; font-size: 0.88rem; }
-.gphone { font-size: 0.75rem; color: #8090b0; margin-top: 2px; }
-.gstars { font-size: 0.82rem; color: #ffd166; font-weight: 700; }
-.gadd {
-  padding: 6px 12px; border-radius: 100px;
-  background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.25);
-  color: #06d6a0; font-size: 0.72rem; font-weight: 800;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
+/* STATS */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.scard{background:#0e1028;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:18px 14px;text-align:center}
+.snum{font-size:2rem;font-weight:900;line-height:1;margin-bottom:4px}
+.slbl{font-size:0.72rem;color:#8090b0;font-weight:700}
 
-/* Заявки */
-.bcard {
-  background: #0e1028; border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px; padding: 16px; margin-bottom: 10px;
-}
-.bname { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
-.bmeta { font-size: 0.8rem; color: #8090b0; line-height: 1.5; }
-.bstatus {
-  display: inline-block; margin-top: 10px;
-  font-size: 0.7rem; font-weight: 800; padding: 4px 12px; border-radius: 100px;
-}
-.bstatus.new { background: rgba(255,60,172,0.12); color: #ff3cac; }
-.bstatus.done { background: rgba(6,214,160,0.1); color: #06d6a0; }
-.bdone-btn {
-  float: right; padding: 5px 12px; border-radius: 100px;
-  background: rgba(255,255,255,0.06); border: none; color: #8090b0;
-  font-size: 0.7rem; font-weight: 700; cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
+/* SECTION TITLE */
+.sec-t{font-size:0.72rem;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;color:#5a6a90;margin-bottom:10px}
 
-/* Настройки */
-.set-row {
-  background: #0e1028; border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px; padding: 16px; margin-bottom: 10px;
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-.set-info { flex: 1; }
-.set-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 3px; }
-.set-desc { font-size: 0.76rem; color: #8090b0; }
-.set-val { font-family: monospace; font-size: 0.82rem; color: #8090b0; text-align: right; }
+/* GUESTS */
+.search-inp{width:100%;padding:11px 16px;margin-bottom:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:#eef2ff;font-size:0.9rem;outline:none;-webkit-appearance:none}
+.glist{display:flex;flex-direction:column;gap:8px}
+.gcard{background:#0e1028;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.gav{width:40px;height:40px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#ff3cac,#9b59ff);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700}
+.ginfo{flex:1;min-width:0}
+.gname{font-weight:700;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gphone{font-size:0.75rem;color:#8090b0;margin-top:2px}
+.gstars{font-size:0.82rem;font-weight:700;margin-top:2px}
+.gactions{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.gbtn{padding:6px 12px;border-radius:100px;font-size:0.72rem;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1px solid;white-space:nowrap}
+.gbtn:active{opacity:0.7}
+.gbtn-visit{background:rgba(6,214,160,0.1);border-color:rgba(6,214,160,0.25);color:#06d6a0}
+.gbtn-bday{background:rgba(255,209,102,0.1);border-color:rgba(255,209,102,0.25);color:#ffd166}
+.gbtn-redeem{background:rgba(255,60,172,0.1);border-color:rgba(255,60,172,0.25);color:#ff3cac}
 
-/* Toast */
-.toast {
-  position: fixed; bottom: 32px; left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: #131535; border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 100px; padding: 11px 20px;
-  font-size: 0.85rem; font-weight: 700;
-  opacity: 0; transition: all 0.3s; pointer-events: none;
-  white-space: nowrap; z-index: 999;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* CASHIER HINT */
+.cashier-hint{background:rgba(45,156,255,0.06);border:1px solid rgba(45,156,255,0.18);border-radius:14px;padding:14px 16px;margin-bottom:16px;font-size:0.82rem;color:#8090b0;line-height:1.6}
+.cashier-staff{display:flex;align-items:center;gap:8px;background:rgba(45,156,255,0.08);border:1px solid rgba(45,156,255,0.2);border-radius:100px;padding:6px 14px;margin-bottom:16px;font-size:0.8rem;color:#2d9cff;font-weight:700}
 
-/* Empty state */
-.empty { text-align: center; color: #5a6a90; padding: 40px 20px; font-size: 0.88rem; }
+/* BOOKINGS */
+.bcard{background:#0e1028;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;margin-bottom:10px}
+.bname{font-weight:700;font-size:0.9rem;margin-bottom:4px}
+.bmeta{font-size:0.8rem;color:#8090b0;line-height:1.5}
+.bstatus{display:inline-block;margin-top:10px;font-size:0.7rem;font-weight:800;padding:4px 12px;border-radius:100px}
+.bstatus.new{background:rgba(255,60,172,0.12);color:#ff3cac}
+.bstatus.done{background:rgba(6,214,160,0.1);color:#06d6a0}
+.bdone-btn{float:right;padding:5px 12px;border-radius:100px;background:rgba(255,255,255,0.06);border:none;color:#8090b0;font-size:0.7rem;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* HISTORY (директор) */
+.hcard{background:#0e1028;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.hico{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.hico.p{background:rgba(6,214,160,0.1)}
+.hico.m{background:rgba(255,92,92,0.1)}
+.hinfo{flex:1;min-width:0}
+.haction{font-size:0.84rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hmeta{font-size:0.73rem;color:#8090b0;margin-top:2px}
+.hpts{font-size:0.88rem;font-weight:900;flex-shrink:0}
+.hpts.p{color:#06d6a0}
+.hpts.m{color:#ff5c5c}
+
+/* SETTINGS */
+.set-row{background:#0e1028;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.set-info{flex:1}
+.set-name{font-weight:700;font-size:0.88rem;margin-bottom:3px}
+.set-desc{font-size:0.76rem;color:#8090b0}
+.set-val{font-family:monospace;font-size:0.82rem;color:#8090b0;text-align:right;cursor:pointer}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(10px);background:#131535;border:1px solid rgba(255,255,255,0.12);border-radius:100px;padding:11px 20px;font-size:0.85rem;font-weight:700;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* CONFIRM MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:#0e1028;border:1px solid rgba(255,255,255,0.1);border-radius:24px 24px 16px 16px;padding:28px 24px;width:100%;max-width:420px}
+.modal-title{font-size:1.05rem;font-weight:900;margin-bottom:8px}
+.modal-desc{font-size:0.85rem;color:#8090b0;line-height:1.6;margin-bottom:24px}
+.modal-btns{display:flex;gap:10px}
+.modal-confirm{flex:1;padding:13px;border:none;border-radius:100px;background:linear-gradient(135deg,#ff3cac,#c4007a);color:#fff;font-size:0.9rem;font-weight:700;cursor:pointer}
+.modal-cancel{flex:1;padding:13px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;background:transparent;color:#8090b0;font-size:0.9rem;font-weight:700;cursor:pointer}
+
+.empty{text-align:center;color:#5a6a90;padding:40px 20px;font-size:0.88rem}
 </style>
 </head>
 <body>
@@ -187,68 +139,74 @@ body {
   <div class="lcard">
     <div class="llogo">🚀 РАКЕТА</div>
     <div class="lsub">Панель управления · Только для персонала</div>
-    <input class="linput" type="password" id="passInp" placeholder="Пароль"
-      onkeydown="if(event.key==='Enter')login()">
+    <input class="linput" type="password" id="passInp" placeholder="Пароль" onkeydown="if(event.key==='Enter')login()">
     <button class="lbtn" onclick="login()">Войти</button>
     <div class="lerr" id="lerr"></div>
   </div>
 </div>
 
-<!-- ADMIN -->
-<div id="adminScreen">
+<!-- NAME SCREEN (кассир вводит имя после пароля) -->
+<div id="nameScreen">
+  <div class="ncard">
+    <div class="nicon">👤</div>
+    <div class="ntitle">Как тебя зовут?</div>
+    <div class="nsub">Твоё имя будет записано в историю начислений, чтобы директор видел кто и когда работал</div>
+    <input class="linput" type="text" id="staffNameInp" placeholder="Например: Ольга" onkeydown="if(event.key==='Enter')saveName()">
+    <button class="lbtn" onclick="saveName()">Начать работу</button>
+    <div class="lerr" id="nerr"></div>
+  </div>
+</div>
+
+<!-- CASHIER SCREEN -->
+<div id="cashierScreen">
   <div class="atop">
-    <div class="atop-title">🚀 Ракета · Панель</div>
+    <div class="atop-left">
+      <div class="atop-title">🚀 Ракета</div>
+      <div class="role-badge role-cashier">🟢 Кассир</div>
+    </div>
     <button class="atop-logout" onclick="logout()">Выйти</button>
   </div>
+  <div style="padding:16px">
+    <div class="cashier-staff" id="cashierStaffLabel">👤 —</div>
+    <div class="cashier-hint">Найди гостя по имени или телефону и нажми <strong style="color:#06d6a0">+100★ Визит</strong> за каждое посещение.</div>
+    <input class="search-inp" type="text" placeholder="🔍 Поиск по имени или телефону" oninput="searchGuests(this.value,'cashierList')">
+    <div class="glist" id="cashierList"><div class="empty">Загружаем...</div></div>
+  </div>
+</div>
 
+<!-- MANAGER / DIRECTOR SCREEN -->
+<div id="adminScreen">
+  <div class="atop">
+    <div class="atop-left">
+      <div class="atop-title">🚀 Ракета</div>
+      <div class="role-badge" id="roleBadge"></div>
+    </div>
+    <button class="atop-logout" onclick="logout()">Выйти</button>
+  </div>
   <div class="anav">
-    <button class="atab on" onclick="tab('dash')" id="tb-dash">
-      <span class="ti">📊</span>Дашборд
-    </button>
-    <button class="atab" onclick="tab('guests')" id="tb-guests">
-      <span class="ti">👥</span>Гости
-    </button>
-    <button class="atab" onclick="tab('book')" id="tb-book">
-      <span class="ti">📅</span>Заявки
-    </button>
-    <button class="atab" onclick="tab('set')" id="tb-set">
-      <span class="ti">⚙️</span>Инфо
-    </button>
+    <button class="atab on" onclick="tab('dash')" id="tb-dash"><span class="ti">📊</span>Дашборд</button>
+    <button class="atab" onclick="tab('guests')" id="tb-guests"><span class="ti">👥</span>Гости</button>
+    <button class="atab" onclick="tab('book')" id="tb-book"><span class="ti">📅</span>Заявки</button>
+    <button class="atab" onclick="tab('hist')" id="tb-hist"><span class="ti">📋</span>История</button>
+    <button class="atab" onclick="tab('set')" id="tb-set"><span class="ti">⚙️</span>Инфо</button>
   </div>
 
   <!-- ДАШБОРД -->
   <div class="apanel on" id="p-dash">
     <div class="stats">
-      <div class="scard">
-        <div class="snum" id="s-guests" style="color:#2d9cff">—</div>
-        <div class="slbl">Гостей</div>
-      </div>
-      <div class="scard">
-        <div class="snum" id="s-stars" style="color:#ffd166">—</div>
-        <div class="slbl">Звёзд выдано</div>
-      </div>
-      <div class="scard">
-        <div class="snum" id="s-visits" style="color:#06d6a0">—</div>
-        <div class="slbl">Визитов</div>
-      </div>
-      <div class="scard">
-        <div class="snum" id="s-book" style="color:#ff3cac">—</div>
-        <div class="slbl">Заявок</div>
-      </div>
+      <div class="scard"><div class="snum" id="s-guests" style="color:#2d9cff">—</div><div class="slbl">Гостей</div></div>
+      <div class="scard"><div class="snum" id="s-stars" style="color:#ffd166">—</div><div class="slbl">Звёзд выдано</div></div>
+      <div class="scard"><div class="snum" id="s-visits" style="color:#06d6a0">—</div><div class="slbl">Визитов</div></div>
+      <div class="scard"><div class="snum" id="s-book" style="color:#ff3cac">—</div><div class="slbl">Заявок</div></div>
     </div>
-    <div class="section-title">Последние гости</div>
-    <div class="glist" id="recentGuests">
-      <div class="empty">Загружаем...</div>
-    </div>
+    <div class="sec-t">Последние гости</div>
+    <div class="glist" id="recentGuests"><div class="empty">Загружаем...</div></div>
   </div>
 
   <!-- ГОСТИ -->
   <div class="apanel" id="p-guests">
-    <input class="search-inp" type="text" placeholder="🔍 Поиск по имени или телефону"
-      oninput="searchGuests(this.value)" id="gsearch">
-    <div class="glist" id="guestsList">
-      <div class="empty">Загружаем...</div>
-    </div>
+    <input class="search-inp" type="text" placeholder="🔍 Поиск по имени или телефону" oninput="searchGuests(this.value,'guestsList')">
+    <div class="glist" id="guestsList"><div class="empty">Загружаем...</div></div>
   </div>
 
   <!-- ЗАЯВКИ -->
@@ -256,73 +214,107 @@ body {
     <div id="bookList"><div class="empty">Загружаем...</div></div>
   </div>
 
+  <!-- ИСТОРИЯ -->
+  <div class="apanel" id="p-hist">
+    <div class="sec-t" style="margin-bottom:12px">Последние 50 операций</div>
+    <div id="histList"><div class="empty">Загружаем...</div></div>
+  </div>
+
   <!-- ИНФО -->
   <div class="apanel" id="p-set">
-    <div class="section-title">Система</div>
+    <div class="sec-t">Система</div>
     <div class="set-row">
-      <div class="set-info">
-        <div class="set-name">Supabase проект</div>
-        <div class="set-desc">База данных клуба лояльности</div>
-      </div>
+      <div class="set-info"><div class="set-name">Supabase проект</div><div class="set-desc">База данных клуба лояльности</div></div>
       <div class="set-val">yiqipul...</div>
     </div>
     <div class="set-row">
-      <div class="set-info">
-        <div class="set-name">Telegram для заявок</div>
-        <div class="set-desc">Куда приходят заявки с сайта</div>
-      </div>
+      <div class="set-info"><div class="set-name">Telegram для заявок</div><div class="set-desc">Куда приходят заявки с сайта</div></div>
       <div class="set-val">@parkraketa74</div>
     </div>
     <div class="set-row">
-      <div class="set-info">
-        <div class="set-name">Телефон парка</div>
-        <div class="set-desc">Основной контакт на лендинге</div>
-      </div>
+      <div class="set-info"><div class="set-name">Телефон парка</div><div class="set-desc">Основной контакт на лендинге</div></div>
       <div class="set-val">+7 351 216-36-26</div>
     </div>
     <div class="set-row">
-      <div class="set-info">
-        <div class="set-name">Звёзд за визит</div>
-        <div class="set-desc">Начисляется кассиром при каждом посещении</div>
-      </div>
+      <div class="set-info"><div class="set-name">★ за визит</div><div class="set-desc">Начисляется кассиром при каждом посещении</div></div>
       <div class="set-val">100 ★</div>
     </div>
     <div class="set-row">
-      <div class="set-info">
-        <div class="set-name">Бонус в день рождения</div>
-        <div class="set-desc">Множитель звёзд</div>
-      </div>
+      <div class="set-info"><div class="set-name">Бонус в день рождения</div><div class="set-desc">Множитель звёзд при начислении менеджером</div></div>
       <div class="set-val">×3</div>
     </div>
     <div class="set-row">
-      <div class="set-info">
-        <div class="set-name">Обмен звёзд</div>
-        <div class="set-desc">Бесплатный визит</div>
-      </div>
+      <div class="set-info"><div class="set-name">Обмен звёзд</div><div class="set-desc">Бесплатный визит</div></div>
       <div class="set-val">1000 ★</div>
+    </div>
+    <div id="passBlock" style="display:none">
+      <div class="sec-t" style="margin-top:20px">Пароли доступа</div>
+      <div class="set-row">
+        <div class="set-info"><div class="set-name">🟢 Кассир</div><div class="set-desc">Начисление 100★ за визит</div></div>
+        <div class="set-val" id="sp-cashier" onclick="togglePass('cashier')">Показать</div>
+      </div>
+      <div class="set-row">
+        <div class="set-info"><div class="set-name">🟣 Менеджер</div><div class="set-desc">Гости + заявки + ×3 ДР + списание</div></div>
+        <div class="set-val" id="sp-manager" onclick="togglePass('manager')">Показать</div>
+      </div>
+      <div class="set-row">
+        <div class="set-info"><div class="set-name">🔴 Директор</div><div class="set-desc">Полный доступ + история + пароли</div></div>
+        <div class="set-val" id="sp-director" onclick="togglePass('director')">Показать</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Отмена</button>
+      <button class="modal-confirm" id="modalConfirmBtn">Подтвердить</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-/* ── CONFIG ── */
-const PASS = 'raketa2026';
-const SB   = 'https://yiqipulgofoschkccaxr.supabase.co';
-const SK   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
+/* ── КОНФИГ ── */
+const ROLES = {
+  'raketa-kassa':   'cashier',
+  'raketa-manager': 'manager',
+  'raketa2026':     'director'
+};
+const PASS_VALS = { cashier:'raketa-kassa', manager:'raketa-manager', director:'raketa2026' };
+const ROLE_LABELS = {
+  cashier:  { text:'🟢 Кассир',   cls:'role-cashier'  },
+  manager:  { text:'🟣 Менеджер', cls:'role-manager'  },
+  director: { text:'🔴 Директор', cls:'role-director' }
+};
+/* Вкладки для менеджера и директора */
+const ROLE_TABS = {
+  manager:  ['guests','book'],
+  director: ['dash','guests','book','hist','set']
+};
+
+const SB = 'https://yiqipulgofoschkccaxr.supabase.co';
+const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWlwdWxnb2Zvc2Noa2NjYXhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzMjExMjksImV4cCI6MjA4OTg5NzEyOX0.Op4iBjGSOBcKh4pkVSd75_l8Fle3Cz15nBh9KF21YhI';
 
 let allGuests = [];
+let allBookings = [];
+let currentRole = null;
+let staffName = '';
+const passShown = {};
 
 /* ── SUPABASE ── */
-async function q(path, opts = {}) {
+async function sbq(path, opts={}) {
   try {
-    const r = await fetch(SB + '/rest/v1/' + path, {
-      headers: {
-        'apikey': SK, 'Authorization': 'Bearer ' + SK,
-        'Content-Type': 'application/json',
-        'Prefer': opts.prefer || 'return=representation'
+    const r = await fetch(SB+'/rest/v1/'+path, {
+      headers:{
+        'apikey':SK,'Authorization':'Bearer '+SK,
+        'Content-Type':'application/json',
+        'Prefer':opts.prefer||'return=representation'
       }, ...opts
     });
     const t = await r.text();
@@ -333,178 +325,325 @@ async function q(path, opts = {}) {
 /* ── LOGIN ── */
 function login() {
   const pass = document.getElementById('passInp').value.trim();
-  if (pass === PASS) {
-    sessionStorage.setItem('ra', '1');
-    document.getElementById('loginScreen').classList.add('hide');
-    document.getElementById('adminScreen').classList.add('show');
-    loadAll();
-  } else {
+  const role = ROLES[pass];
+  if (!role) {
     document.getElementById('lerr').textContent = '❌ Неверный пароль';
     document.getElementById('passInp').style.borderColor = '#ff5c5c';
-    setTimeout(() => {
-      document.getElementById('lerr').textContent = '';
-      document.getElementById('passInp').style.borderColor = '';
-    }, 2000);
+    setTimeout(()=>{ document.getElementById('lerr').textContent=''; document.getElementById('passInp').style.borderColor=''; },2000);
+    return;
   }
+  currentRole = role;
+  sessionStorage.setItem('ra', role);
+  document.getElementById('loginScreen').classList.add('hide');
+
+  if (role === 'cashier') {
+    /* Кассир — сначала вводит имя */
+    const saved = sessionStorage.getItem('staffName');
+    if (saved) { staffName = saved; showCashier(); loadAll(); }
+    else document.getElementById('nameScreen').classList.add('show');
+  } else {
+    applyRole(role);
+    loadAll();
+  }
+}
+
+function saveName() {
+  const n = document.getElementById('staffNameInp').value.trim();
+  if (!n) { document.getElementById('nerr').textContent='⚠️ Введи имя'; return; }
+  staffName = n;
+  sessionStorage.setItem('staffName', n);
+  document.getElementById('nameScreen').classList.remove('show');
+  showCashier();
+  loadAll();
+}
+
+function showCashier() {
+  document.getElementById('cashierScreen').classList.add('show');
+  const lbl = document.getElementById('cashierStaffLabel');
+  if (lbl) lbl.textContent = '👤 ' + staffName;
 }
 
 function logout() {
   sessionStorage.removeItem('ra');
+  sessionStorage.removeItem('staffName');
+  currentRole = null; staffName = '';
   document.getElementById('adminScreen').classList.remove('show');
+  document.getElementById('cashierScreen').classList.remove('show');
+  document.getElementById('nameScreen').classList.remove('show');
   document.getElementById('loginScreen').classList.remove('hide');
   document.getElementById('passInp').value = '';
 }
 
+/* ── APPLY ROLE (менеджер/директор) ── */
+function applyRole(role) {
+  document.getElementById('adminScreen').classList.add('show');
+  const rl = ROLE_LABELS[role];
+  const badge = document.getElementById('roleBadge');
+  badge.textContent = rl.text;
+  badge.className = 'role-badge ' + rl.cls;
+
+  const allowed = ROLE_TABS[role];
+  ['dash','guests','book','hist','set'].forEach(name => {
+    document.getElementById('tb-'+name).classList.toggle('hidden', !allowed.includes(name));
+  });
+
+  if (role === 'manager') {
+    /* Менеджер стартует на Гостях */
+    document.getElementById('p-dash').classList.remove('on');
+    document.getElementById('tb-dash').classList.remove('on');
+    document.getElementById('p-guests').classList.add('on');
+    document.getElementById('tb-guests').classList.add('on');
+  }
+  if (role === 'director') {
+    document.getElementById('passBlock').style.display = 'block';
+  }
+}
+
 /* ── TABS ── */
 function tab(name) {
-  ['dash','guests','book','set'].forEach(n => {
+  ['dash','guests','book','hist','set'].forEach(n=>{
     document.getElementById('p-'+n).classList.remove('on');
     document.getElementById('tb-'+n).classList.remove('on');
   });
   document.getElementById('p-'+name).classList.add('on');
   document.getElementById('tb-'+name).classList.add('on');
+  if (name === 'hist') loadHistory();
 }
 
 /* ── LOAD ALL ── */
 async function loadAll() {
   const [guests, bookings] = await Promise.all([
-    q('raketa_guests?order=registered_at.desc&limit=200'),
-    q('raketa_bookings?order=created_at.desc&limit=50')
+    sbq('raketa_guests?order=registered_at.desc&limit=200'),
+    sbq('raketa_bookings?order=created_at.desc&limit=50')
   ]);
   allGuests = guests || [];
-  renderDash(allGuests, bookings || []);
-  renderGuests(allGuests);
-  renderBookings(bookings || []);
+  allBookings = bookings || [];
+
+  if (currentRole === 'cashier') {
+    renderGuests(allGuests, 'cashierList');
+    return;
+  }
+  if (currentRole === 'director') renderDash(allGuests, allBookings);
+  renderGuests(allGuests, 'guestsList');
+  renderBookings(allBookings);
 }
 
 /* ── DASHBOARD ── */
 function renderDash(guests, bookings) {
-  const totalStars  = guests.reduce((s,g) => s + (g.stars||0), 0);
-  const totalVisits = guests.reduce((s,g) => s + (g.visits||0), 0);
+  const totalStars  = guests.reduce((s,g)=>s+(g.stars||0),0);
+  const totalVisits = guests.reduce((s,g)=>s+(g.visits||0),0);
   document.getElementById('s-guests').textContent = guests.length;
-  document.getElementById('s-stars').textContent  = totalStars > 999
-    ? (totalStars/1000).toFixed(1)+'K' : totalStars;
+  document.getElementById('s-stars').textContent  = totalStars>999?(totalStars/1000).toFixed(1)+'K':totalStars;
   document.getElementById('s-visits').textContent = totalVisits;
   document.getElementById('s-book').textContent   = bookings.length;
-
   const el = document.getElementById('recentGuests');
-  if (!guests.length) { el.innerHTML = '<div class="empty">Нет гостей. Залейте схему в Supabase.</div>'; return; }
-  el.innerHTML = guests.slice(0,5).map(g => guestCard(g)).join('');
+  if (!guests.length) { el.innerHTML='<div class="empty">Нет гостей</div>'; return; }
+  el.innerHTML = guests.slice(0,5).map(g=>guestCard(g,'recentGuests')).join('');
 }
 
-/* ── GUESTS ── */
+/* ── HELPERS ── */
 function getLv(s) {
   if (s>=3000) return {n:'Галактика',c:'#ffd166'};
-  if (s>=1500) return {n:'Командир',c:'#9b59ff'};
+  if (s>=1500) return {n:'Командир', c:'#9b59ff'};
   if (s>=500)  return {n:'Космонавт',c:'#2d9cff'};
-  return {n:'Новичок',c:'#8090b0'};
+  return             {n:'Новичок',  c:'#8090b0'};
 }
 
-function guestCard(g) {
+function guestCard(g, listId) {
   const lv = getLv(g.stars||0);
-  const initials = (g.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-  return `<div class="gcard">
-    <div class="gav">${initials}</div>
+  const ini = (g.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const isCashier = currentRole === 'cashier';
+  const canBday   = !isCashier; /* менеджер и директор */
+  const canRedeem = !isCashier;
+  const canRedVal = (g.stars||0) >= 1000;
+
+  return `<div class="gcard" id="gc-${g.id}">
+    <div class="gav">${ini}</div>
     <div class="ginfo">
       <div class="gname">${g.name}</div>
       <div class="gphone">${g.phone||'—'}</div>
-      <div class="gstars" style="color:${lv.c}">★ ${(g.stars||0).toLocaleString('ru')} · ${lv.n} · ${g.visits||0} визитов</div>
+      <div class="gstars" style="color:${lv.c}">★ ${(g.stars||0).toLocaleString('ru')} · ${lv.n} · ${g.visits||0} виз.</div>
     </div>
-    <button class="gadd" onclick="addStars('${g.id}','${g.name.replace(/'/g,"\\'")}')">+100★</button>
+    <div class="gactions">
+      <button class="gbtn gbtn-visit" onclick="doAction('visit','${g.id}','${esc(g.name)}','${listId}')">+100★</button>
+      ${canBday?`<button class="gbtn gbtn-bday" onclick="doAction('bday','${g.id}','${esc(g.name)}','${listId}')">×3 ДР</button>`:''}
+      ${canRedeem?`<button class="gbtn gbtn-redeem" style="opacity:${canRedVal?1:0.35}" onclick="${canRedVal?`doAction('redeem','${g.id}','${esc(g.name)}','${listId}')`:'toast(\"⚠️ Недостаточно звёзд\")'}"  >−1000★</button>`:''}
+    </div>
   </div>`;
 }
 
-function renderGuests(guests) {
-  const el = document.getElementById('guestsList');
-  if (!guests.length) { el.innerHTML = '<div class="empty">Гостей нет</div>'; return; }
-  el.innerHTML = guests.map(g => guestCard(g)).join('');
+function esc(s){ return s.replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+/* ── RENDER GUESTS ── */
+function renderGuests(guests, listId) {
+  const el = document.getElementById(listId);
+  if (!el) return;
+  if (!guests.length) { el.innerHTML='<div class="empty">Гостей нет</div>'; return; }
+  el.innerHTML = guests.map(g=>guestCard(g,listId)).join('');
 }
 
-function searchGuests(q) {
-  const ql = q.toLowerCase();
-  const filtered = ql
-    ? allGuests.filter(g => (g.name||'').toLowerCase().includes(ql) || (g.phone||'').includes(ql))
+function searchGuests(val, listId) {
+  const vl = val.toLowerCase();
+  const filtered = vl
+    ? allGuests.filter(g=>(g.name||'').toLowerCase().includes(vl)||(g.phone||'').includes(vl))
     : allGuests;
-  renderGuests(filtered);
+  renderGuests(filtered, listId);
 }
 
-async function addStars(id, name) {
-  const g = allGuests.find(x => x.id === id);
-  if (!g) return;
-  const newStars = (g.stars||0) + 100;
-  const newVisits = (g.visits||0) + 1;
+/* ── ACTIONS ── */
+const ACTION_META = {
+  visit:  { title:'Начислить 100★ за визит',        confirmText:'Подтвердить?', delta:+100,  reason:'Визит',                 cost:0    },
+  bday:   { title:'Начислить ×3 в день рождения',   confirmText:'×3 за ДР — это 300★. Подтвердить?', delta:+300, reason:'🎂 День рождения ×3', cost:0 },
+  redeem: { title:'Списать 1000★ — бесплатный визит', confirmText:'Списать 1000★? Гость получает бесплатный вход.', delta:-1000, reason:'🎟️ Бесплатный визит (обмен)', cost:1000 }
+};
+
+let pendingAction = null;
+
+function doAction(type, guestId, guestName, listId) {
+  const meta = ACTION_META[type];
+  pendingAction = { type, guestId, guestName, listId, meta };
+  document.getElementById('modalTitle').textContent = meta.title;
+  document.getElementById('modalDesc').textContent  = `Гость: ${guestName}\n${meta.confirmText}`;
+  document.getElementById('modalConfirmBtn').onclick = confirmAction;
+  document.getElementById('confirmModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('confirmModal').classList.remove('show');
+  pendingAction = null;
+}
+
+async function confirmAction() {
+  closeModal();
+  if (!pendingAction) return;
+  const { type, guestId, guestName, listId, meta } = pendingAction;
+  const g = allGuests.find(x=>x.id===guestId);
+  if (!g) { toast('❌ Гость не найден'); return; }
+
+  if (type === 'redeem' && (g.stars||0) < 1000) { toast('⚠️ Недостаточно звёзд'); return; }
+
+  const newStars  = Math.max(0, (g.stars||0) + meta.delta);
+  const newVisits = type === 'visit' ? (g.visits||0)+1 : (g.visits||0);
   const lv = getLv(newStars).n;
-  const res = await q('raketa_guests?id=eq.'+id, {
-    method: 'PATCH', prefer: '',
-    body: JSON.stringify({stars: newStars, visits: newVisits, level: lv})
-  });
-  await q('raketa_visits', {
-    method: 'POST', prefer: '',
-    body: JSON.stringify({guest_id: id, stars_delta: 100, reason: 'Визит (admin)', staff_note: 'Панель директора'})
-  });
+  const note = staffName ? 'Сотрудник: ' + staffName : ('Роль: ' + currentRole);
+
+  const [patchRes] = await Promise.all([
+    sbq('raketa_guests?id=eq.'+guestId, {
+      method:'PATCH', prefer:'',
+      body:JSON.stringify({stars:newStars, visits:newVisits, level:lv})
+    }),
+    sbq('raketa_visits', {
+      method:'POST', prefer:'',
+      body:JSON.stringify({
+        guest_id:guestId, stars_delta:meta.delta,
+        reason:meta.reason, staff_note:note
+      })
+    })
+  ]);
+
   g.stars = newStars; g.visits = newVisits; g.level = lv;
-  renderGuests(allGuests);
-  renderDash(allGuests, []);
-  toast('⭐ +100 звёзд для ' + name);
+
+  /* Обновляем карточку на месте */
+  const cardEl = document.getElementById('gc-'+guestId);
+  if (cardEl) cardEl.outerHTML = guestCard(g, listId);
+
+  if (currentRole === 'director') renderDash(allGuests, allBookings);
+
+  const msgs = { visit:'⭐ +100★ — '+guestName, bday:'🎂 +300★ ДР — '+guestName, redeem:'🎟️ −1000★ визит — '+guestName };
+  toast(msgs[type]);
 }
 
 /* ── BOOKINGS ── */
 function renderBookings(bookings) {
   const el = document.getElementById('bookList');
   if (!bookings.length) {
-    el.innerHTML = '<div class="empty">Заявок нет.<br>Они появятся после отправки формы на лендинге.</div>';
+    el.innerHTML='<div class="empty">Заявок нет.<br>Появятся после отправки формы на сайте.</div>';
     return;
   }
-  el.innerHTML = bookings.map(b => `
+  el.innerHTML = bookings.map(b=>`
     <div class="bcard">
-      <button class="bdone-btn" onclick="markDone('${b.id}')">
-        ${b.status==='done'?'✓ Готово':'Выполнить'}
-      </button>
+      <button class="bdone-btn" onclick="markDone('${b.id}')">${b.status==='done'?'✓ Готово':'Выполнить'}</button>
       <div class="bname">${b.name} · ${b.phone}</div>
       <div class="bmeta">
-        ${b.event_type ? '🎉 '+b.event_type+'<br>' : ''}
-        ${b.event_date ? '📅 '+b.event_date+'<br>' : ''}
-        ${b.comment ? '💬 '+b.comment+'<br>' : ''}
+        ${b.event_type?'🎉 '+b.event_type+'<br>':''}
+        ${b.event_date?'📅 '+b.event_date+'<br>':''}
+        ${b.comment?'💬 '+b.comment+'<br>':''}
         <small style="color:#5a6a90">${new Date(b.created_at).toLocaleString('ru-RU')}</small>
       </div>
-      <div class="bstatus ${b.status==='done'?'done':'new'}">
-        ${b.status==='done'?'✓ Выполнено':'🆕 Новая'}
-      </div>
+      <div class="bstatus ${b.status==='done'?'done':'new'}">${b.status==='done'?'✓ Выполнено':'🆕 Новая'}</div>
     </div>
   `).join('');
 }
 
 async function markDone(id) {
-  await q('raketa_bookings?id=eq.'+id, {
-    method: 'PATCH', prefer: '',
-    body: JSON.stringify({status: 'done'})
-  });
-  loadAll();
+  await sbq('raketa_bookings?id=eq.'+id, { method:'PATCH', prefer:'', body:JSON.stringify({status:'done'}) });
+  const b = allBookings.find(x=>x.id===id);
+  if (b) b.status = 'done';
+  renderBookings(allBookings);
   toast('✅ Заявка выполнена');
 }
 
-/* ── HELPERS ── */
+/* ── HISTORY ── */
+async function loadHistory() {
+  const el = document.getElementById('histList');
+  el.innerHTML = '<div class="empty">Загружаем...</div>';
+  const rows = await sbq('raketa_visits?order=created_at.desc&limit=50') || [];
+  if (!rows.length) { el.innerHTML='<div class="empty">История пуста</div>'; return; }
+
+  /* Подтягиваем имена гостей из allGuests */
+  const gMap = {};
+  allGuests.forEach(g=>{ gMap[g.id]=g.name; });
+
+  el.innerHTML = rows.map(h=>{
+    const p = h.stars_delta > 0;
+    const gname = gMap[h.guest_id] || '—';
+    return `<div class="hcard">
+      <div class="hico ${p?'p':'m'}">${p?'⬆️':'⬇️'}</div>
+      <div class="hinfo">
+        <div class="haction">${h.reason} · ${gname}</div>
+        <div class="hmeta">${h.staff_note||'—'} · ${new Date(h.created_at).toLocaleString('ru-RU')}</div>
+      </div>
+      <div class="hpts ${p?'p':'m'}">${p?'+':''}${h.stars_delta}★</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── ПАРОЛИ ── */
+function togglePass(role) {
+  const el = document.getElementById('sp-'+role);
+  passShown[role] = !passShown[role];
+  el.textContent = passShown[role] ? PASS_VALS[role] : 'Показать';
+}
+
+/* ── TOAST ── */
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   clearTimeout(t._t);
-  t._t = setTimeout(() => t.classList.remove('show'), 2500);
+  t._t = setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 /* ── INIT ── */
-window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('passInp').addEventListener('keydown', e => {
-    if (e.key === 'Enter') login();
-  });
-  if (sessionStorage.getItem('ra') === '1') {
+window.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('passInp').addEventListener('keydown', e=>{ if(e.key==='Enter') login(); });
+
+  const saved = sessionStorage.getItem('ra');
+  if (saved && Object.values(ROLES).includes(saved)) {
+    currentRole = saved;
     document.getElementById('loginScreen').classList.add('hide');
-    document.getElementById('adminScreen').classList.add('show');
-    loadAll();
+    if (saved === 'cashier') {
+      staffName = sessionStorage.getItem('staffName') || '';
+      if (staffName) { showCashier(); loadAll(); }
+      else document.getElementById('nameScreen').classList.add('show');
+    } else {
+      applyRole(saved);
+      loadAll();
+    }
   }
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').catch(() => {});
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 </script>
 </body>
