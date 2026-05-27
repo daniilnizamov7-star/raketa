@@ -130,7 +130,26 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
 .modal-cancel{flex:1;padding:13px;border:1px solid rgba(255,255,255,0.12);border-radius:100px;background:transparent;color:#8090b0;font-size:0.9rem;font-weight:700;cursor:pointer}
 
 .empty{text-align:center;color:#5a6a90;padding:40px 20px;font-size:0.88rem}
+
+/* QR SCANNER */
+.scan-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;margin-bottom:12px;border:none;border-radius:14px;background:linear-gradient(135deg,rgba(45,156,255,0.15),rgba(45,156,255,0.08));border:1px solid rgba(45,156,255,0.3);color:#2d9cff;font-size:0.9rem;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .2s}
+.scan-btn:active{opacity:0.7}
+#scanModal{position:fixed;inset:0;z-index:600;background:#000;display:none;flex-direction:column}
+#scanModal.show{display:flex}
+.scan-top{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;z-index:10}
+.scan-title{color:#fff;font-weight:800;font-size:0.95rem}
+.scan-close{color:#fff;background:rgba(255,255,255,0.15);border:none;padding:8px 16px;border-radius:100px;font-size:0.8rem;font-weight:700;cursor:pointer}
+#scanVideo{width:100%;height:100%;object-fit:cover}
+.scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.scan-frame{width:220px;height:220px;border:3px solid #2d9cff;border-radius:16px;box-shadow:0 0 0 2000px rgba(0,0,0,0.5)}
+.scan-hint{position:absolute;bottom:48px;left:0;right:0;text-align:center;color:#fff;font-size:0.85rem;font-weight:700;opacity:0.8}
+.scan-found{position:absolute;inset:0;background:rgba(6,214,160,0.15);display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.scan-found.show{display:flex}
+.scan-found-ico{font-size:4rem}
+.scan-found-name{color:#fff;font-size:1.1rem;font-weight:900;text-align:center}
+
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 </head>
 <body>
 
@@ -169,6 +188,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
   <div style="padding:16px">
     <div class="cashier-staff" id="cashierStaffLabel">👤 —</div>
     <div class="cashier-hint">Найди гостя по имени или телефону и нажми <strong style="color:#06d6a0">+100★ Визит</strong> за каждое посещение.</div>
+    <button class="scan-btn" onclick="openScanner('cashierList')">📷 Сканировать QR гостя</button>
     <input class="search-inp" type="text" placeholder="🔍 Поиск по имени или телефону" oninput="searchGuests(this.value,'cashierList')">
     <div class="glist" id="cashierList"><div class="empty">Загружаем...</div></div>
   </div>
@@ -205,6 +225,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
 
   <!-- ГОСТИ -->
   <div class="apanel" id="p-guests">
+    <button class="scan-btn" onclick="openScanner('guestsList')">📷 Сканировать QR гостя</button>
     <input class="search-inp" type="text" placeholder="🔍 Поиск по имени или телефону" oninput="searchGuests(this.value,'guestsList')">
     <div class="glist" id="guestsList"><div class="empty">Загружаем...</div></div>
   </div>
@@ -274,6 +295,24 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
       <button class="modal-cancel" onclick="closeModal()">Отмена</button>
       <button class="modal-confirm" id="modalConfirmBtn">Подтвердить</button>
     </div>
+  </div>
+</div>
+
+
+<!-- QR SCANNER MODAL -->
+<div id="scanModal">
+  <video id="scanVideo" playsinline autoplay muted></video>
+  <div class="scan-top">
+    <div class="scan-title">📷 Сканировать QR гостя</div>
+    <button class="scan-close" onclick="closeScanner()">Закрыть</button>
+  </div>
+  <div class="scan-overlay">
+    <div class="scan-frame"></div>
+  </div>
+  <div class="scan-hint">Наведи камеру на QR-код гостя</div>
+  <div class="scan-found" id="scanFound">
+    <div class="scan-found-ico">✅</div>
+    <div class="scan-found-name" id="scanFoundName"></div>
   </div>
 </div>
 
@@ -644,6 +683,120 @@ window.addEventListener('DOMContentLoaded', ()=>{
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
+/* ── QR SCANNER ── */
+let scanStream = null;
+let scanRAF = null;
+let scanListId = null;
+
+function openScanner(listId) {
+  scanListId = listId;
+  const modal = document.getElementById('scanModal');
+  const video = document.getElementById('scanVideo');
+  const found = document.getElementById('scanFound');
+  found.classList.remove('show');
+  modal.classList.add('show');
+
+  navigator.mediaDevices.getUserMedia({
+    video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+  }).then(stream => {
+    scanStream = stream;
+    video.srcObject = stream;
+    video.play();
+    video.addEventListener('loadedmetadata', startScanLoop, { once: true });
+  }).catch(err => {
+    closeScanner();
+    toast('❌ Нет доступа к камере');
+    console.error(err);
+  });
+}
+
+function startScanLoop() {
+  const video = document.getElementById('scanVideo');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  function tick() {
+    if (!scanStream) return;
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvas.width  = video.videoWidth;
+      canvas.height = video.videoHeight;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = window.jsQR && window.jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: 'dontInvert'
+      });
+      if (code && code.data && code.data.startsWith('RAKETA-')) {
+        handleQRFound(code.data);
+        return;
+      }
+    }
+    scanRAF = requestAnimationFrame(tick);
+  }
+  scanRAF = requestAnimationFrame(tick);
+}
+
+function handleQRFound(qrData) {
+  cancelAnimationFrame(scanRAF);
+  /* Вибрация если доступна */
+  if (navigator.vibrate) navigator.vibrate(100);
+
+  /* Ищем гостя — QR содержит RAKETA-{phone7}-{id8} */
+  const parts = qrData.split('-');
+  const phone7  = parts[1] || '';
+  const idPart  = (parts[2] || '').toLowerCase();
+
+  const guest = allGuests.find(g => {
+    const ph = (g.phone || '').replace(/\D/g,'').slice(-7);
+    const id = (g.id || '').slice(0,8).toLowerCase();
+    return ph === phone7 || id === idPart;
+  });
+
+  const found = document.getElementById('scanFound');
+  const foundName = document.getElementById('scanFoundName');
+
+  if (guest) {
+    foundName.textContent = guest.name + '\n★ ' + (guest.stars||0).toLocaleString('ru');
+    found.classList.add('show');
+    setTimeout(() => {
+      closeScanner();
+      /* Скроллим к гостю и подсвечиваем */
+      highlightGuest(guest.id, scanListId);
+    }, 1200);
+  } else {
+    foundName.textContent = 'Гость не найден';
+    found.classList.add('show');
+    setTimeout(() => {
+      found.classList.remove('show');
+      scanRAF = requestAnimationFrame(startScanLoop.bind(null));
+    }, 1500);
+  }
+}
+
+function highlightGuest(guestId, listId) {
+  /* Сбрасываем поиск и показываем всех */
+  renderGuests(allGuests, listId);
+  setTimeout(() => {
+    const el = document.getElementById('gc-' + guestId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.transition = 'box-shadow 0.3s';
+      el.style.boxShadow = '0 0 0 2px #2d9cff';
+      setTimeout(() => { el.style.boxShadow = ''; }, 2500);
+    }
+  }, 100);
+}
+
+function closeScanner() {
+  cancelAnimationFrame(scanRAF);
+  if (scanStream) {
+    scanStream.getTracks().forEach(t => t.stop());
+    scanStream = null;
+  }
+  document.getElementById('scanVideo').srcObject = null;
+  document.getElementById('scanModal').classList.remove('show');
+  document.getElementById('scanFound').classList.remove('show');
 }
 </script>
 </body>
