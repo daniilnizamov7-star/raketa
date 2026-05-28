@@ -10741,38 +10741,62 @@ async function confirmAction() {
   const { type, guestId, guestName, listId, meta } = pendingAction;
   const g = allGuests.find(x=>x.id===guestId);
   if (!g) { toast('❌ Гость не найден'); return; }
-
-  if (type === 'redeem' && (g.stars||0) < 1000) { toast('⚠️ Недостаточно звёзд'); return; }
+  if (type === 'redeem' && (g.stars||0) < Math.abs(meta.delta)) { toast('⚠️ Недостаточно звёзд'); return; }
 
   const newStars  = Math.max(0, (g.stars||0) + meta.delta);
   const newVisits = type === 'visit' ? (g.visits||0)+1 : (g.visits||0);
   const lv = getLv(newStars).n;
   const note = staffName ? 'Сотрудник: ' + staffName : ('Роль: ' + currentRole);
 
-  const [patchRes] = await Promise.all([
-    sbq('raketa_guests?id=eq.'+guestId, {
-      method:'PATCH', prefer:'',
-      body:JSON.stringify({stars:newStars, visits:newVisits, level:lv})
-    }),
-    sbq('raketa_visits', {
-      method:'POST', prefer:'',
-      body:JSON.stringify({
-        guest_id:guestId, stars_delta:meta.delta,
-        reason:meta.reason, staff_note:note
-      })
-    })
-  ]);
+  toast('⏳ Сохраняем...');
+  console.log('[ACTION] PATCH guest', guestId, 'stars:', newStars);
 
-  g.stars = newStars; g.visits = newVisits; g.level = lv;
+  try {
+    const patchUrl = SB+'/rest/v1/raketa_guests?id=eq.'+guestId;
+    const patchBody = JSON.stringify({stars:newStars, visits:newVisits, level:lv});
+    console.log('[ACTION] URL:', patchUrl);
+    console.log('[ACTION] Body:', patchBody);
 
-  /* Обновляем карточку на месте */
-  const cardEl = document.getElementById('gc-'+guestId);
-  if (cardEl) cardEl.outerHTML = guestCard(g, listId);
+    const pr = await fetch(patchUrl, {
+      method:'PATCH',
+      headers:{
+        'apikey':SK,'Authorization':'Bearer '+SK,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      },
+      body: patchBody
+    });
+    console.log('[ACTION] PATCH status:', pr.status);
+    if (!pr.ok) {
+      const errText = await pr.text();
+      console.error('[ACTION] PATCH error:', errText);
+      toast('❌ Ошибка PATCH: ' + pr.status + ' — ' + errText.slice(0,80));
+      return;
+    }
 
-  if (currentRole === 'director') renderDash(allGuests, allBookings);
+    const vr = await fetch(SB+'/rest/v1/raketa_visits', {
+      method:'POST',
+      headers:{
+        'apikey':SK,'Authorization':'Bearer '+SK,
+        'Content-Type':'application/json',
+        'Prefer':'return=minimal'
+      },
+      body: JSON.stringify({guest_id:guestId, stars_delta:meta.delta, reason:meta.reason, staff_note:note})
+    });
+    console.log('[ACTION] INSERT visit status:', vr.status);
 
-  const msgs = { visit:'⭐ +100★ — '+guestName, bday:'🎂 +300★ ДР — '+guestName, redeem:'🎟️ −1000★ визит — '+guestName };
-  toast(msgs[type]);
+    g.stars = newStars; g.visits = newVisits; g.level = lv;
+    const cardEl = document.getElementById('gc-'+guestId);
+    if (cardEl) cardEl.outerHTML = guestCard(g, listId);
+    if (currentRole === 'director') renderDash(allGuests, allBookings);
+
+    const msgs = { visit:'⭐ +'+meta.delta+'★ — '+guestName, bday:'🎂 +'+meta.delta+'★ ДР — '+guestName, redeem:'🎟️ '+meta.delta+'★ визит — '+guestName };
+    toast(msgs[type] || '✅ +'+meta.delta+'★ — '+guestName);
+
+  } catch(e) {
+    console.error('[ACTION] Exception:', e);
+    toast('❌ Исключение: ' + e.message);
+  }
 }
 
 /* ── BOOKINGS ── */
