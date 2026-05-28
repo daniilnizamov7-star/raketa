@@ -352,7 +352,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
     <div class="modal-desc" id="modalDesc"></div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeModal()">Отмена</button>
-      <button class="modal-confirm" id="modalConfirmBtn">Подтвердить</button>
+      <button class="modal-confirm" id="modalConfirmBtn" onclick="console.log('BTN CLICK', pendingAction); confirmAction()">Подтвердить</button>
     </div>
   </div>
 </div>
@@ -10742,9 +10742,10 @@ function closeModal() {
 }
 
 async function confirmAction() {
-  closeModal();
-  if (!pendingAction) return;
-  const { type, guestId, guestName, listId, meta } = pendingAction;
+  if (!pendingAction) { console.log('[ACTION] pendingAction is null!'); return; }
+  const action = pendingAction; // сохраняем до closeModal
+  closeModal(); // теперь безопасно — action уже сохранён
+  const { type, guestId, guestName, listId, meta } = action;
   const g = allGuests.find(x=>x.id===guestId);
   if (!g) { toast('❌ Гость не найден'); return; }
   if (type === 'redeem' && (g.stars||0) < Math.abs(meta.delta)) { toast('⚠️ Недостаточно звёзд'); return; }
