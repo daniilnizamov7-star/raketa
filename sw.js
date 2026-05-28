@@ -1,9 +1,9 @@
 /* ================================
-   РАКЕТА · Service Worker v6
+   РАКЕТА · Service Worker v7
    Network-first + авто-обновление
 ================================ */
-const VERSION = 'raketa-v6';
-const STATIC  = ['/loyalty.html', '/staff.html', '/index.html', '/icon.svg'];
+const VERSION = 'raketa-v7';
+const STATIC  = ['/loyalty.html', '/index.html', '/admin-x7k2m.html', '/icon.svg'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
