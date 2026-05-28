@@ -243,19 +243,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
 
   <!-- ИНФО -->
   <div class="apanel" id="p-set">
-    <div class="sec-t">Система</div>
-    <div class="set-row">
-      <div class="set-info"><div class="set-name">Supabase проект</div><div class="set-desc">База данных клуба лояльности</div></div>
-      <div class="set-val">yiqipul...</div>
-    </div>
-    <div class="set-row">
-      <div class="set-info"><div class="set-name">Telegram для заявок</div><div class="set-desc">Куда приходят заявки с сайта</div></div>
-      <div class="set-val">@parkraketa74</div>
-    </div>
-    <div class="set-row">
-      <div class="set-info"><div class="set-name">Телефон парка</div><div class="set-desc">Основной контакт на лендинге</div></div>
-      <div class="set-val">+7 351 216-36-26</div>
-    </div>
+    <div class="sec-t">Настройки программы лояльности</div>
     <div class="set-row">
       <div class="set-info"><div class="set-name">★ за визит</div><div class="set-desc">Начисляется кассиром при каждом посещении</div></div>
       <div class="set-val">100 ★</div>
@@ -265,22 +253,48 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
       <div class="set-val">×3</div>
     </div>
     <div class="set-row">
-      <div class="set-info"><div class="set-name">Обмен звёзд</div><div class="set-desc">Бесплатный визит</div></div>
+      <div class="set-info"><div class="set-name">Обмен звёзд</div><div class="set-desc">Бесплатный визит для гостя</div></div>
       <div class="set-val">1000 ★</div>
     </div>
+    <div class="set-row">
+      <div class="set-info"><div class="set-name">Уровни гостей</div><div class="set-desc">Новичок → Космонавт 500★ → Командир 1500★ → Галактика 3000★</div></div>
+      <div class="set-val">4 уровня</div>
+    </div>
+
     <div id="passBlock" style="display:none">
-      <div class="sec-t" style="margin-top:20px">Пароли доступа</div>
+      <div class="sec-t" style="margin-top:24px">Доступы сотрудников</div>
       <div class="set-row">
-        <div class="set-info"><div class="set-name">🟢 Кассир</div><div class="set-desc">Начисление 100★ за визит</div></div>
-        <div class="set-val" id="sp-cashier" onclick="togglePass('cashier')">Показать</div>
+        <div class="set-info">
+          <div class="set-name">🟢 Кассир</div>
+          <div class="set-desc">Начисление 100★ за визит · только поиск гостя</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="set-val" id="sp-cashier" onclick="togglePass('cashier')" style="min-width:90px;text-align:right">Показать</div>
+          <button class="gbtn gbtn-bday" style="padding:5px 10px;font-size:0.7rem" onclick="changePass('cashier')">Сменить</button>
+        </div>
       </div>
       <div class="set-row">
-        <div class="set-info"><div class="set-name">🟣 Менеджер</div><div class="set-desc">Гости + заявки + ×3 ДР + списание</div></div>
-        <div class="set-val" id="sp-manager" onclick="togglePass('manager')">Показать</div>
+        <div class="set-info">
+          <div class="set-name">🟣 Менеджер</div>
+          <div class="set-desc">Гости + заявки + ×3 ДР + списание 1000★</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="set-val" id="sp-manager" onclick="togglePass('manager')" style="min-width:90px;text-align:right">Показать</div>
+          <button class="gbtn gbtn-bday" style="padding:5px 10px;font-size:0.7rem" onclick="changePass('manager')">Сменить</button>
+        </div>
       </div>
       <div class="set-row">
-        <div class="set-info"><div class="set-name">🔴 Директор</div><div class="set-desc">Полный доступ + история + пароли</div></div>
-        <div class="set-val" id="sp-director" onclick="togglePass('director')">Показать</div>
+        <div class="set-info">
+          <div class="set-name">🔴 Директор</div>
+          <div class="set-desc">Полный доступ + история + управление паролями</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="set-val" id="sp-director" onclick="togglePass('director')" style="min-width:90px;text-align:right">Показать</div>
+          <button class="gbtn gbtn-bday" style="padding:5px 10px;font-size:0.7rem" onclick="changePass('director')">Сменить</button>
+        </div>
+      </div>
+      <div style="font-size:0.75rem;color:#5a6a90;margin-top:8px;line-height:1.5">
+        ⚠️ После смены пароля сообщите сотруднику новый пароль. Старый перестанет работать сразу.
       </div>
     </div>
   </div>
@@ -426,12 +440,16 @@ function applyRole(role) {
     document.getElementById('tb-'+name).classList.toggle('hidden', !allowed.includes(name));
   });
 
-  if (role === 'manager') {
-    /* Менеджер стартует на Гостях */
-    document.getElementById('p-dash').classList.remove('on');
-    document.getElementById('tb-dash').classList.remove('on');
-    document.getElementById('p-guests').classList.add('on');
-    document.getElementById('tb-guests').classList.add('on');
+  /* Сбрасываем все панели — потом включаем первую доступную */
+  ['dash','guests','book','hist','set'].forEach(n=>{
+    document.getElementById('p-'+n).classList.remove('on');
+    document.getElementById('tb-'+n).classList.remove('on');
+  });
+  /* Включаем первую доступную вкладку */
+  const firstTab = allowed[0];
+  if (firstTab) {
+    document.getElementById('p-'+firstTab).classList.add('on');
+    document.getElementById('tb-'+firstTab).classList.add('on');
   }
   if (role === 'director') {
     document.getElementById('passBlock').style.display = 'block';
@@ -652,6 +670,24 @@ function togglePass(role) {
   const el = document.getElementById('sp-'+role);
   passShown[role] = !passShown[role];
   el.textContent = passShown[role] ? PASS_VALS[role] : 'Показать';
+}
+
+function changePass(role) {
+  const roleNames = { cashier:'кассира', manager:'менеджера', director:'директора' };
+  const current = PASS_VALS[role];
+  const newPass = prompt(`Новый пароль для ${roleNames[role]}:\n(текущий: ${current})`);
+  if (!newPass || !newPass.trim()) return;
+  if (newPass.trim().length < 6) { toast('⚠️ Минимум 6 символов'); return; }
+  /* Обновляем в памяти */
+  PASS_VALS[role] = newPass.trim();
+  /* Обновляем в ROLES (обратный маппинг) */
+  Object.keys(ROLES).forEach(k=>{ if(ROLES[k]===role) delete ROLES[k]; });
+  ROLES[newPass.trim()] = role;
+  /* Сбрасываем отображение */
+  passShown[role] = false;
+  const el = document.getElementById('sp-'+role);
+  if (el) el.textContent = 'Показать';
+  toast('✅ Пароль ' + roleNames[role] + ' изменён');
 }
 
 /* ── TOAST ── */
