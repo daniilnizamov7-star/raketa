@@ -148,6 +148,12 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
 .scan-found-ico{font-size:4rem}
 .scan-found-name{color:#fff;font-size:1.1rem;font-weight:900;text-align:center}
 
+
+.set-edit-inp{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#eef2ff;font-size:0.85rem;font-family:monospace;padding:5px 10px;width:80px;text-align:right;outline:none;-webkit-appearance:none}
+.set-edit-inp:focus{border-color:#ff3cac}
+.set-save-btn{padding:5px 12px;border-radius:100px;background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.25);color:#06d6a0;font-size:0.72rem;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.set-save-btn:active{opacity:0.7}
+
 </style>
 </head>
 <body>
@@ -245,19 +251,33 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
     <div class="sec-t">Настройки программы лояльности</div>
     <div class="set-row">
       <div class="set-info"><div class="set-name">★ за визит</div><div class="set-desc">Начисляется кассиром при каждом посещении</div></div>
-      <div class="set-val">100 ★</div>
+      <div style="display:flex;align-items:center;gap:8px" id="row-visit">
+        <input class="set-edit-inp" id="cfg-visit" type="number" min="1" max="9999" value="100">
+        <button class="set-save-btn" onclick="saveCfg('visit')">Сохранить</button>
+      </div>
     </div>
     <div class="set-row">
       <div class="set-info"><div class="set-name">Бонус в день рождения</div><div class="set-desc">Множитель звёзд при начислении менеджером</div></div>
-      <div class="set-val">×3</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input class="set-edit-inp" id="cfg-bday" type="number" min="1" max="99" value="3" style="width:60px">
+        <button class="set-save-btn" onclick="saveCfg('bday')">Сохранить</button>
+      </div>
     </div>
     <div class="set-row">
-      <div class="set-info"><div class="set-name">Обмен звёзд</div><div class="set-desc">Бесплатный визит для гостя</div></div>
-      <div class="set-val">1000 ★</div>
+      <div class="set-info"><div class="set-name">Обмен звёзд → бесплатный визит</div><div class="set-desc">Сколько звёзд списывается при обмене</div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input class="set-edit-inp" id="cfg-redeem" type="number" min="100" max="99999" value="1000">
+        <button class="set-save-btn" onclick="saveCfg('redeem')">Сохранить</button>
+      </div>
     </div>
     <div class="set-row">
-      <div class="set-info"><div class="set-name">Уровни гостей</div><div class="set-desc">Новичок → Космонавт 500★ → Командир 1500★ → Галактика 3000★</div></div>
-      <div class="set-val">4 уровня</div>
+      <div class="set-info">
+        <div class="set-name">Уровни гостей</div>
+        <div class="set-desc" id="cfg-levels-desc">Новичок → Космонавт 500★ → Командир 1500★ → Галактика 3000★</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:0.75rem;color:#5a6a90">авто</span>
+      </div>
     </div>
 
     <div id="passBlock" style="display:none">
@@ -10558,8 +10578,14 @@ function applyRole(role) {
     document.getElementById('p-'+firstTab).classList.add('on');
     document.getElementById('tb-'+firstTab).classList.add('on');
   }
+  /* Применяем сохранённые настройки к действиям */
+  try {
+    const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
+    applyCfgToActions(cfg);
+  } catch(e) {}
   if (role === 'director') {
     document.getElementById('passBlock').style.display = 'block';
+    loadCfg();
   }
 }
 
@@ -10773,6 +10799,52 @@ async function loadHistory() {
 }
 
 /* ── ПАРОЛИ ── */
+/* ── НАСТРОЙКИ (localStorage, только директор) ── */
+const CFG_KEY = 'raketa_cfg';
+
+function loadCfg() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
+    if (saved.visit)  document.getElementById('cfg-visit').value  = saved.visit;
+    if (saved.bday)   document.getElementById('cfg-bday').value   = saved.bday;
+    if (saved.redeem) document.getElementById('cfg-redeem').value = saved.redeem;
+    applyCfgToActions(saved);
+  } catch(e) {}
+}
+
+function saveCfg(field) {
+  const vals = {
+    visit:  parseInt(document.getElementById('cfg-visit').value)  || 100,
+    bday:   parseInt(document.getElementById('cfg-bday').value)   || 3,
+    redeem: parseInt(document.getElementById('cfg-redeem').value) || 1000,
+  };
+  localStorage.setItem(CFG_KEY, JSON.stringify(vals));
+  applyCfgToActions(vals);
+  const labels = { visit:'★ за визит', bday:'Бонус ДР', redeem:'Обмен звёзд' };
+  toast('✅ ' + labels[field] + ' сохранено');
+}
+
+function applyCfgToActions(cfg) {
+  if (!cfg) return;
+  if (cfg.visit) {
+    ACTION_META.visit.delta = +cfg.visit;
+    ACTION_META.visit.title = 'Начислить ' + cfg.visit + '★ за визит';
+    ACTION_META.visit.confirmText = 'Подтвердить?';
+  }
+  if (cfg.bday) {
+    const bdayStars = (cfg.visit || 100) * (cfg.bday || 3);
+    ACTION_META.bday.delta = +bdayStars;
+    ACTION_META.bday.title = 'Начислить ×' + cfg.bday + ' в день рождения';
+    ACTION_META.bday.confirmText = '×' + cfg.bday + ' за ДР — это ' + bdayStars + '★. Подтвердить?';
+  }
+  if (cfg.redeem) {
+    ACTION_META.redeem.delta = -cfg.redeem;
+    ACTION_META.redeem.title = 'Списать ' + cfg.redeem + '★ — бесплатный визит';
+    ACTION_META.redeem.confirmText = 'Списать ' + cfg.redeem + '★? Гость получает бесплатный вход.';
+    ACTION_META.redeem.cost = cfg.redeem;
+  }
+}
+
 function togglePass(role) {
   const el = document.getElementById('sp-'+role);
   passShown[role] = !passShown[role];
