@@ -280,6 +280,26 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:#04050
       </div>
     </div>
 
+    <!-- АКЦИИ — только директор -->
+    <div id="promoBlock" style="display:none">
+      <div class="sec-t" style="margin-top:24px">Акции и спецбонусы</div>
+      <div style="font-size:0.78rem;color:#8090b0;margin-bottom:12px;line-height:1.5">
+        Временные акции — появляются кнопкой у каждого гостя. Менеджер и кассир могут их применять.
+      </div>
+      <div id="promoList"></div>
+      <!-- Форма новой акции -->
+      <div style="background:#0e1028;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;margin-top:8px">
+        <div class="sec-t" style="margin-bottom:12px">Новая акция</div>
+        <input class="search-inp" id="promo-name" type="text" placeholder="Название, например: 8 марта 🌷" style="margin-bottom:8px">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input class="set-edit-inp" id="promo-stars" type="number" min="1" max="9999" placeholder="★" style="width:80px;flex-shrink:0">
+          <input class="search-inp" id="promo-until" type="date" style="flex:1;margin-bottom:0">
+        </div>
+        <div style="font-size:0.73rem;color:#5a6a90;margin-bottom:12px">Звёзды · До какой даты (необязательно)</div>
+        <button class="scan-btn" style="margin-bottom:0" onclick="addPromo()">+ Добавить акцию</button>
+      </div>
+    </div>
+
     <div id="passBlock" style="display:none">
       <div class="sec-t" style="margin-top:24px">Доступы сотрудников</div>
       <div class="set-row">
@@ -10582,10 +10602,13 @@ function applyRole(role) {
   try {
     const cfg = JSON.parse(localStorage.getItem(CFG_KEY) || '{}');
     applyCfgToActions(cfg);
+    applyActivePromos();
   } catch(e) {}
   if (role === 'director') {
     document.getElementById('passBlock').style.display = 'block';
+    document.getElementById('promoBlock').style.display = 'block';
     loadCfg();
+    loadPromos();
   }
 }
 
@@ -10647,6 +10670,14 @@ function guestCard(g, listId) {
   const canRedeem = !isCashier;
   const canRedVal = (g.stars||0) >= 1000;
 
+  const promoKeys = Object.keys(ACTION_META).filter(k => k.startsWith('promo_'));
+  const promoBtns = (!isCashier && promoKeys.length)
+    ? promoKeys.map(k => {
+        const pm = ACTION_META[k];
+        return `<button class="gbtn" style="background:rgba(255,100,50,0.1);border-color:rgba(255,100,50,0.25);color:#ff9966;padding:6px 10px;font-size:0.68rem;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" onclick="doAction('${k}','${g.id}','${esc(g.name)}','${listId}')" title="${pm.title}">${pm.title.slice(0,14)}</button>`;
+      }).join('')
+    : '';
+
   return `<div class="gcard" id="gc-${g.id}">
     <div class="gav">${ini}</div>
     <div class="ginfo">
@@ -10655,9 +10686,10 @@ function guestCard(g, listId) {
       <div class="gstars" style="color:${lv.c}">★ ${(g.stars||0).toLocaleString('ru')} · ${lv.n} · ${g.visits||0} виз.</div>
     </div>
     <div class="gactions">
-      <button class="gbtn gbtn-visit" onclick="doAction('visit','${g.id}','${esc(g.name)}','${listId}')">+100★</button>
-      ${canBday?`<button class="gbtn gbtn-bday" onclick="doAction('bday','${g.id}','${esc(g.name)}','${listId}')">×3 ДР</button>`:''}
-      ${canRedeem?`<button class="gbtn gbtn-redeem" style="opacity:${canRedVal?1:0.35}" onclick="${canRedVal?`doAction('redeem','${g.id}','${esc(g.name)}','${listId}')`:'toast(\"⚠️ Недостаточно звёзд\")'}"  >−1000★</button>`:''}
+      <button class="gbtn gbtn-visit" onclick="doAction('visit','${g.id}','${esc(g.name)}','${listId}')">+${ACTION_META.visit.delta}★</button>
+      ${canBday?`<button class="gbtn gbtn-bday" onclick="doAction('bday','${g.id}','${esc(g.name)}','${listId}')">×${document.getElementById('cfg-bday')?.value||3} ДР</button>`:''}
+      ${canRedeem?`<button class="gbtn gbtn-redeem" style="opacity:${canRedVal?1:0.35}" onclick="${canRedVal?`doAction('redeem','${g.id}','${esc(g.name)}','${listId}')`:'toast(\"⚠️ Недостаточно звёзд\")'}"  >−${Math.abs(ACTION_META.redeem.delta)}★</button>`:''}
+      ${promoBtns}
     </div>
   </div>`;
 }
@@ -10842,6 +10874,106 @@ function applyCfgToActions(cfg) {
     ACTION_META.redeem.title = 'Списать ' + cfg.redeem + '★ — бесплатный визит';
     ACTION_META.redeem.confirmText = 'Списать ' + cfg.redeem + '★? Гость получает бесплатный вход.';
     ACTION_META.redeem.cost = cfg.redeem;
+  }
+}
+
+/* ── АКЦИИ ── */
+const PROMO_KEY = 'raketa_promos';
+
+function loadPromos() {
+  renderPromos();
+  /* Применяем активные акции к ACTION_META */
+  applyActivePromos();
+}
+
+function getPromos() {
+  try { return JSON.parse(localStorage.getItem(PROMO_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function savePromos(list) {
+  localStorage.setItem(PROMO_KEY, JSON.stringify(list));
+}
+
+function addPromo() {
+  const name   = document.getElementById('promo-name').value.trim();
+  const stars  = parseInt(document.getElementById('promo-stars').value) || 0;
+  const until  = document.getElementById('promo-until').value;
+  if (!name)  { toast('⚠️ Введи название акции'); return; }
+  if (!stars) { toast('⚠️ Укажи количество звёзд'); return; }
+  const promos = getPromos();
+  promos.push({ id: Date.now(), name, stars, until: until || null, active: true });
+  savePromos(promos);
+  document.getElementById('promo-name').value  = '';
+  document.getElementById('promo-stars').value = '';
+  document.getElementById('promo-until').value = '';
+  renderPromos();
+  applyActivePromos();
+  toast('✅ Акция «' + name + '» добавлена');
+}
+
+function togglePromo(id) {
+  const promos = getPromos();
+  const p = promos.find(x => x.id === id);
+  if (p) { p.active = !p.active; savePromos(promos); renderPromos(); applyActivePromos(); }
+}
+
+function deletePromo(id) {
+  const promos = getPromos().filter(x => x.id !== id);
+  savePromos(promos);
+  renderPromos();
+  applyActivePromos();
+  toast('🗑 Акция удалена');
+}
+
+function renderPromos() {
+  const el = document.getElementById('promoList');
+  if (!el) return;
+  const promos = getPromos();
+  if (!promos.length) {
+    el.innerHTML = '<div style="font-size:0.82rem;color:#5a6a90;padding:8px 0">Акций нет — добавьте первую</div>';
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  el.innerHTML = promos.map(p => {
+    const expired = p.until && p.until < today;
+    const status  = expired ? '⏰ Истекла' : p.active ? '🟢 Активна' : '⏸ Пауза';
+    const statusC = expired ? '#5a6a90' : p.active ? '#06d6a0' : '#ffd166';
+    return `<div class="set-row" style="opacity:${expired?0.5:1}">
+      <div class="set-info">
+        <div class="set-name">${p.name}</div>
+        <div class="set-desc">+${p.stars}★ ${p.until ? '· до '+p.until : '· бессрочно'}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <span style="font-size:0.7rem;color:${statusC};font-weight:700">${status}</span>
+        ${!expired ? `<button class="gbtn gbtn-visit" style="padding:4px 10px;font-size:0.7rem" onclick="togglePromo(${p.id})">${p.active?'Пауза':'Вкл'}</button>` : ''}
+        <button class="gbtn gbtn-redeem" style="padding:4px 10px;font-size:0.7rem" onclick="deletePromo(${p.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function applyActivePromos() {
+  /* Добавляем активные акции в ACTION_META под ключами promo_ID */
+  /* Сначала чистим старые промо-ключи */
+  Object.keys(ACTION_META).forEach(k => { if(k.startsWith('promo_')) delete ACTION_META[k]; });
+  const today = new Date().toISOString().slice(0,10);
+  getPromos().forEach(p => {
+    if (!p.active) return;
+    if (p.until && p.until < today) return;
+    ACTION_META['promo_'+p.id] = {
+      title: p.name,
+      confirmText: 'Начислить +' + p.stars + '★ по акции «' + p.name + '»?',
+      delta: +p.stars,
+      reason: '🎁 Акция: ' + p.name,
+      cost: 0
+    };
+  });
+  /* Перерисовываем карточки гостей если список открыт */
+  if (allGuests.length) {
+    const listId = currentRole === 'cashier' ? 'cashierList' : 'guestsList';
+    const el = document.getElementById(listId);
+    if (el && el.children.length) renderGuests(allGuests, listId);
   }
 }
 
