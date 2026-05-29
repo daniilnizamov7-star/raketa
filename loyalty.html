@@ -23,7 +23,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;-webkit-text-size-adjust:100%}
 body{font-family:var(--fb);background:var(--bg);color:var(--white);
-  padding-top:var(--st);padding-bottom:calc(var(--sb)+72px);
+  padding-top:var(--st);padding-bottom:calc(var(--sb)+88px);
   overflow-x:hidden;min-height:100%}
 
 /* LOADER */
@@ -267,6 +267,9 @@ body{font-family:var(--fb);background:var(--bg);color:var(--white);
       <div class="f-label">День рождения ребёнка (необязательно)</div>
       <input class="f-input" type="date" id="rBday">
     </div>
+    <div style="font-size:0.72rem;color:var(--muted2);text-align:center;margin-bottom:12px;line-height:1.5;padding:0 8px">
+      Нажимая кнопку, вы соглашаетесь на <span style="color:var(--acc);text-decoration:underline;cursor:pointer" onclick="om('pdMo')">обработку персональных данных</span>
+    </div>
     <button class="btn-reg" id="regBtn" onclick="doReg()">🚀 Вступить бесплатно</button>
   </div>
 </div>
@@ -431,10 +434,30 @@ window.addEventListener('DOMContentLoaded',async()=>{
   // Ищем сохранённый телефон
   const saved=localStorage.getItem('rkt_phone');
   if(saved){
+    // Сначала пробуем показать кэшированные данные офлайн
+    const cached=localStorage.getItem('rkt_guest');
+    if(cached){
+      try{
+        G=JSON.parse(cached);
+        showMain(); render();
+        // Фоново обновляем из Supabase
+        sbq(`raketa_guests?phone=eq.%2B7${saved}&limit=1`).then(rows=>{
+          if(rows&&rows.length){
+            G=rows[0];
+            localStorage.setItem('rkt_guest',JSON.stringify(G));
+            render();
+          }
+        }).catch(()=>{});
+        return;
+      }catch(e){}
+    }
+    // Нет кэша — пробуем онлайн
     try{
       const rows=await sbq(`raketa_guests?phone=eq.%2B7${saved}&limit=1`);
       if(rows&&rows.length){
-        G=rows[0]; showMain(); render(); return;
+        G=rows[0];
+        localStorage.setItem('rkt_guest',JSON.stringify(G));
+        showMain(); render(); return;
       }
     }catch(e){ console.warn('SB offline',e.message); }
   }
@@ -462,6 +485,7 @@ async function doReg(){
     if(ex&&ex.length){
       G=ex[0];
       localStorage.setItem('rkt_phone',digits);
+      localStorage.setItem('rkt_guest',JSON.stringify(G));
       showMain(); render();
       toast('👋 С возвращением, '+G.name+'!');
       return;
@@ -479,6 +503,7 @@ async function doReg(){
         reason:'🎁 Регистрация в клубе',staff_note:'Самостоятельно'})
     });
     localStorage.setItem('rkt_phone',digits);
+    localStorage.setItem('rkt_guest',JSON.stringify(G));
     showMain(); render(); stars();
     toast('🚀 Добро пожаловать в Клуб Ракеты!');
   }catch(e){
@@ -780,5 +805,21 @@ function applyUpd(){
   });
 }
 </script>
+
+<!-- PD MODAL -->
+<div class="mo" id="pdMo" onclick="cm('pdMo')">
+  <div class="mo-sheet" onclick="event.stopPropagation()">
+    <span class="mo-handle"></span>
+    <div class="mo-title">🔒 Обработка персональных данных</div>
+    <div class="mo-body" style="font-size:0.82rem;line-height:1.7;color:var(--muted2)">
+      Ваши данные (имя, номер телефона, дата рождения детей) обрабатываются в целях ведения программы лояльности.<br><br>
+      Оператор: Низамов Даниил Ринатович, самозанятый.<br>
+      Регистрация в Роскомнадзор: № 6148/74.<br><br>
+      Данные хранятся на защищённых серверах и не передаются третьим лицам. Вы можете запросить удаление своих данных, обратившись по телефону на кассе парка.
+    </div>
+    <button class="mo-cancel" onclick="cm('pdMo')">Понятно</button>
+  </div>
+</div>
+
 </body>
 </html>
