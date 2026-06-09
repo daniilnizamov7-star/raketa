@@ -1504,7 +1504,7 @@ footer {
     <h3>Заявка отправлена!</h3>
     <p>Наш менеджер свяжется с вами в течение 30 минут и подберёт идеальную программу для вашего праздника</p>
     <div class="modal-actions">
-      <a href="https://wa.me/79058391411" class="btn-primary" style="justify-content:center;">💬 Написать сразу в WhatsApp</a>
+      <a href="https://wa.me/79058391411" class="btn-primary" style="justify-content:center;">💬 Написать сразу в МАХ</a>
       <button onclick="closeModal()" class="btn-secondary" style="text-align:center; border:1.5px solid rgba(255,255,255,0.15);">Закрыть</button>
     </div>
   </div>
@@ -1902,23 +1902,52 @@ document.getElementById('f-phone').addEventListener('input', function() {
   const hero   = document.querySelector('.hero');
   let ticking  = false;
 
-  // Parallax при скролле
+  // --- Hero ракета: мягкая задержка страницы + улёт вверх ---
+  let scrollLocked  = true;   // первые мгновения страница притормаживает
+  let lockTimer     = null;
+  let rocketGone    = false;  // ракета улетела?
+  let wheelBuf      = 0;      // буфер wheel для мягкого старта
+  const LOCK_DELTA  = 280;    // px колеса до разблокировки страницы
+
+  // Мягкая блокировка — не даём странице скроллиться пока ракета не стартовала
+  function softBlock(e) {
+    if (!scrollLocked) return;
+    e.preventDefault();
+    wheelBuf += Math.abs(e.deltaY);
+    // После накопления LOCK_DELTA — отпускаем страницу
+    if (wheelBuf >= LOCK_DELTA) {
+      scrollLocked = false;
+      window.removeEventListener('wheel', softBlock);
+    }
+  }
+  window.addEventListener('wheel', softBlock, { passive: false });
+
+  // Анимация ракеты по реальному scrollY
   window.addEventListener('scroll', function() {
     if (!ticking) {
       requestAnimationFrame(function() {
-        const sy = window.scrollY;
-        const heroH = hero ? hero.offsetHeight : window.innerHeight;
-
-        // Ракета улетает вверх и вправо, исчезает
-        const progress = Math.min(sy / (heroH * 0.7), 1);
-        const ty = -50 - progress * 160;   // вверх
-        const tx = progress * 80;           // вправо (улетает)
-        const scale = 1 - progress * 0.3;
-        const opacity = 1 - progress * 1.4;
+        const sy       = window.scrollY;
+        const heroH    = hero ? hero.offsetHeight : window.innerHeight;
+        const progress = Math.min(sy / (heroH * 0.55), 1);
 
         if (rocket) {
-          rocket.style.transform = `translateY(${ty}%) translateX(${tx}px) scale(${scale}) rotate(${-progress * 25}deg)`;
-          rocket.style.opacity = Math.max(0, opacity);
+          if (sy > 5) {
+            rocket.style.animation = 'none';
+            const ty = -50 - progress * 320;
+            const op = 1 - progress * 1.6;
+            const sc = 1 - progress * 0.12;
+            rocket.style.transform = `translateY(${ty}%) scale(${sc})`;
+            rocket.style.opacity   = Math.max(0, op).toString();
+            if (progress >= 1) rocketGone = true;
+          } else {
+            rocket.style.animation = '';
+            rocket.style.transform = '';
+            rocket.style.opacity   = '1';
+            rocketGone   = false;
+            scrollLocked = true;
+            wheelBuf     = 0;
+            window.addEventListener('wheel', softBlock, { passive: false });
+          }
         }
         ticking = false;
       });
@@ -1926,14 +1955,13 @@ document.getElementById('f-phone').addEventListener('input', function() {
     }
   }, { passive: true });
 
-  // Генерируем мерцающие звёздочки
+  // --- Генерация звёзд ---
   const container = document.getElementById('starsTwinkle');
   if (!container) return;
 
   const colors = ['yellow','cyan','pink','green','white'];
   const crossColors = ['#ffd166','#00e5ff','#ff3cac','#06d6a0','#9b59ff'];
 
-  // Круглые звёзды
   for (let i = 0; i < 55; i++) {
     const s = document.createElement('div');
     s.className = 'star-t ' + colors[Math.floor(Math.random() * colors.length)];
@@ -1948,7 +1976,6 @@ document.getElementById('f-phone').addEventListener('input', function() {
     container.appendChild(s);
   }
 
-  // Четырёхлучевые звёздочки ✦
   const crossPositions = [
     [15,12],[82,8],[91,35],[7,55],[25,78],[70,88],[48,6],[60,70],[33,42],[88,62],
     [5,25],[95,20],[50,92],[18,68],[75,15],[38,85],[63,30],[12,90],[85,50],[45,18]
@@ -1957,7 +1984,7 @@ document.getElementById('f-phone').addEventListener('input', function() {
     const s = document.createElement('div');
     s.className = 'star-cross';
     const color = crossColors[i % crossColors.length];
-    const size = Math.random() * 14 + 10;
+    const size  = Math.random() * 14 + 10;
     s.style.cssText = `
       left:${x}%; top:${y}%;
       color:${color};
@@ -1968,8 +1995,57 @@ document.getElementById('f-phone').addEventListener('input', function() {
     s.textContent = '✦';
     container.appendChild(s);
   });
-})();
 
+  // --- Ракета у формы бронирования ---
+  const bookingSection = document.getElementById('booking');
+  if (!bookingSection) return;
+
+  // Создаём вторую ракету
+  const rocket2 = document.createElement('img');
+  rocket2.src = rocket ? rocket.src : '';
+  rocket2.alt = 'Ракета';
+  rocket2.id  = 'bookingRocket';
+  rocket2.style.cssText = `
+    position: absolute;
+    right: -20px;
+    bottom: -60px;
+    width: clamp(140px, 16vw, 220px);
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(80px) rotate(15deg);
+    transition: opacity 0.8s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1);
+    filter: drop-shadow(0 0 30px rgba(155,89,255,0.4));
+    animation: none;
+  `;
+
+  // Booking wrap нужен position:relative
+  const bookingWrap = bookingSection.closest('.booking-wrap') || bookingSection;
+  bookingWrap.style.position = 'relative';
+  bookingWrap.style.overflow = 'hidden';
+  bookingWrap.appendChild(rocket2);
+
+  // Появляется когда доскроллили до формы
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        setTimeout(function() {
+          rocket2.style.opacity   = '1';
+          rocket2.style.transform = 'translateY(0) rotate(0deg)';
+          // После появления — парит
+          setTimeout(function() {
+            rocket2.style.transition = 'none';
+            rocket2.style.animation  = 'rocketHover 4s ease-in-out infinite';
+          }, 900);
+        }, 300);
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(bookingWrap);
+
+})();
 </script>
 </body>
 </html>
