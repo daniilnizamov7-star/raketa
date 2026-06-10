@@ -976,6 +976,7 @@ footer {
 }
 
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -1764,7 +1765,18 @@ async function submitForm() {
     body: JSON.stringify({ chat_id: CHAT_ID, text, parse_mode: 'Markdown' })
   }).catch(() => {}); // молча — заявка уже в Supabase если не дошло
 
-  // 3. Всегда показываем успех — заявка в базе гарантированно
+  // 3. Email уведомление через EmailJS (работает без VPN в РФ)
+  emailjs.send('service_wuoxwqv', 'template_3i2rd8e', {
+    from_name:  name,
+    phone:      phone,
+    event_type: event || 'не указано',
+    event_date: date  || 'не указано',
+    comment:    comment || 'без комментария',
+    time:       new Date().toLocaleString('ru-RU'),
+    to_email:   'raketa-park74@mail.ru'
+  }).catch(() => {}); // молча — заявка уже в Supabase
+
+  // 4. Всегда показываем успех — заявка в базе гарантированно
   btn.classList.remove('sending');
   btn.classList.add('success');
   btn.textContent = '✓ Заявка отправлена!';
@@ -1901,6 +1913,9 @@ document.getElementById('f-phone').addEventListener('input', function() {
   }, { passive: true });
 })();
 
+
+// EmailJS инициализация
+emailjs.init('DtU7MqlHcf12OJ6gu'); // ← заменить на свой ключ с emailjs.com
 
 /* =====================
    PARALLAX ROCKET + STARS
