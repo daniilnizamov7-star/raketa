@@ -1,0 +1,4 @@
+Options -Indexes
+<FilesMatch "^(config(?:\.example)?\.php|birthday-engine\.php|birthday-catalog\.json|test\.php|\..*|.*\.(sql|log|bak|zip))$">
+    Require all denied
+</FilesMatch>
