@@ -1,0 +1,18 @@
+/* Appetizing illustrations shared by menu cards and the order. */
+.food-icon{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:72px;height:72px;overflow:hidden;border:1px solid #f0e3d2;border-radius:16px;background:#fff9ef;vertical-align:middle;isolation:isolate}
+.food-art{display:block;flex:0 0 auto;width:100%;height:100%;background-repeat:no-repeat;pointer-events:none;transition:transform .3s ease}
+.party-item-heading{display:flex;flex-direction:column;align-items:stretch;gap:15px;margin-bottom:13px}
+.party-item-heading>.food-icon{width:100%;height:158px;border:0;border-radius:12px;background:linear-gradient(135deg,#fffaf2,#fff5e6)}
+.party-item-heading>.food-icon .food-art{width:158px;height:158px;border-radius:12px}
+.party-item-heading h4{margin:0;flex:initial;min-height:45px;font-size:16px;line-height:1.45}
+.party-item:hover .food-art{transform:scale(1.045)}
+.party-item.is-selected{box-shadow:0 4px 20px #7643a010;border-color:#b68adb}
+.party-menu-image-note{font-size:11px;line-height:1.7;color:#9b879f;margin:-6px 0 22px}
+.party-cart-name .food-icon.party-cart-icon{width:39px;height:39px;min-width:39px;flex:0 0 39px;border:0;border-radius:10px}
+.party-cart-name.has-food-icon{gap:10px;align-items:center}
+.party-cart-name.has-food-icon>span:last-child{min-width:0}
+@media(max-width:1180px){.party-item-heading>.food-icon{height:146px}.party-item-heading>.food-icon .food-art{width:146px;height:146px}.party-item-heading h4{font-size:15px}}
+@media(min-width:601px) and (max-width:980px){.party-item-heading>.food-icon{height:180px}.party-item-heading>.food-icon .food-art{width:180px;height:180px}}
+@media(max-width:600px){.party-item-heading{gap:15px;margin-bottom:12px}.party-item-heading>.food-icon{height:190px;border-radius:12px}.party-item-heading>.food-icon .food-art{width:190px;height:190px}.party-item-heading h4{font-size:17px;line-height:1.5;min-height:0}.party-menu-image-note{font-size:11px;margin-bottom:20px}.party-cart-name .food-icon.party-cart-icon{width:38px;height:38px;min-width:38px;flex-basis:38px}}
+@media(max-width:360px){.party-item-heading>.food-icon{height:172px}.party-item-heading>.food-icon .food-art{width:172px;height:172px}.party-item-heading h4{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.food-art{transition:none}.party-item:hover .food-art{transform:none}}

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /booking.php
+
+Sitemap: https://raketa-park.ru/sitemap.xml
