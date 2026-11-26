@@ -1,12 +1,12 @@
 {
-  "name": "Ракета — Семейный парк",
+  "name": "Ракета — семейный парк",
   "short_name": "Ракета",
-  "description": "Карта гостя семейного парка Ракета в Челябинске",
-  "start_url": "/loyalty.html",
+  "description": "Семейный парк развлечений в Челябинске",
+  "lang": "ru",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#04050e",
-  "theme_color": "#04050e",
-  "orientation": "portrait",
+  "background_color": "#321060",
+  "theme_color": "#321060",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
